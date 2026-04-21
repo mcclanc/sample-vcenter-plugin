@@ -48,13 +48,13 @@ npm run start:https
 
 `npm run start:https` sets `SSL_KEY_PATH` and `SSL_CERT_PATH` to the files under `certs/`.
 
-## Broadcom vSphere Client SDK (manual download)
+## Broadcom vSphere Client SDK
 
-Building a **production** remote plug-in still requires the **vSphere Client SDK** matching your vCenter line (JavaScript module, samples, registration tooling). That bundle comes from Broadcom / VMware distribution, not from npm.
+Unpack the distribution into **`html-client-sdk/`** at the repo root (already expected by this project). See **[SDK_LAYOUT.md](SDK_LAYOUT.md)** for how that tree maps to **`ui/`** and the dev **`htmlClientSdk`** stub.
 
 - Doc hub: [Developing Remote Plug-ins with the vSphere Client SDK (vSphere 9)](https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere-sdks-tools/9-0/developing-remote-plug-ins-with-the-vsphere-client-sdk-8-0.html)
 
-After you unpack the SDK, copy the **remote plug-in client** scripts into `ui/` (or wire a bundler) per the SDK’s sample layout.
+The real **`htmlClientSdk`** is provided by vSphere Client in production; locally, **`server/htmlClientSdk.stub.js`** is served at **`/api/ui/htmlClientSdk.js`** so `index.html` matches the official load order.
 
 ## Optional tooling
 

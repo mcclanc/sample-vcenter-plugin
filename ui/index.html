@@ -4,7 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tanzu Hub POC Deployer</title>
-    <link rel="stylesheet" href="styles.css" />
+    <style>
+      html:not([data-theme]),
+      body:not([cds-theme]) {
+        background: transparent;
+      }
+    </style>
+    <script type="text/javascript" src="/api/ui/htmlClientSdk.js"></script>
+    <script>
+      (function () {
+        var base = document.createElement("base");
+        base.href =
+          htmlClientSdk.getProxiedPluginServerOrigin() + "/tanzu-hub-poc-ui/";
+        document.head.appendChild(base);
+      })();
+    </script>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
   </head>
   <body>
     <header class="header">
@@ -18,10 +33,11 @@
       <section>
         <h2>Deployment parameters (stub)</h2>
         <p class="muted">
-          Collect vCenter inventory selections (cluster, datastore, port group) and OVA source. The
-          remote plug-in UI runs in an iframe inside vSphere Client; use the official SDK bridge to
-          call vSphere APIs with the user session where supported, or delegate to a trusted backend
-          service for long-running OVF deploys.
+          Collect vCenter inventory selections (cluster, datastore, port group) and OVA source. When
+          this UI runs inside vSphere Client, <code>htmlClientSdk</code> is provided by the host;
+          this dev server serves a minimal stub at <code>/api/ui/htmlClientSdk.js</code> so local
+          builds match the same load order as the official samples under
+          <code>html-client-sdk/samples/</code>.
         </p>
         <form id="deploy-form" class="form">
           <label>

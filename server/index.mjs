@@ -15,6 +15,12 @@ app.get("/health", (_req, res) => {
   res.json({ ok: true, service: "sample-vcenter-plugin" });
 });
 
+/** Same path the vSphere Client uses; real client injects the production script. */
+app.get("/api/ui/htmlClientSdk.js", (_req, res) => {
+  res.type("application/javascript");
+  res.sendFile(path.join(__dirname, "htmlClientSdk.stub.js"));
+});
+
 app.use("/tanzu-hub-poc-ui", express.static(ui, { index: false }));
 
 const port = Number(process.env.PORT || 8443);

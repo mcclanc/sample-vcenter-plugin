@@ -4,6 +4,22 @@ const log = (msg) => {
   el.textContent = `${new Date().toISOString()} ${msg}\n${el.textContent}`;
 };
 
+function whenSdkReady() {
+  const sdk = globalThis.htmlClientSdk;
+  if (!sdk) {
+    log("htmlClientSdk missing — expected script /api/ui/htmlClientSdk.js");
+    return;
+  }
+  sdk.initialize(() => {
+    log(
+      `htmlClientSdk initialized. locale=${sdk.app.getClientLocale()} theme=${JSON.stringify(sdk.app.getTheme())}`,
+    );
+    log(`getProxiedPluginServerOrigin()=${sdk.getProxiedPluginServerOrigin()}`);
+  });
+}
+
+whenSdkReady();
+
 document.getElementById("stub-action")?.addEventListener("click", () => {
   const form = document.getElementById("deploy-form");
   if (!(form instanceof HTMLFormElement)) return;
@@ -15,5 +31,5 @@ document.getElementById("stub-action")?.addEventListener("click", () => {
     return;
   }
   log(`Stub OK: would deploy "${vmName || "unnamed"}" from ${ova}`);
-  log("Next: integrate vSphere Client Remote Plug-in SDK (HtmlApiClient) + deploy library or backend.");
+  log("Next: call vSphere APIs via htmlClientSdk.app (in client) or your /rest backend.");
 });

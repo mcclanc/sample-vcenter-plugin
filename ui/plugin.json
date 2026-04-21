@@ -10,6 +10,15 @@
     }
   },
   "definitions": {
+    "iconSpriteSheet": {
+      "uri": "images/sprites.png",
+      "definitions": {
+        "main": {
+          "x": 0,
+          "y": 96
+        }
+      }
+    },
     "i18n": {
       "locales": ["en-US"],
       "definitions": {
