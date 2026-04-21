@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "start": "node server/index.mjs",
-    "dev": "node --watch server/index.mjs"
+    "start:https": "SSL_KEY_PATH=certs/dev-key.pem SSL_CERT_PATH=certs/dev-cert.pem node server/index.mjs",
+    "dev": "node --watch server/index.mjs",
+    "certs": "bash scripts/gen-dev-certs.sh"
   },
   "engines": {
     "node": ">=20"

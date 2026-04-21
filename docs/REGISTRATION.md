@@ -12,7 +12,14 @@ Use a hostname and certificate that vCenter trusts (or add your CA to trust). Se
 
 ## TLS for local development
 
-Generate or reuse a cert (for example `mkcert`) and start the server with:
+From the repo root, generate **localhost** certs and run with HTTPS:
+
+```bash
+npm run certs
+npm run start:https
+```
+
+Or set paths yourself:
 
 ```bash
 export SSL_KEY_PATH=/path/to/key.pem

@@ -18,17 +18,22 @@ docs/ARCHITECTURE.md     # How this maps to vCenter + Tanzu POC
 docs/REGISTRATION.md     # HTTPS + manifest URL for registration
 ```
 
+## Machine setup
+
+See **[docs/DEV_SETUP.md](docs/DEV_SETUP.md)** (Homebrew **Node** + **mkcert**, `PATH`, HTTPS dev server, SDK download notes).
+
 ## Quick start
 
 ```bash
 cd sample-vcenter-plugin
 npm install
-npm start
+npm run certs          # first time: localhost TLS files under certs/
+npm run start:https    # HTTPS on port 8443
 ```
 
-- Health: `http://localhost:8443/health`
-- Manifest: `http://localhost:8443/tanzu-hub-poc-ui/plugin.json`  
-  For vCenter registration you usually need **HTTPS**; see [docs/REGISTRATION.md](docs/REGISTRATION.md).
+- Health: `https://localhost:8443/health`
+- Manifest: `https://localhost:8443/tanzu-hub-poc-ui/plugin.json`  
+  Plain HTTP (`npm start`) is only for quick checks; vCenter registration usually needs **HTTPS** — [docs/REGISTRATION.md](docs/REGISTRATION.md).
 
 ## Next implementation steps
 
