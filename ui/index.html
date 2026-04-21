@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tanzu Hub POC Deployer</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="header">
+      <h1 data-i18n="plugin.name">Tanzu Hub POC Deployer</h1>
+      <p class="muted" data-i18n="plugin.summary">
+        Wire this view to vSphere Client SDK APIs, then drive OVA / evaluation appliance deployment.
+      </p>
+    </header>
+
+    <main class="panel">
+      <section>
+        <h2>Deployment parameters (stub)</h2>
+        <p class="muted">
+          Collect vCenter inventory selections (cluster, datastore, port group) and OVA source. The
+          remote plug-in UI runs in an iframe inside vSphere Client; use the official SDK bridge to
+          call vSphere APIs with the user session where supported, or delegate to a trusted backend
+          service for long-running OVF deploys.
+        </p>
+        <form id="deploy-form" class="form">
+          <label>
+            OVA URL or Content Library item
+            <input type="url" name="ova" placeholder="https://…/appliance.ova" />
+          </label>
+          <label>
+            Target VM name
+            <input type="text" name="vmName" placeholder="tanzu-hub-poc-01" />
+          </label>
+          <label>
+            Notes
+            <textarea name="notes" rows="3" placeholder="DNS wildcard, IP plan, sizing…"></textarea>
+          </label>
+          <button type="button" id="stub-action">Validate (client-side stub)</button>
+        </form>
+        <pre id="log" class="log" aria-live="polite"></pre>
+      </section>
+    </main>
+
+    <script type="module" src="main.js"></script>
+  </body>
+</html>

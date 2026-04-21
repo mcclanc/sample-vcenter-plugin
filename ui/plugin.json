@@ -1,0 +1,32 @@
+{
+  "manifestVersion": "1.0.0",
+  "requirements": {
+    "plugin.api.version": "1.0.0"
+  },
+  "configuration": {
+    "nameKey": "plugin.name",
+    "icon": {
+      "name": "main"
+    }
+  },
+  "definitions": {
+    "i18n": {
+      "locales": ["en-US"],
+      "definitions": {
+        "plugin.name": {
+          "en-US": "Tanzu Hub POC Deployer"
+        },
+        "plugin.summary": {
+          "en-US": "Deploy and track Tanzu Platform evaluation / Hub POC appliances from vSphere Client."
+        }
+      }
+    }
+  },
+  "global": {
+    "view": {
+      "navigationId": "tanzuHubPoc",
+      "uri": "index.html",
+      "navigationVisible": true
+    }
+  }
+}

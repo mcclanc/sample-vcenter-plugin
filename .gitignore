@@ -2,3 +2,7 @@
 *.log
 .idea/
 .vscode/
+node_modules/
+*.pem
+.env
+.env.*
