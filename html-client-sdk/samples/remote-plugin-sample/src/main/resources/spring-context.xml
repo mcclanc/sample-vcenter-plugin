@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Copyright (c) 2022-2025 Broadcom. All Rights Reserved.
+     Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
+     and/or its subsidiaries.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:websocket="http://www.springframework.org/schema/websocket"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+       http://www.springframework.org/schema/websocket
+       http://www.springframework.org/schema/websocket/spring-websocket.xsd">
+   <mvc:annotation-driven>
+      <mvc:message-converters>
+         <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+      </mvc:message-converters>
+   </mvc:annotation-driven>
+
+   <bean name="chassisStore" class="com.vmware.sample.remote.store.InMemoryChassisStore"/>
+
+   <bean name="configuration"
+         class="com.vmware.sample.remote.configuration.Configuration"
+         init-method="initialize">
+      <constructor-arg ref="environment"/>
+   </bean>
+
+   <bean name="webSocketSessionRegistry"
+         class="com.vmware.sample.remote.websocket.WebSocketSessionRegistry">
+   </bean>
+
+   <bean name="webSocketMessageHandler"
+         class="com.vmware.sample.remote.websocket.WebSocketMessageHandler">
+      <constructor-arg ref="webSocketSessionRegistry"/>
+   </bean>
+
+   <websocket:handlers allowed-origins="*">
+      <websocket:mapping path="/messaging" handler="webSocketMessageHandler"/>
+      <websocket:handshake-interceptors>
+         <bean class="com.vmware.sample.remote.websocket.WebSocketHandshakeInterceptor">
+            <constructor-arg ref="webSocketTicketService"/>
+         </bean>
+      </websocket:handshake-interceptors>
+   </websocket:handlers>
+
+   <bean name="sessionService"
+         class="com.vmware.sample.remote.gateway.SessionServiceImpl">
+      <constructor-arg ref="configuration"/>
+   </bean>
+
+   <bean name="chassisService"
+         class="com.vmware.sample.remote.services.ChassisServiceImpl">
+      <constructor-arg ref="chassisStore"/>
+      <constructor-arg ref="messagingService"/>
+      <constructor-arg ref="taskService"/>
+   </bean>
+
+   <bean name="vcenterInfoService"
+         class="com.vmware.sample.remote.services.HostServiceImpl">
+      <constructor-arg ref="vimObjectService"/>
+      <constructor-arg ref="chassisService"/>
+   </bean>
+
+   <bean name="taskService" class="com.vmware.sample.remote.vim25.services.TaskService">
+      <constructor-arg ref="sessionService"/>
+   </bean>
+
+    <bean name="authorizationService" class="com.vmware.sample.remote.vim25.services.AuthorizationService">
+        <constructor-arg ref="sessionService"/>
+    </bean>
+
+   <bean name="vimObjectService"
+         class="com.vmware.sample.remote.vim25.services.VimObjectService">
+      <constructor-arg ref="sessionService"/>
+      <constructor-arg ref="configuration"/>
+   </bean>
+
+   <bean name="messagingService"
+         class="com.vmware.sample.remote.services.MessagingServiceImpl">
+      <constructor-arg ref="webSocketSessionRegistry"/>
+   </bean>
+
+   <bean name="securityService"
+         class="com.vmware.sample.remote.services.SecurityServiceImpl">
+      <constructor-arg ref="sessionService"/>
+   </bean>
+
+   <bean name="webSocketTicketService"
+         class="com.vmware.sample.remote.websocket.WebSocketSessionTicketService">
+   </bean>
+
+   <bean name="chassisController"
+         class="com.vmware.sample.remote.controllers.ChassisController">
+      <constructor-arg ref="chassisService"/>
+   </bean>
+
+   <bean name="hostController"
+         class="com.vmware.sample.remote.controllers.HostController">
+      <constructor-arg ref="vcenterInfoService"/>
+      <constructor-arg ref="chassisService"/>
+   </bean>
+
+   <bean name="dynamicItemsController"
+         class="com.vmware.sample.remote.controllers.DynamicItemsController">
+      <constructor-arg ref="authorizationService"/>
+   </bean>
+
+   <bean name="webSocketSessionController"
+         class="com.vmware.sample.remote.controllers.WebSocketSessionController">
+      <constructor-arg ref="webSocketTicketService"/>
+   </bean>
+</beans>

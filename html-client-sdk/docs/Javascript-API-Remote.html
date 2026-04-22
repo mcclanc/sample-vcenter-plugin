@@ -1,0 +1,1110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+     Copyright (c) 2016-2025 Broadcom. All Rights Reserved.
+     Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
+     and/or its subsidiaries.
+-->
+<html lang="en" dir="ltr">
+<head>
+   <title>Javascript API for remote plug-ins</title>
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   <link rel="stylesheet" href="resources/main.css" media="screen" />
+</head>
+<body>
+
+<a name="top"></a>
+<h1>vSphere HTML Client SDK - Javascript API for remote plug-ins</h1>
+
+<ol>
+   <li><a href="#overview">Overview</a></li>
+   <li><a href="#application">Client Application APIs</a></li>
+   <li><a href="#event">Event APIs</a></li>
+   <li><a href="#modal">Modal APIs</a></li>
+</ol>
+
+<!-- ============================================================================================= -->
+<a name="overview"></a>
+<h2>1. Overview</h2>
+
+<p>
+   The vSphere HTML Client SDK offers a set of JavaScript APIs which facilitate the building of HTML Client-only plugins, fully compatible with the HTML-based vSphere Client.
+   These JavaScript APIs are documented here as if they have TypeScript signatures, but they run as pure JavaScript, and all complex types are plain old Javascript objects.
+   The JavaScript APIs may be used by the plugin to communicate with the HTML Client and to execute a number of operations. Each plugin will have access to the JavaScript APIs within its own iframe which eliminates the possibility of plugin conflicts. Please refer to the Plug-in Architecture Diagram in the online vSphere Client SDK documentation.
+   <br/><b>WARNING</b>: Do not access the window.parent (the Client window), as this is unsupported and if your plugin relies on this it might break in a future release of the vSphere Client.
+</p>
+<a name="namespaces"></a>
+<h3>API Namespaces</h3>
+
+<p>The JavaScript APIs are organized in several domains depending on their functionality. This improves readability and communicates clearly the API functionality scope:</p>
+<ul>
+   <li>application</li>
+   <li>event</li>
+   <li>modal</li>
+</ul>
+<a name="accessibility"></a>
+<h3>API Accessibility</h3>
+<p>
+   In order to isolate the plugins, a new asynchronous way for communicating with the parent window is in place, namely the plugin communicates with the vSphere Client with a <span class="code">window.postMessage</span> mechanism.
+   <br/>A Client Library abstracts plugin writers from this new mechanism. It exposes the frontend APIs in a standard manner, and hides the complexity associated with asynchronious programming.
+   <br/>The Client Library is not bundled with plugins and is dynamically loaded from a fixed location. This approach allows for transparent bug fixes and new APIs to be delivered in future vSphere Client releases.
+</p>
+
+<p><b>WARNING</b>: Do not reverse engineer the Client Library and do not use anything not provided by the APIs. Doing this might break your plugin in future vSphere Client releases.</p>
+
+<p>
+   The JavaScript APIs can be accessed by including the "<span class="code">/api/ui/htmlClientSdk.js</span>" source. For example: <span class="code">&lt;script src="/api/ui/htmlClientSdk.js"/&gt;</span>.
+
+   <br/>Once the <span class="code">htmlClientSdk.js</span> source is included, the <span class="code">htmlClientSdk</span> object is created in the iframe's window which has two functions:
+</p>
+<ul>
+   <li>
+      <span class="code">initialize(callback: () => void) => void</span>
+      <br/>Initializes the <span class="code">htmlClientSdk</span>. The method may be called several times but the initialization takes place only the first time.
+      After the <span class="code">htmlClientSdk</span> is initialized, every caller of the <i>initialize()</i> method that has provided a callback() function will be notified by invoking the respective callback() function.
+      If the <span class="code">htmlClientSdk</span> is already initialized, calling the <i>initialize()</i> method will immediately invoke the provided callback() function, if there is one.
+      After the <span class="code">htmlClientSdk</span> has been initialized, all supported interfaces are added to the <span class="code">htmlClientSdk</span> object (this happens before notifying the callers of the <i>initialize()</i> method).
+   </li>
+   <li>
+      <span class="code">isInitialized() => boolean</span>
+      <br/>Checks whether the <span class="code">htmlClientSdk</span> has been initialized.
+   </li>
+   <li>
+      <span class="code">getProxiedPluginServerOrigin() => string | null</span>
+      <br/>Returns the proxied plugin server origin. Where plugin server origin is
+      <span class="code">&lt;plugin-server-scheme&gt;://&lt;plugin-server-hostname&gt;:&lt;plugin-server-port&gt;</span> (<i>RFC 6454</i>)
+      and proxied plugin server origin is
+      <span class="code">&lt;proxy-server-scheme&gt;://&lt;proxy-server-hostname&gt;:&lt;proxy-server-port&gt;/&lt;plugin-specific-proxy-path&gt;</span>.
+      The proxied origin of the plugin server might be useful when specifying the base URL for relative links using the HTML
+      <span class="code">&lt;base&gt;</span> tag (specifying the tag will also affect modal content URLs).
+   </li>
+</ul>
+<br/><b><i>Note:</i></b> For practical examples on how to use the JS APIs for remote plugins, see the <i>"remote-plugin-sample"</i> plugin. In order to make the following examples more readable, we will use a shortcut for the JS API object, namely
+<span class="code">"htmlClientSdk"</span> which will be equal to <span class="code">"window.htmlClientSdk".</span>
+
+<!-- ============================================================================================= -->
+<a name="application"></a>
+<h2>2. Client Application APIs</h2>
+
+<p>The client application APIs are related to the HTML Client application. The client application APIs can be accessed with the
+   <span class="code">htmlClientSdk.app.{API}</span>
+   <br>
+</p>
+<table cellpadding="5">
+   <col width="15%">
+   <col width="50%">
+   <col width="30%">
+   <tr>
+      <th>APIs</th><th>Description</th><th>Example usage</th>
+   </tr>
+   <tr>
+      <td class="code">formatDateTime(instant: number,<br/>&emsp;
+         options?: PluginDateTimeFormatOptions) => string</td>
+      <td>
+         Formats the specified date-time instant using the provided options.<br/>
+         Returns a string which represents the formatted date.
+         <br/><br/>
+         The instant should be a Unix Time Stamp, an integer value that is the number of milliseconds since 1 January 1970 UTC.
+         <br/><br/>
+         <span class="code">PluginDateTimeFormatOptions</span> type is defined as follows:
+         <br/>
+         <span class="code">
+         <br/>interface PluginDateTimeFormatOptions {
+            <br/>&emsp;<b>format?</b>: <i>"DATE" | "TIME" | "DATE_AND_TIME"</i>;
+         <br/>}
+         </span>
+         <br/><br/>Where:
+         <ul>
+            <li><b>format</b> - Specifies the date-time format. The possible options are:<br/>
+               <ul style="list-style-type:circle;">
+                  <li>"DATE" - output only the date part of the date-time value in the formatted string, e.g. "05/13/2019"</li>
+                  <li>"TIME" - output only the time part of the date-time value in the formatted string, e.g. "11:22:48 AM"</li>
+                  <li>"DATE_AND_TIME" - output both the date and the time of the date-time value in the formatted string, e.g. "05/13/2019, 11:22:48 AM"</li>
+               </ul>
+               If the field's value is not specified then "DATE_AND_TIME" will be used as the default value.</li>
+         </ul>
+      </td>
+      <td>
+         <span class="code">htmlClientSdk.app.formatDateTime(1557735887313);</span><br/>
+         <b>Returns: </b><span class="code"><i>"05/13/2019, 11:24:47 AM"</i></span><br/><br/>
+         <span class="code">htmlClientSdk.app.formatDateTime(1557735887313, {format: "DATE"});</span><br/>
+         <b>Returns: </b><span class="code"><i>"05/13/2019"</i></span><br/><br/>
+         <span class="code">htmlClientSdk.app.formatDateTime(1557735887313, {format: "TIME"});</span><br/>
+         <b>Returns: </b><span class="code"><i>"11:24:47 AM"</i></span><br/><br/>
+         <span class="code">htmlClientSdk.app.formatDateTime(1557735887313, {format: "DATE_AND_TIME"});</span><br/>
+         <b>Returns: </b><span class="code"><i>"05/13/2019, 11:24:47 AM"</i></span><br/><br/>
+      </td>
+   </tr>
+   <tr>
+      <td class="code">getApiEndpoints() => ApiEndpoints</td>
+      <td>Returns an object containing the base locations of vSphere Client plugin related APIs.
+         <br/>The returned object is of type ApiEndpoints, where:
+
+         <br/>
+         <span class="code">
+            <br/>interface ApiEndpoints {
+               <br/>&emsp;<b>uiApiEndpoint</b>: UiApiEndpoint;
+            <br/>}
+         </span>
+
+         <br/>
+         <span class="code">
+            <br/>interface UiApiEndpoint {
+               <br/>&emsp;<b>origin</b>: string;
+               <br/>&emsp;<b>pathname</b>: string;
+               <br/>&emsp;<b>queryParams</b>: QueryParam[];
+               <br/>&emsp;<b>fullUrl</b>: string;
+            <br/>}
+         </span>
+         <br/><br/>Where:
+         <ul>
+            <li><b>origin</b> - Protocol, hostname and port number of the APIs host URL. The format is &lt;protocol&gt;://&lt;hostname&gt;:&lt;port&gt; for example: http://localhost:1111 .</li>
+            <li><b>pathname</b> - Path to the APIs.</li>
+            <li><b>queryParams</b> - Additional parameters are included.</li>
+            <li><b>fullUrl</b> - Composition of the previous as: &lt;origin&gt;&lt;pathname&gt;(?&lt;serializedQueryParams&gt;).</li>
+         </ul>
+
+         <span class="code">
+            <br/>interface QueryParam {
+                  <br/>&emsp;<b>name</b>: string;
+                  <br/>&emsp;<b>value</b>: string;
+            <br/>}
+         </span>
+      </td>
+      <td>
+         <span class="code">htmlClientSdk.app.getApiEndpoints();</span>
+         <p>&emsp;<b>for example</b>:
+            <span class="code"><i>
+            <br/>&emsp;{
+            <br/>&emsp;&emsp;             <b>uiApiEndpoint</b>: {
+            <br/>&emsp;&emsp;&emsp;          <b>origin</b>: "https://hostname",
+            <br/>&emsp;&emsp;&emsp;          <b>pathname</b>: "apiPath",
+            <br/>&emsp;&emsp;&emsp;          <b>queryParams</b>: [{ name: "percentage?", value: "100%" }, { name: "color", value: "blue" }],
+            <br/>&emsp;&emsp;&emsp;          <b>fullUrl</b>: "https://hostname/apiPath?percentage%3F=100%25&color=blue"
+            <br/>&emsp;&emsp;             }
+            <br/>&emsp;}
+         </i>
+      </span>
+      </td>
+   </tr>
+   <tr>
+      <td class="code">getClientInfo() => ClientInfo</td>
+      <td>Returns information about the current vSphere Client, such as "version", "type" etc.
+         <br/>
+         <span class="code">
+         <br/>interface ClientInfo {
+            <br/>&emsp;<b>type?</b>: <i>string</i>;
+            <br/>&emsp;<b>version?</b>: <i>string</i>;
+         <br/>}
+      </span>
+         <br/><br/>Where:
+         <ul>
+            <li><b>type</b> - The vSphere Client type.</li>
+            <li><b>version</b> - The vSphere Client version.</li>
+         </ul>
+      </td>
+      <td>
+         <span class="code">htmlClientSdk.app.getClientInfo();</span>
+         <p>&emsp;<b>for example</b>: <span class="code"><i>{<b>type</b>: "HTML", <b>version</b>: "6.5.1"}</i></span></p>
+      </td>
+   </tr>
+   <tr>
+      <td class="code">getClientLocale() => string</td>
+      <td>Returns the current locale of the vSphere Client.</td>
+      <td>
+         <span class="code">htmlClientSdk.app.getClientLocale();</span>
+         <p>&emsp;<b>for example</b>: <span class="code"><i>"de-DE"</i></span></p>
+      </td>
+   </tr>
+   <tr>
+      <td class="code">getContextObjects() => any[]</td>
+      <td>
+         Returns current context objects:
+         <ul>
+            <li>
+               In global views the result is empty because global views are
+               not associated with any vSphere object.
+            </li>
+            <li>
+               In views that are associated with a particular vSphere object
+               the result contains a JavaScript object with a field
+               named <span class="code">'id'</span> - the ID of the selected vSphere object.
+            </li>
+            <li>
+               In modals opened through a SDK call to <span class="code">htmlClientSdk.modal.open(configObj)</span>
+               the result is the value of <span class="code">configObj.contextObjects</span>
+               or an empty array if <span class="code">configObj.contextObjects</span>
+               is <span class="code">undefined</span>.
+            </li>
+            <li>
+               In modals opened through actions defined in the plugin.json file
+               the result is an array of context objects representing the targets of the
+               invoked action. Each context object is a JavaScript object that contains
+               a field named <span class="code">'id'</span> which is the id of the corresponding target object.
+               <br><i>Note: the result will be an empty array if there are no target objects.</i>
+            </li>
+         </ul>
+      </td>
+      <td>
+         <span class="code">htmlClientSdk.app.getContextObjects();</span>
+         <p>&emsp;<b>for example</b>: <span class="code"><i>[ { id: "urn:vmomi:Datacenter:datacenter-1" } ]</i></span></p>
+      </td>
+   </tr>
+   <tr>
+      <td class="code">getNavigationData() => any</td>
+      <td>Retrieves the navigation data passed to the current view by the <span class="code">navigateTo()</span> API.
+         <br/>
+      </td>
+      <td>
+         If the following is called:<br/><br/>
+         <span class="code">htmlClientSdk.app.navigateTo({
+            <br/>&emsp;<b>targetViewId</b>: <i>"acme-plugin-monitor-view"</i>,
+            <br/>&emsp;<b>objectId</b>: <i>"urn:vmomi:Datacenter:datacenter-1"</i>,
+            <br/>&emsp;<b>customData</b>: <i>{name: "test", filter: true}</i>
+            <br/>});
+         </span>
+         <br/><br/>Then, any call to:<br/>
+         <span class="code">htmlClientSdk.app.getNavigationData();</span><br/>
+         <p>will return: <span class="code"><i>{<b>name</b>: "test", <b>filter</b>: true}</i></span></p>
+      </td>
+   </tr>
+   <tr>
+      <td class="code">getPluginBackendInfo(callback: (backendInfo: PluginBackendInfo | null) => void) => void</td>
+      <td>Retrieves the plugin backend info for the current remote plugin instance. In case of an exception in the backend call, the callback's parameter value (backendInfo) will be null.
+         <br/>The backendInfo object is of the following type:
+         <br/>
+         <span class="code">
+            <br/>interface PluginBackendInfo {
+               <br/>&emsp;// a flat list of all registered global plugin backend servers for the instance across all vCenter Server registrations
+               <br/>&emsp;<b>allPluginBackendServers</b>: PluginBackendServerInfo[];
+               <br/>&emsp;// a map of registered global plugin backend servers for the instance, per vCenter Server GUID
+               <br/>&emsp;<b>backendServersPerVc</b>: { [vcGuid: string]: PluginBackendServerInfo[] };
+               <br/>&emsp;// a map of registered per object plugin backend servers for the instance, per objectId
+               <br/>&emsp;<b>backendServersPerVcObject</b>: { [objectId: string]: PluginBackendServerInfo[] };
+            <br/>}
+         </span>
+         <br/>
+         <span class="code">
+            <br/>interface PluginBackendServerInfo {
+               <br/>&emsp;<b>proxiedUrl</b>: string;
+               <br/>&emsp;<b>proxiedBaseUrl</b>: string;
+               <br/>&emsp;<b>type</b>: string;
+            <br/>}
+         </span>
+         <br/><br/>Where:
+         <ul>
+            <li><b>proxiedUrl</b> - The full URL of the plugin backend, proxied through the VMware vCenter Server Reverse Proxy.</li>
+            <li><b>proxiedBaseUrl</b> - The base of the plugin backend location, proxied through the VMware vCenter Server Reverse Proxy.</li>
+            <li><b>type</b> - The type of the plugin backend, as specified in Extension Manager registration.</li>
+         </ul>
+         <br/><b><i>Note:</i></b> The <span class="code">proxiedUrl</span> is the proxied server info url up to the last slash '/'.
+      </td>
+      <td>
+         Consider a remote plugin instance registration with two vCenters Servers - <i>vCenter1</i> with guid <i>vc-guid-1</i> and <i>vCenter2</i> with guid <i>vc-guid-2</i>. We call such such registrations "vCenter-global".
+         Along with the two vCenter-global registrations, consider a registration of the plugin instance with a Cluster object with value <i>domain-c9</i> such that the Cluster object is part of the <i>vCenter1</i> vCenter Server. We call such registrations "per-object registrations"
+         Let the vCenter-global plugin instance registration in vCenter1's Extension Manager contain two ServerInfo objects, such that:
+         <ul>
+            <li>The first ServerInfo describes a plugin server at <b>10.30.198.150:8443/api/</b>, with server type <b>AUX_SERVER_1</b></li>
+            <li>The second ServerInfo describes a plugin server at <b>10.30.198.149:5432/common/</b> with server type <b>COMMON_SERVER</b></li>
+         </ul>
+         Similarly, let the vCenter-global plugin instance registration in vCenter2's Extension Manager contain two ServerInfo objects, such that:
+         <ul>
+            <li>The first ServerInfo describes a plugin server at <b>10.30.198.151:8443</b>, with server type <b>AUX_SERVER_2</b></li>
+            <li>The second ServerInfo describes a plugin server at <b>10.30.198.149:5432</b> with server type <b>COMMON_SERVER</b></li>
+         </ul>
+         Finally, let the per-object plugin instance registration contain the following ServerInfo:
+         <ul>
+            <li>The ServerInfo describes a plugin server at <b>10.40.0.0:8443</b>, with server type <b>AUX_SERVER_3</b></li>
+         </ul>
+         Then the following invocation:
+         <br><br/>
+         <span class="code">
+            htmlClientSdk.app.getPluginBackendInfo(
+            <br/>&emsp;(backendInfo) => {
+            <br/>&emsp;&emsp;console.log(backendInfo);
+            <br/>&emsp;})
+         </span>
+         <p>&emsp;would yield a result similar to:</p>
+         <span class="code">
+            &nbsp;{
+            <br/>&nbsp;&nbsp;<b>allPluginBackendServers</b>: [
+            <br/>&nbsp;&nbsp;&nbsp;{<b>proxiedUrl:</b> "/plugins/remote~1.0~8/10.30.198.150-8443/api", <b>proxiedBaseUrl:</b> "/plugins/remote~1.0~8/10.30.198.150-8443", <b>type:</b> "AUX_SERVER_1"},
+            <br/>&nbsp;&nbsp;&nbsp;{<b>proxiedUrl:</b> "/plugins/remote~1.0~8/10.30.198.149-5432/common", <b>proxiedBaseUrl:</b> "/plugins/remote~1.0~8/10.30.198.149-5432", <b>type:</b> "COMMON_SERVER"},
+            <br/>&nbsp;&nbsp;&nbsp;{<b>proxiedUrl:</b> "/plugins/remote~1.0~8/10.30.198.151-8443", <b>proxiedBaseUrl:</b> "/plugins/remote~1.0~8/10.30.198.151-8443", <b>type:</b> "AUX_SERVER_2"},
+            <br/>&nbsp;&nbsp;&nbsp;{<b>proxiedUrl:</b> "/plugins/remote~1.0~8/10.40.0.0-8443", <b>proxiedBaseUrl:</b> "/plugins/remote~1.0~8/10.40.0.0-8443", <b>type:</b> "AUX_SERVER_3"}
+            <br/>&nbsp;&nbsp;],
+            <br/>&nbsp;&nbsp;<b>backendServersPerVc</b>: {
+            <br/>&nbsp;&nbsp;&nbsp;vc-guid-1: [
+            <br/>&nbsp;&nbsp;&nbsp;&nbsp;{<b>proxiedUrl:</b> "/plugins/remote~1.0~8/10.30.198.150-8443", <b>proxiedBaseUrl:</b> "/plugins/remote~1.0~8/10.30.198.150-8443", <b>type:</b> "AUX_SERVER_1"},
+            <br/>&nbsp;&nbsp;&nbsp;&nbsp;{<b>proxiedUrl:</b> "/plugins/remote~1.0~8/10.30.198.149-5432", <b>proxiedBaseUrl:</b> "/plugins/remote~1.0~8/10.30.198.149-5432", <b>type:</b> "COMMON_SERVER"}
+            <br/>&nbsp;&nbsp;&nbsp;],
+            <br/>&nbsp;&nbsp;&nbsp;vc-guid-2: [
+            <br/>&nbsp;&nbsp;&nbsp;&nbsp;{<b>proxiedUrl:</b> "/plugins/remote~1.0~8/10.30.198.151-8443", <b>proxiedBaseUrl:</b> "/plugins/remote~1.0~8/10.30.198.151-8443", <b>type:</b> "AUX_SERVER_2"},
+            <br/>&nbsp;&nbsp;&nbsp;&nbsp;{<b>proxiedUrl:</b> "/plugins/remote~1.0~8/10.30.198.149-5432", <b>proxiedBaseUrl:</b> "/plugins/remote~1.0~8/10.30.198.149-5432", <b>type:</b> "COMMON_SERVER"}
+            <br/>&nbsp;&nbsp;&nbsp;]
+            <br/>&nbsp;&nbsp;},
+            <br/>&nbsp;<b>backendServersPerVcObject</b>:{
+            <br/>&nbsp;&nbsp;&nbsp;'urn:vmomi:ClusterComputeResource:domain-c9:vc-guid-1': [
+            <br/>&nbsp;&nbsp;&nbsp;&nbsp;{<b>proxiedUrl:</b> "/plugins/remote~1.0~8/10.40.0.0-8443", <b>proxiedBaseUrl:</b> "/plugins/remote~1.0~8/10.40.0.0-8443", <b>type:</b> "AUX_SERVER_3"}
+            <br/>&nbsp;&nbsp;&nbsp;],
+            <br/>&nbsp;&nbsp;}
+            <br/>&nbsp;}
+         </span>
+      </td>
+   </tr>
+   <tr>
+      <td class="code">getRemotePluginNavigationMap(targetPluginId: string,
+         callback: ((navigationInfo: RemotePluginNavigationMap | null) => void)) => void</td>
+      <td>
+         Retrieves the navigation IDs of the views of the target remote plugin per vCenter Server and per inventory object.
+         The result contains the navigation IDs of the views that are marked as public within the manifest file of the target plugin.
+         If the target plugin ID is the same as the one requesting the views then non-public entries would be returned as well.
+         The result will contain information about all vCenter Servers and all vCenter Server objects with which an enabled
+         version of the target remote plugin is registered.
+         <br/><br/>
+         Parameters:
+         <ul>
+            <li><b>targetPluginId</b> - the target remote plugin ID</li>
+            <li><b>callback</b> - a function that will be invoked with the
+               result map after it has been retrieved. In case of an exception
+               in the backend call, the result map will be <span class="code">null</span>.
+            </li>
+         </ul>
+         <br/><br/>
+         <span class="code">RemotePluginNavigationMap</span> type is defined as follows:
+         <br/>
+         <span class="code">
+         <br/>interface RemotePluginNavigationMap {
+         <br/>
+         <br/>&emsp;// A map of vCenter Server GUID to the relevant remote plugin navigation information about that vCenter Server.
+         <br/>&emsp;<b>navigationInfoByVcGuid</b>: <i>{ [vcGuid: string]: RemotePluginVcNavigationInfo }</i>;
+         <br/>
+         <br/>&emsp;// A map of vCenter Server GUID to a list of relevant remote plugin navigation information and their associated inventory objects.
+         <br/>&emsp;<b>navigationInfoByVcObject</b>: <i>{ [vcGuid: string]: VcObjectsRemotePluginNavigationInfo[] }</i>;
+         <br/>}
+         </span>
+         <br/>
+         <span class="code">
+         <br/>interface RemotePluginVcNavigationInfo {
+         <br/>
+         <br/>&emsp;// The remote plugin version registered with the particular vCenter Server.
+         <br/>&emsp;<b>pluginVersion</b>: <i>string</i>;
+         <br/>
+         <br/>&emsp;// The particular remote plugin version views' navigation IDs.
+         <br/>&emsp;<b>viewsIds</b>: <i>string[]</i>;
+         <br/>}
+         </span>
+         <br/>
+         <span class="code">
+         <br/>interface VcObjectsRemotePluginNavigationInfo {
+         <br/>
+         <br/>&emsp;// The remote plugin version registered with the particular vCenter Server.
+         <br/>&emsp;<b>info</b>: <i>RemotePluginVcNavigationInfo</i>;
+         <br/>
+         <br/>&emsp;// The inventory objects for which the remote plugin navigation info is valid.
+         <br/>&emsp;<b>vcObjects</b>: <i>VcObjectInfo[]</i>;
+         <br/>}
+         </span>
+         <br/>
+         <span class="code">
+         <br/>interface VcObjectInfo {
+         <br/>
+         <br/>&emsp;// The type of the inventory object, e.g. 'ClusterComputeResource', 'HostSystem', etc.
+         <br/>&emsp;<b>type</b>: <i>string</i>;
+         <br/>
+         <br/>&emsp;// The local ID of the object in respect to the vCenter Server, e.g. 'host-14'.
+         <br/>&emsp;<b>value</b>: <i>sting</i>;
+         <br/>}
+         </span>
+      </td>
+      <td>
+         Consider that a remote plugin with ID <b><i>com.acme.remote</i></b>
+         has a single registration within the environment. The registration is done
+         on vCenter with GUID <b><i>vc-guid-0</i></b> for plugin instance with version <b><i>1.0.0.0</i></b>.
+         Also consider that the plugin has a single public view within <i>Host -> Monitor</i> with navigationId <b><i>mon</i></b>.
+         <br><br/>
+         Then the following API invocation:
+         <br><br/>
+         <span class="code">htmlClientSdk.app.getRemotePluginNavigationMap("com.acme.remote", function(map) {
+         <br/>&emsp;console.log(map);
+         <br/>});
+         </span>
+         <br/>
+         <br/>would yield the following result:
+         <br/>
+         <span class="code">
+         <br/>{
+         <br/>&emsp;navigationInfoByVcGuid: {
+         <br/>&emsp;&emsp;vc-guid-0: {
+         <br/>&emsp;&emsp;&emsp;pluginVersion: "1.0.0.0",
+         <br/>&emsp;&emsp;&emsp;viewsIds: ["mon"]
+         <br/>&emsp;&emsp;}
+         <br/>&emsp;},
+         <br/>&emsp;navigationInfoByVcObject: {
+         <br/>&emsp;&emsp;vc-guid-0: [
+         <br/>&emsp;&emsp;&emsp;{
+         <br/>&emsp;&emsp;&emsp;&emsp;info: {
+         <br/>&emsp;&emsp;&emsp;&emsp;&emsp;pluginVersion: "1.0.0.0",
+         <br/>&emsp;&emsp;&emsp;&emsp;&emsp;viewsIds: ["mon"]
+         <br/>&emsp;&emsp;&emsp;&emsp;},
+         <br/>&emsp;&emsp;&emsp;&emsp;vcObjects: [
+         <br/>&emsp;&emsp;&emsp;&emsp;&emsp;{
+         <br/>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;type: "vCenter",
+         <br/>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;value: "vc-guid-0"
+         <br/>&emsp;&emsp;&emsp;&emsp;&emsp;}
+         <br/>&emsp;&emsp;&emsp;&emsp;]
+         <br/>&emsp;&emsp;&emsp;}
+         <br/>&emsp;&emsp;]
+         <br/>&emsp;}
+         <br/>}
+         </span>
+      </td>
+   </tr>
+   <tr>
+      <td class="code">getSessionInfo(callback: (info: SessionInfo | null) => void) => void</td>
+      <td>Retrieves information about the current session. In case of an exception in the backend call, the callback's parameter value for sessionInfo is null.
+         <br/>The sessionInfo object has the following type:
+         <br/>
+         <span class="code">
+            <br/>interface SessionInfo {
+               <br/>&emsp;<b>sessionToken</b>: string;
+               <br/>&emsp;<b>nodeId</b>: string;
+            <br/>}
+         </span>
+         <br/><br/>Where:
+         <ul>
+            <li><b>sessionToken</b> - The dedicated plugin session identifier, which can be used for vCenter Server authentication.</li>
+            <li><b>nodeId</b> - The ID of the node that issued the session token.</li>
+         </ul>
+      </td>
+      <td>
+         <span class="code">
+            htmlClientSdk.app.getSessionInfo(
+            <br/>&emsp;(sessionInfo) => {
+            <br/>&emsp;&emsp;console.log(sessionInfo);
+            <br/>&emsp;})
+         </span>
+         <p>&emsp;<b>for example</b>: <span class="code">
+            <i>{
+               <br/>  &nbsp;<b>sessionToken:</b> "89de2262-513b-42cf-a0ff-67802e6771d9",
+               <br/>  &nbsp;<b>nodeId:</b> "507a724c-d595-4471-8a45-736fc617e31e"
+               <br/>
+               }
+            </i></span>
+         </p>
+      </td>
+   </tr>
+   <tr>
+      <td class="code">getTheme() => PluginTheme</td>
+      <td>
+         Returns information about the theme the plugin should use. The returned
+         <span class="code">PluginTheme</span> type is defined as follows:
+         <br/>
+         <span class="code">
+            <br/>interface PluginTheme {
+            <br/>&emsp;<b>name</b>: <i>"light" | "dark"</i>
+            <br/>}
+         </span>
+      </td>
+      <td>
+         <span class="code">htmlClientSdk.app.getTheme();</span>
+         <p>&emsp;<b>for example</b>: <span class="code"><i>{ <b>name</b>: "dark" }</i></span></p>
+      </td>
+   </tr>
+   <tr>
+      <td class="code">refreshPluginItemsState() => void</td>
+      <td>
+         Refreshes the cached plug-in's data that is related for the API
+         initiator.
+         <br>
+         For example: Plugin A introduces a view that is dynamically filtered
+         based on a property value of some object.
+         <br>
+         If the property value is changed by the plug-in using the public
+         vSphere APIs, then the plug-in needs to call this API to signal the
+         UI to re-evaluate the state of the initiator's plug-in related items.
+      </td>
+      <td>
+         <span class="code">htmlClientSdk.app.refreshPluginItemsState();</span>
+      </td>
+   </tr>
+   <tr>
+      <td class="code">navigateTo(configObj: NavigationOptions) => void</td>
+      <td>Navigates to a specified view with an optional custom data which will be passed to the view.
+         The only valid values for the <span class="code">targetViewId</span> are navigation IDs
+         defined by the plugin itself.
+         This means that the navigation to a cluster monitor view will not work if the view is not defined in the plugin.json of the plugin.
+         If just <span class="code">objectId</span> is passed, then the default object view will be displayed.
+         <br/>The configuration object should contain the following information:
+         <br/>
+         <span class="code">
+         <br/>interface NavigationOptions {
+            <br/>&emsp;<b>targetViewId?</b>: <i>string</i>;
+            <br/>&emsp;<b>objectId?</b>: <i>string</i>;
+            <br/>&emsp;<b>customData?</b>: <i>any</i>;
+         <br/>}
+      </span>
+         <br/><br/>Where:
+         <ul>
+            <li><b>targetViewId</b> - the navigation ID of the destination view.</li>
+            <li><b>objectId</b> - ID of any object associated with the view. (For a global view, this field is not required.)</li>
+            <li><b>customData</b> - A custom data structure passed to the view.</li>
+         </ul>
+         <br/><b><i>Note:</i></b> When navigating to a global view, the <span class="code">objectId</span> property should be skipped.
+      </td>
+      <td>
+      <span class="code">htmlClientSdk.app.navigateTo({
+         <br/>&emsp;<b>targetViewId</b>: <i>"acme-plugin-monitor-view"</i>,
+         <br/>&emsp;<b>objectId</b>: <i>"urn:vmomi:Datacenter:datacenter-1"</i>,
+         <br/>&emsp;<b>customData</b>: <i>{name: "test", filter: true}</i>
+         <br/>});
+      </span>
+      </td>
+   </tr>
+   <tr>
+      <td class="code">navigateToClientView(configObj: ClientViewNavigationOptions) => void</td>
+      <td>Navigates to a specified client view.
+         <br/>The configuration object should contain the following information:
+         <br/>
+         <span class="code">
+         <br/>interface ClientViewNavigationOptions {
+            <br/>&emsp;<b>targetViewId?</b>: <i>string</i>;
+            <br/>&emsp;<b>objectId?</b>: <i>string</i>;
+         <br/>}
+      </span>
+         <br/><br/>Where:
+         <ul>
+            <li><b>targetViewId</b> - ID of the destination view. Valid IDs are:
+               <ul>
+                  <li>administration.ceip</li>
+                  <li>cluster.configure.settings.drs</li>
+                  <li>cluster.configure.settings.ha</li>
+                  <li>cluster.configure.settings.quickstart</li>
+                  <li>cluster.monitor.allIssues</li>
+                  <li>cluster.summary</li>
+                  <li>datastore.summary</li>
+                  <li>folder.configure.keyProviders</li>
+                  <li>host.configure.networking.physicalAdapters</li>
+                  <li>host.summary</li>
+                  <li>namespace.storage.persistentVolumeClaims</li>
+                  <li>network.summary</li>
+                  <li>profilesAndPolicies.vmStoragePolicies</li>
+                  <li>template.summary</li>
+                  <li>vm.monitor.performance.overview</li>
+                  <li>vm.summary</li>
+                  <li>folder.configure.settings.general</li>
+                  <li>workload-platform.supervisor.summary</li>
+                  <li>workload-platform.supervisor.enableWizard</li>
+                  <li>workload-platform.home.supervisors</li>
+                  <li>autodeploy</li>
+               </ul>
+            </li>
+            <li><b>objectId</b> - ID of any object associated with the view. (For a global view, this field is not required.)</li>
+         </ul>
+         <br/><b><i>Note:</i></b> When navigating to a global view, the <span class="code">objectId</span> property should be skipped.
+      </td>
+      <td>
+      <span class="code">htmlClientSdk.app.navigateToClientView({
+         <br/>&emsp;<b>targetViewId</b>: <i>"administration.ceip"</i>
+         <br/>});
+      </span>
+      </td>
+   </tr>
+   <tr>
+      <td class="code">navigateToRemotePluginView(configObj: RemotePluginViewNavigationOptions) => void</td>
+      <td>Navigates to the specified view defined by a remote plugin with an optional custom data which will be passed to the view.
+         The valid values for the <span class="code">targetViewId</span> parameter are the ones returned by the
+         <span class="code">htmlClientSdk.app.getRemotePluginNavigationMap()</span> call for the given plugin.
+         <br/>The configuration object should contain the following information:
+         <br/>
+         <span class="code">
+         <br/>interface RemotePluginViewNavigationOptions {
+            <br/>&emsp;<b>pluginId</b>: <i>string</i>;
+            <br/>&emsp;<b>targetViewId</b>: <i>string</i>;
+            <br/>&emsp;<b>vcGuid</b>: <i>string</i>;
+            <br/>&emsp;<b>objectId?</b>: <i>string</i>;
+            <br/>&emsp;<b>customData?</b>: <i>any</i>;
+         <br/>}
+         </span>
+         <br/><br/>Where:
+         <ul>
+            <li><b>pluginId</b> - the ID of the plugin that contains the destination view.</li>
+            <li><b>targetViewId</b> - the navigation ID of the destination view.</li>
+            <li><b>vcGuid</b> - the GUID of the vCenter Server in the context of which the target view is to be shown.
+               Determines the specific plugin server instance from which to load the destination view.
+               If the <span class="code">objectId</span> field is specified then
+               the object it refers to should be managed by the vCenter server specified by the
+               <span class="code">vcGuid</span> field value.
+            <li><b>objectId</b> - ID of any object associated with the view. (For a global view, this field is not required.)</li>
+            <li><b>customData</b> - A custom data structure passed to the view.</li>
+         </ul>
+         <br/><b><i>Note:</i></b> When navigating to a global view, the <span class="code">objectId</span> property should be skipped.
+      </td>
+      <td>
+      <span class="code">htmlClientSdk.app.navigateToRemotePluginView({
+         <br/>&emsp;<b>pluginId</b>: <i>"acme-plugin"</i>,
+         <br/>&emsp;<b>targetViewId</b>: <i>"acme-plugin-monitor-view"</i>,
+         <br/>&emsp;<b>vcGuid</b>: <i>"vc-guid-0"</i>,
+         <br/>&emsp;<b>objectId</b>: <i>"urn:vmomi:Datacenter:datacenter-1:vc-guid-0"</i>,
+         <br/>&emsp;<b>customData</b>: <i>{name: "test", filter: true}</i>
+         <br/>});
+      </span>
+      </td>
+   </tr>
+</table>
+
+<!-- ============================================================================================= -->
+<a name="event"></a>
+<h2>3. Event APIs</h2>
+
+<p>The event APIs provide means for plugins to subscribe and respond to events. These APIs can be accessed via
+   <span class="code">htmlClientSdk.event.{API}</span>
+</p>
+<table cellpadding="5">
+   <col width="20%">
+   <col width="50%">
+   <col width="30%">
+   <tr>
+      <th>API</th><th>Description</th><th>Example usage</th>
+   </tr>
+   <tr>
+      <td>
+         <span class="code">onDateTimeFormatChanged(callback: () => void) => void</span>
+      </td>
+      <td>
+         Subscribes to date-time format change events. When the date-time format changes, the provided <span class="code">callback</span> function will be invoked without arguments.
+      </td>
+      <td>
+         <span class="code">
+            <br/>function onTimeFormatPreferencesChange() {
+            <br/>&emsp;alert("The time format preferences have changed.");
+            <br/>}
+            <br/>
+            <br/>
+            htmlClientSdk.event.onDateTimeFormatChanged(onTimeFormatPreferencesChange);
+         </span>
+      </td>
+   </tr>
+   <tr>
+      <td class="code">onGlobalRefresh(callback: () => void) => void</td>
+      <td>Subscribes to a global refresh event and when such an event occurs, the callback function will be executed.</td>
+      <td>
+         <span class="code">
+            function updateData() {
+            <br/>&emsp; alert("Data is updated after a global refresh.");
+            <br/>}
+            <br/>
+            <br/>
+            htmlClientSdk.event.onGlobalRefresh(updateData);
+         </span>
+      </td>
+   </tr>
+   <tr>
+      <td class="code">onThemeChanged((theme: PluginTheme) => void) => void</td>
+      <td>
+         Subscribes for plugin theme changed events. When such an event occurs,
+         the <span class="code">callback</span> argument function will be
+         invoked with a single argument - the new plugin theme in the form of
+         <span class="code">PluginTheme</span> object.
+         <br/><br/>
+         The <span class="code">PluginTheme</span> type is defined as follows:
+         <br/>
+         <span class="code">
+            <br/>interface PluginTheme {
+            <br/>&emsp;<b>name</b>: <i>"light" | "dark"</i>;
+            <br/>}
+         </span>
+      </td>
+      <td>
+         <span class="code">
+            <br/>function showCurrentThemeName(theme) {
+            <br/>&emsp;alert(theme.name);
+            <br/>}
+            <br/>
+            <br/>
+            htmlClientSdk.event.onThemeChanged(showCurrentThemeName);
+         </span>
+      </td>
+   </tr>
+</table>
+
+<!-- ============================================================================================= -->
+<a name="modal"></a>
+<h2>4. Modal APIs</h2>
+
+<p>The modal APIs are used to perform various actions for a modal dialog such as open, close and configure. The modal APIs can be accessed with the
+   <span class="code">htmlClientSdk.modal.{API}</span>
+   <br/><b><i>Note:</i></b> This SDK uses the Structured Clone Algorithm, which has limitations as described in the Mozilla Developer Network (MDN) web doc. Limitations affect Modal, Confirmation Modal, and Shared Modal APIs.
+</p>
+<table cellpadding="5">
+   <tr>
+      <th>API</th><th>Description</th><th>Example usage</th>
+   </tr>
+   <tr>
+      <td class="code">close(data?: any) => void</td>
+      <td>Closes the already opened modal. The modal is the one corresponding to the iframe from which this API was called from.
+         <br/>If data has been provided it will be passed to the onClose callback function if such was specified in the parameter of the <span class="code">modal.open</span> API.
+      </td>
+      <td>
+      <span class="code">var modalId = 2;
+         <br/>htmlClientSdk.modal.close(modalId);</span>
+      </td>
+   </tr>
+   <tr>
+      <td class="code">getCustomData() => any</td>
+      <td>Returns the custom data that was provided upon opening the modal through customData property or null if the customData property was not set.
+      </td>
+      <td>
+         <span class="code">htmlClientSdk.modal.getCustomData();</span>
+         <p>&emsp;<b>for example</b>: <span class="code"><i>{idsRange: [1, 9]}</i></span></p>
+      </td>
+   </tr>
+   <tr>
+      <td class="code">getSharedModalsMap(targetPluginId: string,
+         callback: ((sharedModalsMap: SharedModalsMap | null) => void)) => void</td>
+      <td>
+         Retrieves the IDs of the modals shared by a remote plugin per vCenter Server and per inventory object.
+         The result contains the IDs of the shared modals marked as public within the manifest file of the target plugin.
+         If the target plugin ID is the same as the one requesting the shared modals then non-public entries would be returned as well.
+         The result will contain information about all vCenter Servers and all vCenter Server objects with which an enabled
+         version of the target remote plugin is registered.
+         <br/><br/>
+         Parameters:
+         <ul>
+            <li><b>targetPluginId</b> - the target remote plugin ID</li>
+            <li><b>callback</b> - a function that will be invoked with the
+               result map after it has been retrieved. In case of an error, the result map will be <span class="code">null</span>.
+            </li>
+         </ul>
+         <br/><br/>
+         <span class="code">SharedModalsMap</span> type is defined as follows:
+         <br/>
+         <span class="code">
+         <br/>interface SharedModalsMap {
+         <br/>&emsp;// A map of vCenter Server GUID to information about the shared modals of the remote plugin relevant to that vCenter Server.
+         <br/>&emsp;<b>sharedModalsInfoByVcGuid</b>: <i>{ [vcGuid: string]: VcSharedModalsInfo }</i>;
+         <br/>
+         <br/>&emsp;// A map of vCenter Server GUID to information about the shared modals of the remote plugin relevant to each set of inventory objects which the remote plugin is registered.
+         <br/>&emsp;<b>sharedModalsInfoByVcObjects</b>: <i>{ [vcGuid: string]: VcObjectsSharedModalsInfo[] }</i>;
+         <br/>}
+         </span>
+         <br/>
+         <span class="code">
+         <br/>interface VcSharedModalsInfo {
+         <br/>&emsp;// The remote plugin version registered with the given vCenter Server.
+         <br/>&emsp;<b>pluginVersion</b>: <i>string</i>;
+         <br/>
+         <br/>&emsp;// The set of IDs of the shared modals exposed by the plugin.
+         <br/>&emsp;<b>sharedModalsIds</b>: <i>string[]</i>;
+         <br/>}
+         </span>
+         <br/>
+         <span class="code">
+         <br/>interface VcObjectsSharedModalsInfo {
+         <br/>&emsp;// The set of inventory objects.
+         <br/>&emsp;<b>vcObjects</b>: <i>VcObjectInfo[]</i>;
+         <br/>
+         <br/>&emsp;// The remote plugin version registered with the set of inventory objects.
+         <br/>&emsp;<b>pluginVersion</b>: <i>string</i>;
+         <br/>
+         <br/>&emsp;// The set of IDs of the shared modals exposed by the plugin.
+         <br/>&emsp;<b>sharedModalsIds</b>: <i>string[]</i>;
+         <br/>}
+         </span>
+         <br/>
+         <span class="code">
+         <br/>interface VcObjectInfo {
+         <br/>&emsp;// The type of the inventory object, e.g. 'ClusterComputeResource', 'HostSystem', etc.
+         <br/>&emsp;<b>type</b>: <i>string</i>;
+         <br/>
+         <br/>&emsp;// The local ID of the object in respect to the vCenter Server, e.g. 'host-14'.
+         <br/>&emsp;<b>value</b>: <i>sting</i>;
+         <br/>}
+         </span>
+      </td>
+      <td>
+         Consider that a remote plugin with ID <b><i>com.acme.remote</i></b>
+         has a single registration within the environment. The registration is done
+         on vCenter with GUID <b><i>vc-guid-0</i></b> for plugin instance with version <b><i>1.0.0.0</i></b>.
+         Also consider that the plugin has a single public shared modal with id <b><i>shared-modal</i></b>.
+         <br><br/>
+         Then the following API invocation:
+         <br><br/>
+         <span class="code">htmlClientSdk.modal.getSharedModalsMap("com.acme.remote", function(map) {
+         <br/>&emsp;console.log(map);
+         <br/>});
+         </span>
+         <br/>
+         <br/>would yield the following result:
+         <br/>
+         <span class="code">
+         <br/>{
+         <br/>&emsp;sharedModalsInfoByVcGuid: {
+         <br/>&emsp;&emsp;vc-guid-0: {
+         <br/>&emsp;&emsp;&emsp;pluginVersion: "1.0.0.0",
+         <br/>&emsp;&emsp;&emsp;sharedModalsIds: ["shared-modal"]
+         <br/>&emsp;&emsp;}
+         <br/>&emsp;},
+         <br/>&emsp;sharedModalsInfoByVcObjects: {
+         <br/>&emsp;&emsp;vc-guid-0: [
+         <br/>&emsp;&emsp;&emsp;{
+         <br/>&emsp;&emsp;&emsp;&emsp;vcObjects: [
+         <br/>&emsp;&emsp;&emsp;&emsp;&emsp;{
+         <br/>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;type: "vCenter",
+         <br/>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;value: "vc-guid-0"
+         <br/>&emsp;&emsp;&emsp;&emsp;&emsp;}
+         <br/>&emsp;&emsp;&emsp;&emsp;],
+         <br/>&emsp;&emsp;&emsp;&emsp;pluginVersion: "1.0.0.0",
+         <br/>&emsp;&emsp;&emsp;&emsp;sharedModalsIds: ["shared-modal"]
+         <br/>&emsp;&emsp;&emsp;}
+         <br/>&emsp;&emsp;]
+         <br/>&emsp;}
+         <br/>}
+         </span>
+      </td>
+   </tr>
+   <tr>
+      <td class="code">open(configObj: ModalConfig) => void</td>
+      <td>Opens a modal dialog and accepts for parameter a configuration object, which contains:
+         <br/>
+         <span class="code">
+         <br/>interface ModalConfig {
+            <br/>&emsp;<b>url</b>: <i>string</i>;
+            <br/>&emsp;<b>title?</b>: <i>string</i>;
+            <br/>&emsp;<b>accessibilityTitle?</b>: <i>string</i>;
+            <br/>&emsp;<b>size?</b>: {
+               <br/>&emsp;&emsp;<b>width</b>: <i>number</i>,
+               <br/>&emsp;&emsp;<b>height</b>: <i>number</i>
+            <br/>&emsp;};
+            <br/>&emsp;<b>closable?</b>: <i>boolean</i>;
+            <br/>&emsp;<b>onClosed?</b>: <i>(result?: any) => void</i>;
+            <br/>&emsp;<b>contextObjects?</b>: <i>any[]</i>;
+            <br/>&emsp;<b>customData?</b>: <i>any</i>;
+            <br/>&emsp;<b>sanitizeData?</b>: <i>boolean</i>;
+         <br/>}
+         </span>
+         <br/><br/>Where:
+         <ul>
+            <li><b>url</b> - Location of HTML content for the dialog.</li>
+            <li><b>title</b> - Dialog title.</li>
+            <li><b>accessibilityTitle</b> - Dialog accessible title.</li>
+            <li><b>size</b> - Dialog size. Specified in pixels.</li>
+            <li><b>closable</b> - Whether the dialog displays a close button. (default=true)</li>
+            <li><b>onClosed</b> - Function runs when the dialog closes.</li>
+            <li><b>contextObjects</b> - IDs of relevant objects the calling module passes to the dialog.</li>
+            <li><b>customData</b> - Data the calling module passes to the dialog.</li>
+            <li><b>sanitizeData</b> - Specifies whether the provided modal configuration data should be sanitized (serialized/deserialized) when sending. (default=true)
+               <br/>
+               <b>Note: </b>The vSphere Client SDK JS APIs for remote plugins utilize <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage">window.postMessage()</a> API.
+               This API uses the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm">Structured Clone Algorithm</a> which has certain limitations.
+               <br/>
+               Therefore, the modal API is using <i>JSON.stringify()</i> and <i>JSON.parse()</i> to serialize/deserialize the modal configuration object. This has some side effects,
+               such as removing object's functions, treating <i>Date</i> objects as strings etc. In addition, <i>JSON.stringify()</i>
+               does not support cyclic objects i.e. objects that have cyclic references to themselves.
+               For more information, see: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify">JSON.stringify() documentation.</a>
+               <br/>
+               In case such objects need to be passed, <b>sanitizeData: false</b> should be specified in the modal configuration object.
+            </li>
+         </ul>
+      </td>
+      <td>
+         <span class="code">
+            <br/>var config = {
+            <br/>&emsp;<b>url</b>: <i>"resources/editDatacenter.html"</i>,
+            <br/>&emsp;<b>title</b>: <i>"Edit Datacenter"</i>,
+            <br/>&emsp;<b>accessibilityTitle</b>: <i>"Edit Datacenter"</i>,
+            <br/>&emsp;<b>size</b>: {
+            <br/>&emsp;&emsp;<b>width</b>: <i>490</i>,
+            <br/>&emsp;&emsp;<b>height</b>: <i>240</i>
+            <br/>&emsp;},
+            <br/>&emsp;<b>onClosed</b>: <i>function(id) { alert("Modal " + id + " closed."); }</i>,
+            <br/>&emsp;<b>contextObjects</b>: <i>[{ id: "urn:vmomi:Datacenter:datacenter-1" },
+            <br/>&emsp;&emsp;&emsp; { id: "urn:vmomi:Datacenter:datacenter-2" }]</i>,
+            <br/>&emsp;<b>customData</b>: <i>{idsRange: [1, 9]}</i>
+            <br/>&emsp;};
+            <br/>
+            <br/>htmlClientSdk.modal.open(config);
+         </span>
+      </td>
+   </tr>
+   <tr>
+      <td class="code">openConfirmationModal(configObj: ConfirmationModalConfig) => void</td>
+      <td>Opens a simplified modal dialog dedicated to showing confirmation messages. The API offers:
+         <br/>
+         <span class="code">
+         <br/>interface ConfirmationModalConfig {
+            <br/>&emsp;<b>content</b>: <i>string</i>;
+            <br/>&emsp;<b>buttons</b>: <i>ModalButton[]</i>;
+            <br/>&emsp;<b>size?</b>: <i>ModalSize</i>;
+            <br/>&emsp;<b>alertLevel?</b>: <i>AlertLevel</i>;
+            <br/>&emsp;<b>title?</b>: <i>string</i>;
+            <br/>&emsp;<b>accessibilityTitle?</b>: <i>string</i>;
+            <br/>&emsp;<b>secondaryTitle?</b>: <i>string</i>;
+            <br/>&emsp;<b>closable?</b>: <i>boolean</i>;
+            <br/>&emsp;<b>onClosed?</b>: <i>() => void</i>;
+         <br/>}
+         <br/>
+         <br/>interface ModalSize {
+            <br/>&emsp;<b>width</b>: <i>number</i>;
+         <br/>}
+         <br/>
+         <br/>interface ModalButton {
+            <br/>&emsp;<b>label</b>: <i>string</i>;
+            <br/>&emsp;<b>type?</b>: <i>ButtonType</i>;
+            <br/>&emsp;<b>style?</b>: <i>ButtonStyle</i>;
+            <br/>&emsp;<b>callback?</b>: <i>() => void</i>;
+         <br/>}
+         <br/>
+         <br/>enum ButtonType {
+            <br/>&emsp;<b>PRIMARY</b> = <i>"PRIMARY"</i>,
+            <br/>&emsp;<b>SECONDARY</b> = <i>"SECONDARY"</i>
+         <br/>}
+         <br/>
+         <br/>enum ButtonStyle {
+            <br/>&emsp;<b>SUCCESS</b> = <i>"SUCCESS"</i>,
+            <br/>&emsp;<b>INFO</b> = <i>"INFO"</i>,
+            <br/>&emsp;<b>WARNING</b> = <i>"WARNING"</i>,
+            <br/>&emsp;<b>DANGER</b> = <i>"DANGER"</i>
+         <br/>}
+         <br/>
+         <br/>enum AlertLevel {
+            <br/>&emsp;<b>SUCCESS</b> = <i>"SUCCESS"</i>,
+            <br/>&emsp;<b>INFO</b> = <i>"INFO"</i>,
+            <br/>&emsp;<b>WARNING</b> = <i>"WARNING"</i>,
+            <br/>&emsp;<b>DANGER</b> = <i>"DANGER"</i>
+         <br/>}
+         </span>
+         <br/><br/>Where:
+         <ul>
+            <li><b>content</b> - The message to be displayed in the modal dialog.</li>
+            <li><b>buttons</b> - An array of buttons to be displayed in the modal footer. The limit is at least 1 button and at most 4 buttons.</li>
+            <li><b>size</b> - Dialog size. In the current version only width is accepted. Specified in pixels.</li>
+            <li><b>alertLevel</b> - Dialog alert level. It results in a SUCCESS, INFO, WARNING, or DANGER icons.</li>
+            <li><b>title</b> - Dialog primary title.</li>
+            <li><b>accessibilityTitle</b> - Dialog accessibility title.</li>
+            <li><b>secondaryTitle</b> - Dialog secondary title. For example, it can be the name of the object
+               <br/>which the action will be performed on.</li>
+            <li><b>closable</b> - Whether the dialog displays a close button. Enabled by default.</li>
+            <li><b>onClosed</b> - Callback to be invoked when the dialog is closed by X button, or ESC key.</li>
+         </ul>
+      </td>
+      <td>
+         <span class="code">
+            <br/>var confirmationModalConfig = {
+            <br/>&emsp;<b>content</b>: <i>"Deleting a chassis can cause failures in your environment?"</i>,
+            <br/>&emsp;<b>size</b>: {
+            <br/>&emsp;&emsp;<b>width</b>: <i>490</i>
+            <br/>&emsp;},
+            <br/>&emsp;<b>alertLevel</b>: <i>"DANGER"</i>,
+            <br/>&emsp;<b>title</b>: <i>"Delete chassis."</i>,
+            <br/>&emsp;<b>accessibilityTitle</b>: <i>"Delete chassis. Chassis-1"</i>,
+            <br/>&emsp;<b>secondaryTitle</b>: <i>"Chassis-1"</i>,
+            <br/>&emsp;<b>buttons</b>: <i>[{</i>
+            <br/>&emsp;&emsp;&emsp; <i>label: "DELETE"</i>,
+            <br/>&emsp;&emsp;&emsp; <i>callback: () => {//some delete callback actions} }</i>,
+            <br/>&emsp;&emsp;&emsp; <i>label: "CANCEL"</i>,
+            <br/>&emsp;&emsp;&emsp; <i>callback: () => {//some cancel callback actions} }],</i>
+            <br/>&emsp;<b>closable</b>: <i>false</i>,
+            <br/>&emsp;<b>onClosed</b>: <i>function() {//Default onClosed handler. Invoked on ESC / X button press}</i>
+            <br/>&emsp;};
+            <br/>
+            <br/>htmlClientSdk.modal.openConfirmationModal(confirmationModalConfig);
+         </span>
+      </td>
+   </tr>
+   <tr>
+      <td class="code">openSharedModal(configObj: SharedModalConfig) => void</td>
+      <td>Opens a modal shared by a remote plugin. The valid values for the <span class="code">configObj.sharedModalId</span> parameter are the ones returned by the
+         <span class="code">htmlClientSdk.modal.getSharedModalsMap()</span> call for the given plugin.
+         <br/>
+         <br/>The configuration object has the following signature:
+         <br/>
+         <span class="code">
+         <br/>interface SharedModalConfig {
+         <br/>&emsp;// The ID of the remote plugin that defines the shared modal.
+         <br/>&emsp;<b>pluginId</b>: <i>string</i>;
+         <br/>
+         <br/>&emsp;// The ID of the shared modal.
+         <br/>&emsp;<b>sharedModalId</b>: <i>string</i>;
+         <br/>
+         <br/>&emsp;// The GUID of the vCenter with which the target remote plugin instance is registered.
+         <br/>&emsp;<b>vcGuid</b>: <i>string</i>;
+         <br/>
+         <br/>&emsp;// The ID of the object with which the target remote plugin instance is registered. Used when the remote plugin is registered with specific objects.
+         This object is not passed to the modal and cannot be read by it, the object is only used to determine the remote plugin instance through which to open the modal.
+         <br/>&emsp;<b>objectId?</b>: <i>string</i>;
+         <br/>
+         <br/>&emsp;// A callback to be invoked when the dialog is closed. The callback is invoked with a single argument, the result returned by modal if any.
+         <br/>&emsp;<b>onClosed?</b>: <i>(result?: any) => void</i>;
+         <br/>
+         <br/>&emsp;// An optional field to store an array of context objects that can be passed to the modal when it is opened.
+         The context objects can be retrieved by the modal using the API htmlClientSdk.app.getContextObjects().
+         <br/>&emsp;<b>contextObjects?</b>: <i>any[]</i>;
+         <br/>
+         <br/>&emsp;// An optional additional data that can be passed to the modal when it is opened.
+         <br/>&emsp;<b>customData?</b>: <i>any</i>;
+         <br/>
+         <br/>&emsp; // Specifies whether the provided modal configuration data should be sanitized (serialized/deserialized) when sending. (default=true)
+            <br/>&emsp;<b>sanitizeData?</b>: <i>boolean</i>;
+            <br/>
+               &nbsp;<b>Note: </b>The vSphere Client SDK JS APIs for remote plugins utilize <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage">window.postMessage()</a> API.
+               This API uses the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm">Structured Clone Algorithm</a> which has certain limitations.
+            <br/>
+               &emsp;Therefore, the modal API is using <i>JSON.stringify()</i> and <i>JSON.parse()</i> to serialize/deserialize the modal configuration object. This has some side effects,
+               such as removing object's functions, treating <i>Date</i> objects as strings etc. In addition, <i>JSON.stringify()</i>
+               does not support cyclic objects i.e. objects that have cyclic references to themselves.
+               For more information, see: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify">JSON.stringify() documentation.</a>
+            <br/>
+               In case such objects need to be passed, <b>sanitizeData: false</b> should be specified in the modal configuration object.
+         <br/>}
+         </span>
+         <br/>
+         <br/><b><i>Note:</i></b> The <span class="code">onClosed</span> callback <span class="code">result</span> argument is populated only in case the modal
+         closed itself through the API <span class="code">htmlClientSdk.modal.close()</span> and passed a result argument to the API.
+         In case of an asynchronous error while opening the modal the <span class="code">onClosed</span> callback will be invoked with <span class="code">undefined</span> as <span class="code">result</span> argument.
+      </td>
+      <td>
+         <span class="code">htmlClientSdk.modal.openSharedModal({
+            <br/>&emsp;<b>pluginId</b>: <i>"com.acme.remote"</i>,
+            <br/>&emsp;<b>sharedModalId</b>: <i>"shared-modal"</i>,
+            <br/>&emsp;<b>vcGuid</b>: <i>"vc-guid-0"</i>,
+            <br/>&emsp;<b>onClosed</b>: <i>function(result) { console.log("Modal closed with result", result); }</i>,
+            <br/>&emsp;<b>contextObjects</b>: <i>[{ id: "urn:vmomi:Datacenter:datacenter-1:0d497fd2-e54b-4376-8ae2-a4a12981100d" }]</i>,
+            <br/>&emsp;<b>customData</b>: <i>{ preselectedHosts: ["urn:vmomi:HostSystem:host-1:0d497fd2-e54b-4376-8ae2-a4a12981100d"] }</i>
+         <br/>});
+      </span>
+      </td>
+   </tr>
+   <tr>
+      <td class="code">setOptions(configObj: DynamicModalConfig) => void</td>
+      <td>Changes the configuration of the modal with properties specified in the parameter object.
+         <br/>The configObj type is defined as follows:
+         <br/>
+         <span class="code">
+         <br/>interface DynamicModalConfig {
+            <br/>&emsp;<b>title?</b>: <i>string</i>;
+            <br/>&emsp;<b>accessibilityTitle?</b>: <i>string</i>;
+            <br/>&emsp;<b>height?</b>: <i>number</i>;
+         <br/>}
+      </span>
+         <br/><br/>Where:
+         <ul>
+            <li><b>title</b> - Dialog title.</li>
+            <li><b>accessibilityTitle</b> - Dialog accessibility title.</li>
+            <li><b>height</b> - Dialog height. Specified in pixels.</li>
+         </ul>
+      </td>
+      <td>
+      <span class="code">htmlClientSdk.modal.setOptions({
+         <br/>&emsp;<b>title</b>: <i>"New Title",</i>
+         <br/>&emsp;<b>accessibilityTitle</b>: <i>"New Accessibility Title",</i>
+         <br/>&emsp;<b>height</b>: <i>450</i>
+         <br/>});
+      </span>
+      </td>
+   </tr>
+</table>
+
+<br/>
+<hr>
+</body>
+</html>

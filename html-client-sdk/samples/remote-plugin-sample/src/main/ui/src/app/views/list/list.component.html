@@ -1,0 +1,79 @@
+<!--
+     Copyright (c) 2019-2025 Broadcom. All Rights Reserved.
+     Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
+     and/or its subsidiaries.
+-->
+<h1 class="view-title">{{ 'list.chassisList' | translate }}</h1>
+<div class="chassis-list-view">
+   <div class="chassises-datagrid-container">
+      <clr-datagrid [clrDgLoading]="loading === 'explicit'"
+                    [(clrDgSelected)]="selectedChassis"
+                    [clrDgRowSelection]="true">
+         <clr-dg-placeholder>{{ 'list.noData' | translate }}
+         </clr-dg-placeholder>
+         <clr-dg-action-bar>
+            <div class="btn-group">
+               <button type="button" class="btn btn-sm btn-secondary"
+                     (click)="onAdd()">
+                  <cds-icon shape="plus"></cds-icon>
+                  {{ 'list.addChassis' | translate }}
+               </button>
+               <button type="button" class="btn btn-sm btn-secondary"
+                     (click)="onAddWizard()">
+                  <cds-icon shape="plus"></cds-icon>
+                  {{ 'list.addChassisWizard' | translate }}
+               </button>
+               <button type="button" class="btn btn-sm btn-secondary"
+                     (click)="onEdit()"
+                     [disabled]="selectedChassis.length !== 1">
+                  <cds-icon shape="pencil"></cds-icon>
+                  {{ 'common.edit' | translate }}
+               </button>
+               <button type="button" class="btn btn-sm btn-secondary"
+                     (click)="onDelete()"
+                     [disabled]="selectedChassis.length <= 0">
+                  <cds-icon shape="times-circle"></cds-icon>
+                  {{ 'common.delete' | translate }}
+               </button>
+            </div>
+         </clr-dg-action-bar>
+
+         <clr-dg-column>{{ 'common.name' | translate }}</clr-dg-column>
+         <clr-dg-column>{{ 'common.state' | translate }}</clr-dg-column>
+
+         <clr-dg-row *clrDgItems="let chassis of chassisList"
+               [clrDgItem]="chassis">
+            <clr-dg-cell>
+               <cds-icon shape="chassisIcon"></cds-icon>
+               {{chassis.name}}
+            </clr-dg-cell>
+            <clr-dg-cell>
+               <app-chassis-status [isActive]="chassis.isActive"></app-chassis-status>
+            </clr-dg-cell>
+         </clr-dg-row>
+         <clr-dg-footer>
+            <clr-dg-pagination #pagination
+                  [clrDgPageSize]="numberOfChassisPerPage">
+               {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+               of {{pagination.totalItems}} chassis
+            </clr-dg-pagination>
+         </clr-dg-footer>
+      </clr-datagrid>
+   </div>
+
+   <div class="splitter"></div>
+
+   <div class="details-container">
+      @if (selectedChassis.length === 0) {
+         <p class="details-message">
+            {{ 'list.noObjectsSelected' | translate }}
+         </p>
+      } @else if (selectedChassis.length > 1) {
+         <p class="details-message">
+            {{ 'list.multipleObjectsSelected' | translate }}
+         </p>
+      } @else {
+         <app-details-view [chassis]="selectedChassis[0]"></app-details-view>
+      }
+   </div>
+</div>

@@ -1,0 +1,17 @@
+[
+   {
+      "eventId": "com.vmware.event1",
+      "eventTypeSchema": "<EventType><eventTypeID>com.vmware.event1.type</eventTypeID><description>Event1 description.</description><arguments><argument><name>arg1</name><type>string</type></argument><argument><name>arg2</name><type>bool</type></argument></arguments></EventType>"
+   },
+   {
+      "eventId": "com.vmware.event2",
+      "eventTypeSchema": "<EventType><eventTypeID>com.vmware.event2.type</eventTypeID><description>Event2 description.</description><arguments><argument><name>arg3</name><type>int</type></argument><argument><name>arg4</name><type>moid</type></argument></arguments></EventType>"
+   },
+   {
+      "eventId": "com.vmware.event3",
+      "eventTypeSchema": "<EventType><eventTypeID>com.vmware.event3.type</eventTypeID><description>Event3 description.</description><arguments><argument><name>arg5</name><type>long</type></argument><argument><name>arg6</name><type>float</type></argument></arguments></EventType>"
+   },
+   {
+      "eventId": "com.vmware.event4"
+   }
+]

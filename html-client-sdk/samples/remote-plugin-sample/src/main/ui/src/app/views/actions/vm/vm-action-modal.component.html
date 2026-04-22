@@ -1,0 +1,40 @@
+<!--
+     Copyright (c) 2019-2025 Broadcom. All Rights Reserved.
+     Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
+     and/or its subsidiaries.
+-->
+<form clrForm
+      clrLayout="horizontal"
+      (ngSubmit)="onSubmit()">
+   <div class="modal-body">
+      <!-- Name -->
+      <clr-input-container>
+         <label>{{'common.name' | translate}}</label>
+         <input clrInput
+                autofocus />
+         <clr-control-error>
+            {{'actions.create.emptyNameError' | translate}}
+         </clr-control-error>
+      </clr-input-container>
+
+      <!-- Server Type -->
+      <clr-input-container>
+         <label>{{'common.serverType' | translate}}</label>
+         <input clrInput />
+      </clr-input-container>
+   </div>
+
+   <div class="modal-footer">
+      <button type="button"
+              class="btn"
+              (click)="onClose()"
+              id="cancelBtn">
+         {{ 'common.cancel' | translate }}
+      </button>
+      <button type="submit"
+              class="btn btn-primary"
+              id="okBtn">
+         {{ 'common.ok' | translate }}
+      </button>
+   </div>
+</form>

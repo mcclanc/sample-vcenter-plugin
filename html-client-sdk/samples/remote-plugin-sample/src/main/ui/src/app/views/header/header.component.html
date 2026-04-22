@@ -1,0 +1,45 @@
+<!--
+     Copyright (c) 2019-2025 Broadcom. All Rights Reserved.
+     Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
+     and/or its subsidiaries.
+-->
+@if (chassis) {
+   <div class="heading-container">
+      <h2 class="chassis-title">{{chassis.name}}</h2>
+      <clr-dropdown [clrCloseMenuOnItemClick]="true">
+         <button type="button"
+                 class="dropdown-toggle btn btn-link"
+                 clrDropdownTrigger>
+            {{ 'common.actions' | translate }}
+            <cds-icon shape="angle"
+                      direction="down"
+                      class="is-info">
+            </cds-icon>
+         </button>
+         <clr-dropdown-menu *clrIfOpen>
+            <button type="button"
+                    class="btn btn-link"
+                    clrDropdownItem
+                    (click)="onEdit()">
+               <cds-icon shape="pencil"></cds-icon>
+               {{ 'common.edit' | translate }}
+            </button>
+            <button type="button"
+                    class="btn btn-link"
+                    clrDropdownItem
+                    (click)="onDelete()">
+               <cds-icon shape="times-circle"></cds-icon>
+               {{ 'common.delete' | translate }}
+            </button>
+            <button type="button"
+                    class="btn btn-link"
+                    clrDropdownItem
+                    [disabled]="chassis.isActive"
+                    (click)="onActivate()">
+               <cds-icon shape="check"></cds-icon>
+               {{ 'common.activate' | translate }}
+            </button>
+         </clr-dropdown-menu>
+      </clr-dropdown>
+   </div>
+}

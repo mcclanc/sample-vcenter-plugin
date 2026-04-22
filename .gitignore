@@ -3,7 +3,10 @@
 .idea/
 .vscode/
 node_modules/
+**/target/
+*.class
 certs/
 *.pem
 .env
 .env.*
+*.jar.bak*

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<!--
+     Copyright (c) 2019-2025 Broadcom. All Rights Reserved.
+     Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
+     and/or its subsidiaries.
+-->
+<html>
+<head>
+   <title>SDK Remote Plugin</title>
+   <meta charset="utf-8" />
+   <style>
+      /* Prevent background flicker when loading the theme for the first time. */
+      html:not([data-theme]),
+      body:not([cds-theme]) {
+         background: transparent;
+      }
+   </style>
+   <script type="text/javascript" src="/api/ui/htmlClientSdk.js"></script>
+   <script>
+      const base = document.createElement('base');
+      base.href = htmlClientSdk.getProxiedPluginServerOrigin() + '/sample-ui/';
+      document.write(base.outerHTML);
+   </script>
+   
+   <link rel="prefetch" as="style" type="text/css" href="theme-light.css" id="theme-stylesheet-light">
+   <link rel="prefetch" as="style" type="text/css" href="theme-dark.css" id="theme-stylesheet-dark">
+   <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+   <app-root></app-root>
+</body>
+</html>

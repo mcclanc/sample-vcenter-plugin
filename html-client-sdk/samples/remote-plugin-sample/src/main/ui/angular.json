@@ -1,0 +1,106 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": false
+  },
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "remote-plugin-sample": {
+      "root": "",
+      "sourceRoot": "src",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "aot": true,
+            "outputPath": "../../../target/classes/ui",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "tsConfig": "src/tsconfig.app.json",
+            "polyfills": [
+              "zone.js"
+            ],
+            "assets": [
+              "src/assets"
+            ],
+            "styles": [
+              {
+                "inject": false,
+                "input": "node_modules/@cds/core/global.min.css",
+                "bundleName": "styles"
+              },
+              {
+                "inject": false,
+                "input": "node_modules/@clr/ui/clr-ui.min.css",
+                "bundleName": "styles"
+              },
+              {
+                "inject": false,
+                "input": "src/styles.css",
+                "bundleName": "styles"
+              },
+              {
+                "inject": false,
+                "input": "src/styles-light.css",
+                "bundleName": "theme-light"
+              },
+              {
+                "inject": false,
+                "input": "node_modules/@cds/core/styles/theme.dark.min.css",
+                "bundleName": "theme-dark"
+              },
+              {
+                "inject": false,
+                "input": "src/styles-dark.css",
+                "bundleName": "theme-dark"
+              }
+            ]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
+              "optimization": false,
+              "outputHashing": "all",
+              "sourceMap": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "schematics": {
+    "@schematics/angular:component": {
+      "prefix": "app"
+    },
+    "@schematics/angular:directive": {
+      "prefix": "app"
+    }
+  }
+}

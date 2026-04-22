@@ -39,6 +39,12 @@ npm run start:https    # HTTPS on port 8443
 - Manifest: `https://localhost:8443/tanzu-hub-poc-ui/plugin.json`  
   Plain HTTP (`npm start`) is only for quick checks; vCenter registration usually needs **HTTPS** — [docs/REGISTRATION.md](docs/REGISTRATION.md).
 
+## Credentials (safe for GitHub)
+
+- **Do not commit** real vCenter or SSO passwords, API tokens, or `.env` files. This repo’s `.gitignore` excludes `.env*`, `*.pem`, and `certs/`.
+- **Registration:** use environment variables (for example `VC_PASSWORD` for [scripts/register-extension-lab.sh](scripts/register-extension-lab.sh)), not literals in tracked files.
+- **HTML Client SDK Java samples** under `html-client-sdk/samples/` use `server.ssl.key-store-password=${KEYSTORE_PASSWORD}`. Export `KEYSTORE_PASSWORD` before running Spring Boot. For the **bundled sample `keystore.jks`**, use the passphrase from Broadcom’s upstream remote plug-in sample `application.properties` in the official SDK bundle (or replace the keystore with your own and set this variable accordingly).
+
 ## Next implementation steps
 
 1. Add the **vSphere Client Remote Plug-in** JavaScript SDK (from the Broadcom SDK bundle) to `ui/` and replace the stub UI with real inventory pickers and task monitoring.

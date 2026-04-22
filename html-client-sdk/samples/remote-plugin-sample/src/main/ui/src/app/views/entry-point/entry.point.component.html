@@ -1,0 +1,27 @@
+<!--
+     Copyright (c) 2019-2025 Broadcom. All Rights Reserved.
+     Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
+     and/or its subsidiaries.
+-->
+
+<div class="main-container">
+   <div class="content-container">
+      <clr-vertical-nav>
+         @for (navItem of navItems; track navItem.route) {
+            <a clrVerticalNavLink
+               [routerLink]="navItem.route"
+               routerLinkActive="active"
+               [class.active]="isNavItemActive(navItem)">
+               <span clrVerticalNavIcon
+                     [class]="['plugin-icon', navItem.iconClass]">
+               </span>
+               {{ navItem.labelKey | translate }}
+            </a>
+         }
+      </clr-vertical-nav>
+
+      <div class="content-area">
+         <router-outlet></router-outlet>
+      </div>
+   </div>
+</div>

@@ -1,0 +1,21 @@
+/*
+ * ******************************************************************
+ * Copyright (c) 2019-2025 Broadcom. All Rights Reserved.
+ * Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
+ * and/or its subsidiaries.
+ * ******************************************************************
+ */
+
+:host {
+   display: flex;
+   flex-direction: column;
+   flex: 1;
+}
+
+clr-datagrid {
+   flex: 1;
+}
+
+.word-break {
+   overflow-wrap: break-word;
+}

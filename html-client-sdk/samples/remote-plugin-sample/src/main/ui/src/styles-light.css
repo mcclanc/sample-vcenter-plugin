@@ -1,0 +1,18 @@
+/*
+ * ******************************************************************
+ * Copyright (c) 2022-2025 Broadcom. All Rights Reserved.
+ * Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
+ * and/or its subsidiaries.
+ * ******************************************************************
+ */
+:root {
+   --border-color: rgb(204, 204, 204);
+   --overlay-color: rgba(255, 255, 255, 0.2);
+   --info-icon-color: darkblue;
+   --link-color: rgba(0, 124, 187, 1);
+   --background-image: url(assets/images/sprites.png);
+}
+
+.plugin-icon {
+    background-image: url(assets/images/sprites.png);
+}

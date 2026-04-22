@@ -1,0 +1,7 @@
+{
+   "manifestVersion": "1.0.0",
+   "manifests": [
+      "plugin-70.json",
+      "plugin.json"
+   ]
+}

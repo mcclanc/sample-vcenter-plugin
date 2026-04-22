@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Copyright (c) 2022-2025 Broadcom. All Rights Reserved.
+     Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
+     and/or its subsidiaries.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+
+   <groupId>com.vmware.samples</groupId>
+   <artifactId>remote-plugin-sample</artifactId>
+   <packaging>jar</packaging>
+   <version>9.0.0.0-SNAPSHOT</version>
+
+   <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+      <maven.compiler.source>17</maven.compiler.source>
+      <maven.compiler.target>17</maven.compiler.target>
+      <maven.compiler.version>3.8.1</maven.compiler.version>
+      <maven.install.version>2.5.2</maven.install.version>
+      <maven.assembly.version>2.6</maven.assembly.version>
+      <maven.dependency.version>3.1.2</maven.dependency.version>
+      <maven.resources.version>3.2.0</maven.resources.version>
+      <maven.surefire.version>3.0.0-M5</maven.surefire.version>
+      <maven.jar.version>2.6</maven.jar.version>
+      <java.version>17</java.version>
+      <maven.clean.version>3.1.0</maven.clean.version>
+      <exec.maven.version>3.0.0</exec.maven.version>
+      <mvn.frontend.plugin.version>1.11.3</mvn.frontend.plugin.version>
+      <spring.boot.version>2.7.18</spring.boot.version>
+      <guava.version>20.0</guava.version>
+      <testng.version>6.3.1</testng.version>
+      <commons.lang3.version>3.7</commons.lang3.version>
+      <mvn.install.plugin.version>2.5.2</mvn.install.plugin.version>
+      <angular.app.root.dir>${project.basedir}/src/main/ui</angular.app.root.dir>
+      <plugin.manifest.dir>${project.basedir}/src/main/resources/static</plugin.manifest.dir>
+      <target.plugin.manifest.dir>${project.build.outputDirectory}/static</target.plugin.manifest.dir>
+      <vim25.version>9.0.0</vim25.version>
+      <jaxws.rt.version>3.0.2</jaxws.rt.version>
+      <woodstox.core.version>6.4.0</woodstox.core.version>
+      <jakarta.xml.bind-api.version>3.0.1</jakarta.xml.bind-api.version>
+      <jakarta.xml.ws-api.version>3.0.1</jakarta.xml.ws-api.version>
+      <jakarta.jws-api.version>3.0.0</jakarta.jws-api.version>
+      <jakarta.xml.soap-api.version>2.0.1</jakarta.xml.soap-api.version>
+      <jakarta.activation.version>2.0.1</jakarta.activation.version>
+      <skip.node.install>false</skip.node.install>
+      <build.type>build</build.type>
+      <nodejs.unpack.path>${project.build.directory}/node</nodejs.unpack.path>
+   </properties>
+
+   <profiles>
+      <!--Local Node and NPM executables for multi-os build-->
+      <profile>
+         <id>windows</id>
+         <properties>
+            <npm.executable>${nodejs.unpack.path}/npm.cmd</npm.executable>
+            <node.prepended.to.path>${nodejs.unpack.path};${env.PATH}</node.prepended.to.path>
+         </properties>
+         <activation>
+            <os>
+               <family>windows</family>
+            </os>
+         </activation>
+      </profile>
+
+      <profile>
+         <id>linux</id>
+         <properties>
+            <npm.executable>${nodejs.unpack.path}/npm</npm.executable>
+            <node.prepended.to.path>${nodejs.unpack.path}:${env.PATH}</node.prepended.to.path>
+         </properties>
+         <activation>
+            <os>
+               <family>unix</family>
+            </os>
+         </activation>
+      </profile>
+
+      <profile>
+         <id>mac</id>
+         <properties>
+            <npm.executable>${nodejs.unpack.path}/npm</npm.executable>
+            <node.prepended.to.path>${nodejs.unpack.path}:${env.PATH}</node.prepended.to.path>
+         </properties>
+         <activation>
+            <os>
+               <family>mac</family>
+            </os>
+         </activation>
+      </profile>
+
+      <profile>
+         <id>production-build</id>
+         <properties>
+            <build.type>build:prod</build.type>
+         </properties>
+         <activation>
+            <property>
+               <name>production.build</name>
+               <value>true</value>
+            </property>
+         </activation>
+      </profile>
+   </profiles>
+
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-dependencies</artifactId>
+            <version>${spring.boot.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
+
+   <dependencies>
+      <!-- Spring Dependencies -->
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-web</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-websocket</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-test</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-devtools</artifactId>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <groupId>org.apache.httpcomponents</groupId>
+         <artifactId>httpclient</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>com.google.guava</groupId>
+         <artifactId>guava</artifactId>
+         <version>${guava.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.apache.commons</groupId>
+         <artifactId>commons-lang3</artifactId>
+         <version>${commons.lang3.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.testng</groupId>
+         <artifactId>testng</artifactId>
+         <version>${testng.version}</version>
+      </dependency>
+
+      <!--vim25 should be installed in the local repo prior to the-->
+      <!--dependency resolution phase.-->
+      <dependency>
+         <groupId>com.vmware.vim25</groupId>
+         <artifactId>vim25</artifactId>
+         <version>${vim25.version}</version>
+      </dependency>
+
+      <!-- com.vmware.vim25:vim25 depends on this since 8.0U1 -->
+      <dependency>
+         <groupId>com.sun.xml.ws</groupId>
+         <artifactId>jaxws-rt</artifactId>
+         <version>${jaxws.rt.version}</version>
+      </dependency>
+
+      <!-- com.sun.xml.ws:jaxws-rt:3.0.2 has dependency to com.fasterxml.woodstox:woodstox-core:6.2.6 which has known vulnerabilities,
+      so force a newer version of the fasterxml.woodstox:woodstox-core dependency -->
+      <dependency>
+         <groupId>com.fasterxml.woodstox</groupId>
+         <artifactId>woodstox-core</artifactId>
+         <version>${woodstox.core.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>jakarta.xml.bind</groupId>
+         <artifactId>jakarta.xml.bind-api</artifactId>
+         <version>${jakarta.xml.bind-api.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>jakarta.xml.ws</groupId>
+         <artifactId>jakarta.xml.ws-api</artifactId>
+         <version>${jakarta.xml.ws-api.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>jakarta.jws</groupId>
+         <artifactId>jakarta.jws-api</artifactId>
+         <version>${jakarta.jws-api.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>jakarta.xml.soap</groupId>
+         <artifactId>jakarta.xml.soap-api</artifactId>
+         <version>${jakarta.xml.soap-api.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>com.sun.activation</groupId>
+         <artifactId>jakarta.activation</artifactId>
+         <version>${jakarta.activation.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>com.sun.xml.messaging.saaj</groupId>
+         <artifactId>saaj-impl</artifactId>
+         <version>2.0.1</version>
+      </dependency>
+   </dependencies>
+
+   <build>
+      <resources>
+         <resource>
+            <directory>${project.basedir}/src/main/resources</directory>
+            <excludes>
+               <exclude>static/*.json</exclude>
+            </excludes>
+         </resource>
+      </resources>
+
+      <plugins>
+         <!--Install vim25 to the local repository. Bound to the validate phase.-->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-install-plugin</artifactId>
+            <version>${maven.install.version}</version>
+            <executions>
+               <execution>
+                  <id>install-external-dependencies</id>
+                  <phase>validate</phase>
+                  <goals>
+                     <goal>install-file</goal>
+                  </goals>
+                  <configuration>
+                     <file>${project.basedir}/libs/vim25.jar</file>
+                     <groupId>com.vmware.vim25</groupId>
+                     <artifactId>vim25</artifactId>
+                     <version>${vim25.version}</version>
+                     <packaging>jar</packaging>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+         <!--Download and install NodeJS and NPM-->
+         <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <version>${mvn.frontend.plugin.version}</version>
+            <executions>
+               <!--Locally install Node and NPM-->
+               <execution>
+                  <id>Download NodeJS and NPM.</id>
+                  <goals>
+                     <goal>install-node-and-npm</goal>
+                  </goals>
+                  <phase>generate-sources</phase>
+                  <configuration>
+                     <installDirectory>${project.build.directory}</installDirectory>
+                     <nodeVersion>v18.20.5</nodeVersion>
+                     <npmVersion>10.8.2</npmVersion>
+                     <workingDirectory>${angular.app.root.dir}</workingDirectory>
+                     <skip>${skip.node.install}</skip>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+         <!--Exec Maven Plugin to execute 'npm install' and 'npm run build'-->
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>${exec.maven.version}</version>
+            <executions>
+               <!--Install package.json dependencies-->
+               <execution>
+                  <id>Run npm install.</id>
+                  <phase>generate-resources</phase>
+                  <goals>
+                     <goal>exec</goal>
+                  </goals>
+                  <configuration>
+                     <workingDirectory>${angular.app.root.dir}</workingDirectory>
+                     <environmentVariables>
+                        <PATH>${node.prepended.to.path}</PATH>
+                     </environmentVariables>
+                     <executable>${npm.executable}</executable>
+                     <arguments>
+                        <argument>install</argument>
+                     </arguments>
+                  </configuration>
+               </execution>
+               <!--Lint the Angular App-->
+               <execution>
+                  <id>Lint the Angular App.</id>
+                  <goals>
+                     <goal>exec</goal>
+                  </goals>
+                  <phase>generate-resources</phase>
+                  <configuration>
+                     <workingDirectory>${angular.app.root.dir}</workingDirectory>
+                     <environmentVariables>
+                        <PATH>${node.prepended.to.path}</PATH>
+                     </environmentVariables>
+                     <executable>${npm.executable}</executable>
+                     <arguments>
+                        <argument>run</argument>
+                        <argument>lint</argument>
+                     </arguments>
+                  </configuration>
+               </execution>
+               <!--Build the Angular App-->
+               <execution>
+                  <id>Build the Angular App.</id>
+                  <goals>
+                     <goal>exec</goal>
+                  </goals>
+                  <phase>generate-resources</phase>
+                  <configuration>
+                     <workingDirectory>${angular.app.root.dir}</workingDirectory>
+                     <environmentVariables>
+                        <PATH>${node.prepended.to.path}</PATH>
+                     </environmentVariables>
+                     <executable>${npm.executable}</executable>
+                     <arguments>
+                        <argument>run</argument>
+                        <argument>${build.type}</argument>
+                     </arguments>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>${maven.dependency.version}</version>
+            <executions>
+               <execution>
+                  <id>Analyze Maven Dependencies.</id>
+                  <configuration>
+                     <ignoreNonCompile>true</ignoreNonCompile>
+                     <failOnWarning>false</failOnWarning>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>${maven.surefire.version}</version>
+         </plugin>
+
+         <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <version>${spring.boot.version}</version>
+            <executions>
+               <execution>
+                  <id>Build an executable Spring Boot jar.</id>
+                  <phase>install</phase>
+                  <goals>
+                     <goal>repackage</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-clean-plugin</artifactId>
+            <version>${maven.clean.version}</version>
+            <configuration>
+               <excludeDefaultDirectories>true</excludeDefaultDirectories>
+               <filesets>
+                  <fileset>
+                     <directory>target</directory>
+                     <excludes>
+                        <exclude>**/classes/ui/**</exclude>
+                     </excludes>
+                  </fileset>
+               </filesets>
+            </configuration>
+         </plugin>
+
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>${maven.resources.version}</version>
+         </plugin>
+
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>${maven.compiler.version}</version>
+            <configuration>
+               <release>${java.version}</release>
+            </configuration>
+         </plugin>
+
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>${maven.assembly.version}</version>
+            <executions>
+               <execution>
+                  <id>Copy single manifest json</id>
+                  <phase>prepare-package</phase>
+                  <goals>
+                     <goal>single</goal>
+                  </goals>
+                  <configuration>
+                     <descriptors>
+                        <descriptor>src/assembly/single-manifest.xml</descriptor>
+                     </descriptors>
+                     <appendAssemblyId>false</appendAssemblyId>
+                     <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                     <finalName>static</finalName>
+                     <attach>false</attach>
+                  </configuration>
+               </execution>
+               <execution>
+                  <id>Create multi-manifest zip</id>
+                  <phase>prepare-package</phase>
+                  <goals>
+                     <goal>single</goal>
+                  </goals>
+                  <configuration>
+                     <descriptors>
+                        <descriptor>src/assembly/multi-manifest.xml</descriptor>
+                     </descriptors>
+                     <appendAssemblyId>false</appendAssemblyId>
+                     <outputDirectory>${target.plugin.manifest.dir}</outputDirectory>
+                     <finalName>plugin-manifest</finalName>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>${maven.jar.version}</version>
+         </plugin>
+      </plugins>
+   </build>
+</project>

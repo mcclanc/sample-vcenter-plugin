@@ -1,0 +1,20 @@
+<!--
+     Copyright (c) 2022-2025 Broadcom. All Rights Reserved.
+     Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
+     and/or its subsidiaries.
+-->
+<clr-stack-view>
+   @if (loading) {
+      <clr-stack-block>
+         <span class="spinner spinner-inline"></span>
+         <span>Loading...</span>
+      </clr-stack-block>
+   } @else {
+      <clr-stack-block>
+         <clr-stack-label>Related Chassis</clr-stack-label>
+         <clr-stack-content (click)="navigateToHostMonitorView()">
+            <a>{{numberOfRelatedChassis}}</a>
+         </clr-stack-content>
+      </clr-stack-block>
+   }
+</clr-stack-view>

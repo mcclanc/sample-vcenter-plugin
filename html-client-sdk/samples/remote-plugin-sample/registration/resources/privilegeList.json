@@ -1,0 +1,10 @@
+[
+  {
+    "groupId": "com.vmware.sample.remote.1.0.0.0",
+    "privileges": [
+      {
+        "privilegeId": "ManageVm"
+      }
+    ]
+  }
+]

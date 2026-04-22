@@ -1,0 +1,11 @@
+[
+   {
+      "taskId": "com.vmware.sample.remote.Task1"
+   },
+   {
+      "taskId": "com.vmware.sample.remote.Task2"
+   },
+   {
+      "taskId": "com.vmware.sample.remote.Task3"
+   }
+]

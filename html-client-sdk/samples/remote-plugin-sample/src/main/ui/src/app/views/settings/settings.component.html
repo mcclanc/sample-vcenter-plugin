@@ -1,0 +1,41 @@
+<!--
+     Copyright (c) 2019-2025 Broadcom. All Rights Reserved.
+     Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
+     and/or its subsidiaries.
+-->
+<h1 class="view-title">{{ 'common.settings' | translate }}</h1>
+
+@if (showSuccessMessage) {
+    <clr-alert clrAlertType="success"
+               (clrAlertClosedChange)="showSuccessMessage = false">
+        <clr-alert-item>
+            <span class="alert-text">
+                {{ 'settings.theNumberOfDisplayedChassisPerPage' | translate }}
+                '{{ numberOfChassisPerPageMessageValue }}'
+                {{ 'settings.wasUpdatedInTheWebLocalStorage' | translate }}.
+            </span>
+        </clr-alert-item>
+    </clr-alert>
+}
+
+<div cds-layout="horizontal align:right">
+    <button class="btn btn-sm"
+            (click)="onUpdate()">
+        {{ 'common.update' | translate }}
+    </button>
+</div>
+
+<clr-stack-view>
+    <clr-stack-block>
+        <clr-stack-label>{{ 'settings.numberOfChassisPerPage' | translate }}</clr-stack-label>
+        <clr-stack-content>
+            <clr-number-input-container>
+                <input clrNumberInput
+                       type="number"
+                       [min]="minPageSize"
+                       [max]="maxPageSize"
+                       [(ngModel)]="numberOfChassisPerPage" />
+            </clr-number-input-container>
+        </clr-stack-content>
+    </clr-stack-block>
+</clr-stack-view>

@@ -1,0 +1,11 @@
+[
+  {
+    "taskId": "com.vmware.sample.remote.1.0.0.0.CreateChassis"
+  },
+  {
+    "taskId": "com.vmware.sample.remote.1.0.0.0.DeleteChassis"
+  },
+  {
+    "taskId": "com.vmware.sample.remote.1.0.0.0.UpdateChassis"
+  }
+]

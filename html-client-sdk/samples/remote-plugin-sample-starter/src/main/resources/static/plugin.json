@@ -1,0 +1,44 @@
+{
+   "manifestVersion": "1.0.0",
+   "requirements": {
+      "plugin.api.version": "1.0.0"
+   },
+   "configuration": {
+      "nameKey": "RemoteSample:plugin.name",
+      "icon": {
+         "name": "main"
+      }
+   },
+   "global": {
+      "view": {
+         "navigationId": "com.vmware.remote.sample.entrypoint",
+         "uri": "index.html",
+         "navigationVisible": false
+      }
+   },
+   "definitions": {
+      "iconSpriteSheet": {
+         "uri": "images/sprites.png",
+         "definitions": {
+            "main": {
+               "x": 0,
+               "y": 96
+            }
+         }
+      },
+      "i18n": {
+         "locales": [
+            "en-US",
+            "de-DE",
+            "fr-FR"
+         ],
+         "definitions": {
+            "RemoteSample:plugin.name": {
+               "en-US": "SDK Remote Plugin Sample Starter",
+               "de-DE": "SDK Remote Plugin Sample Starter",
+               "fr-FR": "SDK Remote Plugin Sample Starter"
+            }
+         }
+      }
+   }
+}

@@ -1,0 +1,28 @@
+<!--
+     Copyright (c) 2019-2025 Broadcom. All Rights Reserved.
+     Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
+     and/or its subsidiaries.
+-->
+<app-custom-header [chassis]="chassis"></app-custom-header>
+<clr-tabs>
+   <clr-tab>
+      <button clrTabLink>{{ 'main.summary' | translate }}</button>
+      <clr-tab-content *clrIfActive>
+         <app-summary-view [chassis]="chassis"></app-summary-view>
+      </clr-tab-content>
+   </clr-tab>
+
+   <clr-tab>
+      <button clrTabLink>{{ 'main.monitor' | translate }}</button>
+      <clr-tab-content *clrIfActive>
+         <app-monitor-view [chassis]="chassis"></app-monitor-view>
+      </clr-tab-content>
+   </clr-tab>
+
+   <clr-tab>
+      <button clrTabLink>{{ 'vsphere.objects.hosts' | translate }}</button>
+      <clr-tab-content *clrIfActive>
+         <app-hosts-list-view [chassis]="chassis"></app-hosts-list-view>
+      </clr-tab-content>
+   </clr-tab>
+</clr-tabs>

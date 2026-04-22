@@ -1,0 +1,173 @@
+{
+   "manifestVersion": "1.2.0",
+   "requirements": {
+      "plugin.api.version": "1.2.0",
+      "vsphere.client": {
+         "version": "[7.0,)",
+         "environments": ["onprem", "gateway", "cloud"]
+      },
+      "vcenter.server": {
+         "version": "[7.0,)",
+         "environments": ["onprem", "cloud"]
+      },
+      "confirmation.modal.api": "1.0.0",
+      "proxied.plugin.server.origin.api": "1.0.0",
+      "icon.sprite.sheet.theming": "1.0.0",
+      "plugin.backend.info.api": "1.0.0",
+      "action.accepts.multiple.targets": true,
+      "plugin.dynamic.extensions": "1.0.0"
+   },
+   "configuration": {
+      "nameKey": "plugin.name",
+      "icon": {
+         "name": "main"
+      }
+   },
+   "global": {
+      "view": {
+         "navigationId": "entryPoint",
+         "uri": "index.html#/entry-point",
+         "navigationVisible": false
+      }
+   },
+   "objects": {
+      "VirtualMachine": {
+         "summary": {
+            "dynamicUri": "dynamicItems/vm/summary",
+            "view": {
+               "id": "vmCard",
+               "uri": "index.html#/vm-card",
+               "dynamic": true
+            }
+         },
+         "monitor": {
+            "views": [
+               {
+                  "navigationId": "vmMonitor",
+                  "labelKey": "vm.monitor.view.title",
+                  "uri": "index.html#/vm-monitor"
+               }
+            ]
+         },
+         "configure": {
+            "dynamicUri": "dynamicItems/vm/configure",
+            "views": [
+               {
+                  "navigationId": "vmConfigureView",
+                  "labelKey": "vm.configure.view.title",
+                  "uri": "index.html#/vm-configure",
+                  "dynamic": true
+               }
+            ]
+         },
+         "menu": {
+            "dynamicUri": "dynamicItems/vm/actions",
+            "actions": [
+               {
+                  "id": "vmAction",
+                  "labelKey": "vm.action.label",
+                  "icon": {
+                     "name": "action-vm"
+                  },
+                  "trigger": {
+                     "type": "modal",
+                     "uri": "index.html#/vm-action-modal",
+                     "titleKey": "vm.action.modal.title",
+                     "size": {
+                        "width": 600,
+                        "height": 205
+                     }
+                  },
+                  "acceptsMultipleTargets": true,
+                  "dynamic": true
+               }
+            ]
+         }
+      },
+      "HostSystem": {
+         "summary": {
+            "view": {
+               "uri": "index.html#/host-card"
+            }
+         },
+         "monitor": {
+            "views": [
+               {
+                  "navigationId": "hostMonitor",
+                  "labelKey": "host.monitor.view.title",
+                  "uri": "index.html#/host-monitor"
+               }
+            ]
+         }
+      }
+   },
+   "definitions": {
+      "iconSpriteSheet": {
+         "uri": "assets/images/sprites.png",
+         "definitions": {
+            "main": {
+               "x": 0,
+               "y": 64
+            },
+            "action-vm": {
+               "x": 0,
+               "y": 0
+            }
+         },
+         "themeOverrides": {
+            "dark": {
+               "uri": "assets/images/sprites-dark.png",
+               "definitions": {
+                  "main": {
+                     "x": 0,
+                     "y": 64
+                  },
+                  "action-vm": {
+                     "x": 0,
+                     "y": 0
+                  }
+               }
+            }
+         }
+      },
+      "i18n": {
+         "locales": [
+            "en-US",
+            "de-DE",
+            "fr-FR"
+         ],
+         "definitions": {
+            "plugin.name": {
+               "en-US": "SDK Remote Plugin",
+               "de-DE": "SDK Remote Plugin",
+               "fr-FR": "SDK Remote Plugin"
+            },
+            "vm.action.label": {
+               "en-US": "UI action",
+               "de-DE": "UI Aktion",
+               "fr-FR": "UI action"
+            },
+            "vm.action.modal.title": {
+               "en-US": "Action Title",
+               "de-DE": "Aktion Titel",
+               "fr-FR": "Action Title"
+            },
+            "vm.monitor.view.title": {
+               "en-US": "Monitor View",
+               "de-DE": "Monitoransicht",
+               "fr-FR": "Vue du Moniteur"
+            },
+            "vm.configure.view.title": {
+               "en-US": "Configure View",
+               "de-DE": "Konfigurierenansicht",
+               "fr-FR": "Vue du Configurer"
+            },
+            "host.monitor.view.title": {
+               "en-US": "Related Chassis",
+               "de-DE": "Verwandte Chassis",
+               "fr-FR": "Châssis Connexe"
+            }
+         }
+      }
+   }
+}

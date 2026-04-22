@@ -1,0 +1,17 @@
+{
+   "en": {
+      "com.vmware.sample.remote.X1": "Task 1",
+      "com.vmware.sample.remote.faults.X.summary": "Fault Summary.",
+      "privilege.GroupId-1.Privilege-1.label": "Label 1"
+   },
+   "de": {
+      "com.vmware.sample.remote.X1": "Task 1-DE",
+      "com.vmware.sample.remote.faults.X.summary": "Fault Summary-DE.",
+      "privilege.GroupId-1.Privilege-1.label": "Label 1-DE"
+   },
+   "fr": {
+      "com.vmware.sample.remote.X1": "Task 1-FR",
+      "com.vmware.sample.remote.faults.X.summary": "Fault Summary-FR.",
+      "privilege.GroupId-1.Privilege-1.label": "Label 1-FR"
+   }
+}

@@ -1,0 +1,62 @@
+/*
+ * ******************************************************************
+ * Copyright (c) 2019-2025 Broadcom. All Rights Reserved.
+ * Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
+ * and/or its subsidiaries.
+ * ******************************************************************
+ */
+
+/* You can add global styles to this file, and also import other style files */
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+cds-icon {
+  margin-bottom: 3px;
+}
+
+form.modal-content-delete {
+  padding: 10px 0 0 24px;
+}
+
+form.vm-action-modal-content {
+  padding: 0 0 0 24px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  &.view-title {
+    font-size: 20px;
+    margin: 0 0 0.5rem 0;
+  }
+}
+
+.chassis-list-view .chassises-datagrid-container .datagrid-overlay-wrapper{
+  margin-top: 30px;
+}
+
+.clr-vertical-nav .nav-icon.plugin-icon {
+  width: 32px;
+  height: 32px;
+  display: inline-block;
+  flex: none;
+  transform: scale(0.5);
+}
+
+.welcome-icon {
+  background-position: 0 32px;
+}
+
+.settings-icon {
+  background-position: 32px 64px;
+}
+
+.chassis-list-icon {
+  background-position: 96px 128px;
+}
+
+clr-tabs > .tab-content {
+  width: 100%
+}

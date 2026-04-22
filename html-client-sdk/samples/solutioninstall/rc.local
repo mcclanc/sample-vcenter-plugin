@@ -1,0 +1,115 @@
+#!/bin/bash -x
+#
+# Copyright (c) 2022-2025 Broadcom. All Rights Reserved.
+# Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
+# and/or its subsidiaries.
+#
+# Startup script which reads injected OVF parameters and calls back
+# vSphere UI's solutioninstall endpoint to complete solution installation.
+#
+# Note: Based on the Sample Network Customization script by William Lam
+# https://github.com/lamw/custom-virtual-appliances/blob/master/rc.local
+
+getOvfProperty () {
+   OVF_PROPERTY_NAME=$1
+   OVF_PROPERTY=$(vmtoolsd --cmd "info-get guestinfo.ovfEnv" | grep ${OVF_PROPERTY_NAME})
+   OVF_VALUE=$(echo "${OVF_PROPERTY}" | awk -F 'oe:value="' '{print $2}' | awk -F '"' '{print $1}')
+   echo "${OVF_VALUE}"
+}
+
+mkdir /var/log/solutioninstall
+exec > /var/log/solutioninstall/solutioninstall.log
+
+if [ -e /root/initialized ]; then
+   echo "Solution is already initialized"
+   exit
+else
+   # Read OVF parameters
+   INSTALL_TOKEN=$(getOvfProperty "solutionInstall.token")
+   INSTALL_ENDPOINT=$(getOvfProperty "solutionInstall.postDeployData.endpoint")
+   INSTALL_THUMBPRINT=$(getOvfProperty "solutionInstall.postDeployData.thumbprint")
+   PLUGIN_ID=$(getOvfProperty "vmw.vsphereui.solutioninstall.pluginId")
+   echo "Read OVF parameters: INSTALL_ENDPOINT(${INSTALL_ENDPOINT}), \
+      INSTALL_THUMBPRINT(${INSTALL_THUMBPRINT}), \
+      INSTALL_TOKEN(<hidden-token>), PLUGIN_ID(${PLUGIN_ID})"
+
+   # Validate all expected OVF parameters have been found
+   if [ -z "${INSTALL_TOKEN}" ] || [ -z "${INSTALL_ENDPOINT}" ] || \
+      [ -z "${INSTALL_THUMBPRINT}" ] || [ -z "${PLUGIN_ID}" ]; then
+      echo "Expected OVF parameters cannot be blank!"
+      exit 0
+   fi
+
+   # Wait for IP allocation (given the script is executed on startup the VM might not have an IP assigned yet)
+   # Make an attempt to read the IP each second with a total timeout of 60 seconds.
+   timeout 60s bash -c 'until ip route get 1; do sleep 1; done'
+   PLUGIN_SERVER_IP=$(ip route get 1 | awk '{print $(NF-2);exit}') ;
+   echo "Plugin server IP: ${PLUGIN_SERVER_IP}"
+   if [ -z "${PLUGIN_SERVER_IP}" ]; then
+      echo "No IP has been assigned to the VM within the 60 second timeout!"
+      exit 0
+   fi
+
+   # Install Java package
+   tdnf install openjdk17 -y
+   # Open 8443 port
+   iptables -A INPUT -p tcp --dport 8443 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+   # Start plugin server
+   java -jar /root/remote-plugin-sample-starter-*.jar \
+      --logging.file.name=/var/log/solutioninstall/plugin-server.log &
+   {
+      # Prepare the expected URL of the plugin manifest to be served by the plugin server
+      PLUGIN_MANIFEST_URL="https://${PLUGIN_SERVER_IP}:8443/sample-ui/plugin.json"
+
+      # Prepare the expected SHA-256 thumbprint of the plugin server
+      # Here it is specific to the remote-plugin-sample-starter app.
+      # In a real-world scenario this is not hardcoded but read from the plugin server certificate.
+      PLUGIN_SERVER_THUMBPRINT="59:93:D9:CF:54:CB:32:60:93:58:CE:45:AD:4D:D7:1F:1C:08:1D:0D:B6:A5:3D:F5:3E:D7:A9:CA:E2:32:DE:41"
+
+      # Wait for the plugin server to start
+      # Try to access the plugin manifest once every 10 seconds with a total timeout of 30s.
+      timeout 30s bash -c 'until curl -k -s --head -w %{http_code} '"${PLUGIN_MANIFEST_URL}"' -o /dev/null ; do sleep 10; done'
+
+      EXTENSION='{"vcenterExtensions":[{
+                         "extension":{
+                            "server":[{
+                               "serverThumbprint":"'${PLUGIN_SERVER_THUMBPRINT}'",
+                               "description":{
+                                  "summary":"Sample solution appliance with remote plugin",
+                                  "label":"Sample Solution"
+                               },
+                               "company":"Broadcom Inc.",
+                               "type":"MANIFEST_SERVER",
+                               "url":"'${PLUGIN_MANIFEST_URL}'",
+                               "adminEmail":["noreply@broadcom.com"]
+                            }],
+                            "shownInSolutionManager":true,
+                            "description":{
+                               "summary":"Sample solution appliance with remote plugin",
+                               "label":"Sample Solution"
+                            },
+                            "client":[{
+                               "description":{
+                                  "summary":"Sample solution appliance with remote plugin",
+                                  "label":"Sample Solution"
+                               },
+                               "company":"Broadcom Inc.",
+                               "type":"vsphere-client-remote",
+                               "version":"1.0.0.0",
+                               "url":"'${PLUGIN_MANIFEST_URL}'"
+                            }],
+                            "company":"Broadcom Inc.",
+                            "version":"1.0.0.0",
+                            "key":"'${PLUGIN_ID}'"
+                         }
+                      }]}'
+      # Call back vSphere Client to register the plugin
+      echo "Calling endpoint ${INSTALL_ENDPOINT} having thumbprint ${INSTALL_THUMBPRINT} with token <hidden-token>."
+      output=`python3 /etc/rc.d/vsphere_ui_request.py "$INSTALL_ENDPOINT" "$INSTALL_TOKEN" "$INSTALL_THUMBPRINT" "$EXTENSION"`
+      echo "The call to the vSphere Client to register the Extension finished with result: $output"
+
+      if [[ "$output" == *"[200]"* ]]; then
+         touch /root/initialized
+      fi
+   }
+fi

@@ -1,0 +1,139 @@
+<!--
+     Copyright (c) 2019-2025 Broadcom. All Rights Reserved.
+     Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
+     and/or its subsidiaries.
+-->
+
+<clr-wizard #wizard
+            [clrWizardOpen]="true"
+            (clrWizardOpenChange)="onClose()"
+            [clrWizardSize]="'lg'"
+            [clrWizardPreventModalAnimation]="true"
+            class="clr-wizard--inline clr-wizard--no-shadow">
+
+    <clr-wizard-title>{{'shared.modal.createChassis' | translate}}</clr-wizard-title>
+
+    <clr-wizard-button [type]="'cancel'"
+                       (click)="onCancel()">
+        {{ 'common.cancel' | translate }}
+    </clr-wizard-button>
+    <clr-wizard-button [type]="'previous'">{{ 'common.back' | translate }}</clr-wizard-button>
+    <clr-wizard-button [type]="'next'">{{ 'common.next' | translate }}</clr-wizard-button>
+    <clr-wizard-button [type]="'finish'">{{ 'common.ok' | translate }}</clr-wizard-button>
+
+    <clr-wizard-page [clrWizardPageNextDisabled]="isNamePristine() || isNameEmpty()">
+        <ng-template clrPageTitle>
+            {{ 'actions.create.wizardPage1' | translate }}
+        </ng-template>
+
+        <form clrForm
+              clrLayout="horizontal"
+              clrLabelSize="4"
+              [formGroup]="wizardPage1Form">
+            <!-- Chassis Name -->
+            <clr-input-container>
+                <label>{{'common.name' | translate}}</label>
+                <input clrInput
+                       formControlName="name"
+                       [placeholder]="'actions.namePlaceholder' | translate"
+                       required
+                       autofocus />
+                <clr-control-error>
+                    {{'actions.create.emptyNameError' | translate}}
+                </clr-control-error>
+            </clr-input-container>
+
+            <!-- Chassis Server Type -->
+            <clr-input-container>
+                <label>{{'common.serverType' | translate}}</label>
+                <input clrInput
+                       formControlName="serverType"
+                       [placeholder]="'actions.serverTypePlaceholder' | translate" />
+            </clr-input-container>
+        </form>
+    </clr-wizard-page>
+
+    <clr-wizard-page>
+        <ng-template clrPageTitle>
+            {{ 'actions.create.wizardPage2' | translate }}
+        </ng-template>
+
+        <form clrForm
+              clrLayout="horizontal"
+              clrLabelSize="4"
+              [formGroup]="wizardPage2Form">
+            <!-- Chassis Dimensions -->
+            <clr-input-container>
+                <label>{{'common.dimensions' | translate}}</label>
+                <input clrInput
+                       formControlName="dimensions"
+                       [placeholder]="'actions.dimensionsPlaceholder' | translate" />
+            </clr-input-container>
+
+            <!-- Chassis isActive -->
+            <clr-checkbox-container>
+                <label cds-layout="horizontal gap:xsm">
+                    {{ 'common.state' | translate }}
+                    <clr-tooltip>
+                        <cds-icon clrTooltipTrigger
+                                  shape="info-standard"
+                                  status="info"
+                                  size="18">
+                        </cds-icon>
+                        <clr-tooltip-content clrPosition="top-right"
+                                             clrSize="md">
+                            {{ 'actions.whatCanTheStateBe' | translate }}
+                        </clr-tooltip-content>
+                    </clr-tooltip>
+                </label>
+                <clr-checkbox-wrapper>
+                    <input clrCheckbox
+                           formControlName="isActive"
+                           type="checkbox"
+                           name="active" />
+                    <label>{{ 'common.active' | translate }}</label>
+                </clr-checkbox-wrapper>
+            </clr-checkbox-container>
+        </form>
+    </clr-wizard-page>
+
+    <clr-wizard-page (clrWizardPageNext)="clearErrorMsg()">
+        <ng-template clrPageTitle>
+            {{ 'actions.create.wizardPage3' | translate }}
+        </ng-template>
+        <app-alert-message [error]="error"></app-alert-message>
+        <app-hosts-list-view [preselectedHostsIds]="chassis.relatedHostsIds || []"
+                             (hostsSelectionChange)="onHostsSelectionChange($event)"
+                             (onNavigateToHostObject)="onNavigateToHostObject()"
+                             (onError)="onError($event)">
+        </app-hosts-list-view>
+    </clr-wizard-page>
+
+    <clr-wizard-page #myFinishPage
+                     (clrWizardPageOnLoad)="loadReadyToCompletePageData()"
+                     clrWizardPagePreventDefault="true"
+                     (clrWizardPageOnCommit)="onSubmit()"
+                     (clrWizardPageOnCancel)="onCancel()"
+                     (clrWizardPagePrevious)="onGoBack()">
+        <ng-template clrPageTitle>
+            {{ 'actions.create.wizardPage4' | translate }}
+        </ng-template>
+
+        <app-alert-message [error]="error"></app-alert-message>
+
+        <div cds-layout="grid gap:md">
+            <span cds-layout="col:6" cds-text="body bold">{{ 'common.name' | translate }}:</span>
+            <span cds-layout="col:6">{{ readyToCompleteData?.name }}</span>
+            <span cds-layout="col:6" cds-text="body bold">{{ 'common.serverType' | translate }}:</span>
+            <span cds-layout="col:6">{{ readyToCompleteData?.serverType }}</span>
+            <span cds-layout="col:6" cds-text="body bold">{{ 'common.dimensions' | translate }}:</span>
+            <span cds-layout="col:6">{{ readyToCompleteData?.dimensions }}</span>
+            <span cds-layout="col:6" cds-text="body bold">{{ 'common.state' | translate }}:</span>
+            <span cds-layout="col:6">
+                <app-chassis-status [isActive]="readyToCompleteData?.state"></app-chassis-status>
+            </span>
+            <span cds-layout="col:6" cds-text="body bold">{{ 'common.hosts' | translate }}:</span>
+            <span cds-layout="col:6">{{ readyToCompleteData?.hosts }}</span>
+        </div>
+    </clr-wizard-page>
+</clr-wizard>

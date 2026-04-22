@@ -1,0 +1,38 @@
+{
+  "en": {
+    "com.vmware.sample.remote.1.0.0.0.CreateChassis.label": "Create chassis",
+    "com.vmware.sample.remote.1.0.0.0.CreateChassis.summary": "Creating in-memory chassis object",
+    "com.vmware.sample.remote.1.0.0.0.DeleteChassis.label": "Delete chassis",
+    "com.vmware.sample.remote.1.0.0.0.DeleteChassis.summary": "Deleting in-memory chassis object",
+    "com.vmware.sample.remote.1.0.0.0.UpdateChassis.label": "Update chassis",
+    "com.vmware.sample.remote.1.0.0.0.UpdateChassis.summary": "Updating in-memory chassis object",
+    "com.vmware.sample.remote.1.0.0.0.faults.ChassisAlreadyExistsFault.summary": "The chassis object already exists.",
+    "com.vmware.sample.remote.1.0.0.0.faults.RelatedChassisDeletionFault.summary": "The chassis object cannot be deleted because it has a relation to a host object.",
+    "privilege.com.vmware.sample.remote.1.0.0.0.label": "Remote Plugin Sample",
+    "privilege.com.vmware.sample.remote.1.0.0.0.ManageVm.label": "Manage VMs"
+  },
+  "de": {
+    "com.vmware.sample.remote.1.0.0.0.CreateChassis.label": "Chassis erstellen",
+    "com.vmware.sample.remote.1.0.0.0.CreateChassis.summary": "In-Memory-Chassis-Objekt erstellen",
+    "com.vmware.sample.remote.1.0.0.0.DeleteChassis.label": "Chassis löschen",
+    "com.vmware.sample.remote.1.0.0.0.DeleteChassis.summary": "In-Memory-Chassis-Objekt löschen",
+    "com.vmware.sample.remote.1.0.0.0.UpdateChassis.label": "Chassis aktualisieren",
+    "com.vmware.sample.remote.1.0.0.0.UpdateChassis.summary": "In-Memory-Chassis-Objekt aktualisieren",
+    "com.vmware.sample.remote.1.0.0.0.faults.ChassisAlreadyExistsFault.summary": "Das Chassis-Objekt ist bereits vorhanden.",
+    "com.vmware.sample.remote.1.0.0.0.faults.RelatedChassisDeletionFault.summary": "Das Chassis-Objekt kann nicht gelöscht werden, da es eine Beziehung zu einem Host-Objekt hat.",
+    "privilege.com.vmware.sample.remote.1.0.0.0.label": "Remote Plugin Sample",
+    "privilege.com.vmware.sample.remote.1.0.0.0.ManageVm.label": "Verwalten VMs"
+  },
+  "fr": {
+    "com.vmware.sample.remote.1.0.0.0.CreateChassis.label": "Créer un châssis",
+    "com.vmware.sample.remote.1.0.0.0.CreateChassis.summary": "Création d'un objet de châssis en mémoire",
+    "com.vmware.sample.remote.1.0.0.0.DeleteChassis.label": "Supprimer le châssis",
+    "com.vmware.sample.remote.1.0.0.0.DeleteChassis.summary": "Suppression d'un objet de châssis en mémoire",
+    "com.vmware.sample.remote.1.0.0.0.UpdateChassis.label": "Mise à jour du châssis",
+    "com.vmware.sample.remote.1.0.0.0.UpdateChassis.summary": "Mise à jour de l'objet châssis en mémoire",
+    "com.vmware.sample.remote.1.0.0.0.faults.ChassisAlreadyExistsFault.summary": "L'objet châssis existe déjà.",
+    "com.vmware.sample.remote.1.0.0.0.faults.RelatedChassisDeletionFault.summary": "L'objet châssis ne peut pas être supprimé car il a une relation avec un objet hôte.",
+    "privilege.com.vmware.sample.remote.1.0.0.0.label": "Remote Plugin Sample",
+    "privilege.com.vmware.sample.remote.1.0.0.0.ManageVm.label": "Gérer VMs"
+  }
+}

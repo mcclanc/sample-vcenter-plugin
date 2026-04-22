@@ -23,10 +23,10 @@
       "locales": ["en-US"],
       "definitions": {
         "plugin.name": {
-          "en-US": "Tanzu Hub POC Deployer"
+          "en-US": "Tanzu Platform Integration"
         },
         "plugin.summary": {
-          "en-US": "Deploy and track Tanzu Platform evaluation / Hub POC appliances from vSphere Client."
+          "en-US": "VMware Tanzu Platform is an AI-ready, integrated private cloud Platform-as-a-Service (PaaS) designed to accelerate development, deployment, and management of secure applications on Kubernetes-based infrastructure."
         }
       }
     }

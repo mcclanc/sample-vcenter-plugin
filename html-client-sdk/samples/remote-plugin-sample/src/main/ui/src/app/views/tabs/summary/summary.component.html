@@ -1,0 +1,52 @@
+<!--
+     Copyright (c) 2019-2025 Broadcom. All Rights Reserved.
+     Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
+     and/or its subsidiaries.
+-->
+<div class="row">
+   <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+      <div class="card">
+         <div class="card-header">
+            {{ 'tabs.summary.mainInformation' | translate }}
+         </div>
+         <div class="card-block">
+            @if (chassis) {
+               <clr-stack-view>
+                  <clr-stack-block>
+                     <clr-stack-label>{{ 'common.name' | translate }}</clr-stack-label>
+                     <clr-stack-content>{{chassis.name}}</clr-stack-content>
+                  </clr-stack-block>
+                  <clr-stack-block>
+                     <clr-stack-label>{{ 'common.state' | translate }}</clr-stack-label>
+                     <clr-stack-content>
+                        <app-chassis-status [isActive]="chassis.isActive"></app-chassis-status>
+                     </clr-stack-content>
+                  </clr-stack-block>
+               </clr-stack-view>
+            }
+         </div>
+      </div>
+   </div>
+
+   <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+      <div class="card">
+         <div class="card-header">
+            {{ 'tabs.summary.additionalDetails' | translate }}
+         </div>
+         <div class="card-block">
+            @if (chassis) {
+               <clr-stack-view>
+                  <clr-stack-block>
+                     <clr-stack-label>{{ 'common.serverType' | translate }}</clr-stack-label>
+                     <clr-stack-content>{{chassis.serverType}}</clr-stack-content>
+                  </clr-stack-block>
+                  <clr-stack-block>
+                     <clr-stack-label>{{ 'common.dimensions' | translate }}</clr-stack-label>
+                     <clr-stack-content>{{chassis.dimensions}}</clr-stack-content>
+                  </clr-stack-block>
+               </clr-stack-view>
+            }
+         </div>
+      </div>
+   </div>
+</div>

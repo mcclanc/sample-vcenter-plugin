@@ -1,0 +1,11 @@
+[
+   {
+      "faultId": "com.vmware.sample.X1"
+   },
+   {
+      "faultId": "com.vmware.sample.X2"
+   },
+   {
+      "faultId": "com.vmware.sample.X3"
+   }
+]

@@ -1,0 +1,24 @@
+[
+   {
+      "groupId": "GroupId-1",
+      "privileges": [
+         {
+            "privilegeId": "Privilege-1"
+         },
+         {
+            "privilegeId": "Privilege-2"
+         }
+      ]
+   },
+   {
+      "groupId": "GroupId-2",
+      "privileges": [
+         {
+            "privilegeId": "Privilege-1"
+         },
+         {
+            "privilegeId": "Privilege-2"
+         }
+      ]
+   }
+]
