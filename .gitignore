@@ -10,3 +10,14 @@ certs/
 .env
 .env.*
 *.jar.bak*
+
+# Local OVF Tool / Windows extract under tools/ (keep scripts: download-ovftool-mac.sh, tools/vendor/.gitignore)
+tools/*.exe
+tools/*.dll
+tools/env/
+tools/schemas/
+tools/icudt*.dat
+tools/open_source_licenses.txt
+tools/vmware-eula.rtf
+tools/vmware.eula
+tools/README.txt
