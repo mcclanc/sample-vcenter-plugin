@@ -13,7 +13,8 @@ Remote **vSphere Client** plug-in scaffold for a **Tanzu Hub / Tanzu Platform ev
 ```
 html-client-sdk/         # Unpacked Broadcom vSphere HTML Client SDK (samples, docs, tools)
 ui/plugin.json           # Your remote plug-in manifest
-ui/index.html            # Global view (htmlClientSdk + base href pattern from samples)
+ui/index.html            # Entry view: three paths (htmlClientSdk + base href)
+ui/usecase.html          # Use cases view (opened from card 1 on index)
 ui/images/sprites.png    # Icon sprite (from SDK starter sample)
 server/index.mjs         # Static host, /health, dev stub for /api/ui/htmlClientSdk.js
 server/htmlClientSdk.stub.js

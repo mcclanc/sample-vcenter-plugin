@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Deploy Production Tanzu Hub — App Platform as a Service</title>
+    <style>
+      html:not([data-theme]),
+      body:not([cds-theme]) {
+        background: transparent;
+      }
+    </style>
+    <script type="text/javascript" src="/api/ui/htmlClientSdk.js"></script>
+    <script>
+      (function () {
+        var base = document.createElement("base");
+        base.href =
+          htmlClientSdk.getProxiedPluginServerOrigin() + "/tanzu-hub-poc-ui/";
+        document.head.appendChild(base);
+      })();
+    </script>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+  </head>
+  <body>
+    <nav class="subpage-nav" aria-label="Breadcrumb">
+      <a class="subpage-nav__link" href="index.html">← Back to start</a>
+    </nav>
+    <header class="header">
+      <h1>Deploy a Production Ready Tanzu Hub</h1>
+      <p class="muted">
+        This POC UI does not run a production install yet. Use Broadcom documentation and your
+        platform runbooks to deploy an HA, scaled-out Tanzu Hub, then return here to connect
+        vCenter if needed.
+      </p>
+    </header>
+    <script type="module" src="landing.js"></script>
+  </body>
+</html>

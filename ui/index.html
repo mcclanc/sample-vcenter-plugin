@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="VMware Tanzu Platform is an AI-ready, integrated private cloud Platform-as-a-Service (PaaS) designed to accelerate development, deployment, and management of secure applications on Kubernetes-based infrastructure."
+      content="Choose how to work with Tanzu Platform and Tanzu Hub from vSphere."
     />
-    <title>Tanzu Platform Integration</title>
+    <title>App Platform as a Service</title>
     <style>
       html:not([data-theme]),
       body:not([cds-theme]) {
@@ -25,76 +25,112 @@
     </script>
     <link rel="stylesheet" type="text/css" href="styles.css" />
   </head>
-  <body>
-    <header class="header">
-      <h1 data-i18n="plugin.name">Tanzu Platform Integration</h1>
-      <p class="muted" data-i18n="plugin.summary">
+  <body class="landing-page">
+    <header class="header landing-hero">
+      <p class="landing-hero__eyebrow">Tanzu Platform</p>
+      <h1 data-i18n="plugin.name">App Platform as a Service</h1>
+      <p class="muted landing-hero__lead" data-i18n="plugin.summary">
         VMware Tanzu Platform is an AI-ready, integrated private cloud Platform-as-a-Service (PaaS)
-        designed to accelerate development, deployment, and management of secure applications on
-        Kubernetes-based infrastructure.
+        designed to accelerate development, deployment, and management of secure applications.
+      </p>
+      <p class="landing-hero__more">
+        <a
+          class="landing-hero__more-link"
+          href="https://techdocs.broadcom.com/us/en/vmware-tanzu/platform/tanzu-platform/10-4/about-tnz-platform/index.html"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn More
+        </a>
       </p>
     </header>
 
-    <main class="main-content">
-      <div class="card-row">
-        <section class="assess-card" aria-label="Application assessment">
-          <button type="button" class="assess-card__surface" id="assess-card-open">
-            <span class="assess-card__title">
-              Assess your applications for viability for deployment on to Tanzu Platform.
-            </span>
-          </button>
-        </section>
-        <section class="assess-card" aria-label="Tanzu Data Intelligence">
-          <button type="button" class="assess-card__surface" id="data-intel-card-open">
-            <span class="assess-card__title">
-              Let AI drive your data with Tanzu Data Intelligence
-            </span>
-          </button>
-        </section>
-        <section class="assess-card" aria-label="Secure images and enterprise services">
-          <button type="button" class="assess-card__surface" id="secure-enterprise-card-open">
-            <span class="assess-card__title">
-              Unlock the power secure images and enterprise service offerings with Tanzu Platform
-            </span>
-          </button>
-        </section>
+    <main class="main-content landing-main">
+      <p class="landing-intro landing-intro--splash">Choose a path to get started.</p>
+      <div class="choice-grid">
+        <a class="choice-card choice-card--usecases" href="usecase.html">
+          <div class="choice-card__icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M4 6h16M4 12h12M4 18h8"
+              />
+            </svg>
+          </div>
+          <h2 class="choice-card__title">Get started by checking out some of the use cases Tanzu Platform can provide.</h2>
+          <p class="choice-card__desc">
+            Tanzu Platform is the PaaS solution for VCF. It provides several use cases for
+            developers. Click here to check out specific use cases and evaluate them.
+          </p>
+        </a>
+        <a class="choice-card choice-card--deploy" href="deploy-production.html">
+          <div class="choice-card__icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect
+                x="5"
+                y="14"
+                width="14"
+                height="6"
+                rx="1.5"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <rect
+                x="7.5"
+                y="8"
+                width="9"
+                height="5"
+                rx="1.5"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <rect x="10" y="3" width="4" height="4" rx="1" stroke="currentColor" stroke-width="2" />
+            </svg>
+          </div>
+          <h2 class="choice-card__title">Deploy a Production Ready Tanzu Hub</h2>
+          <p class="choice-card__desc">
+            Already know all about Tanzu Platform and ready to deploy into production? Click here
+            to deploy an HA and scaled out production ready instance of Tanzu Hub.
+          </p>
+        </a>
+        <a class="choice-card choice-card--connect" href="connect-vcenter.html">
+          <div class="choice-card__icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                d="M9 17H7a5 5 0 0 1 0-10h2"
+              />
+              <path
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                d="M15 7h2a5 5 0 0 1 0 10h-2"
+              />
+              <line
+                x1="8"
+                y1="12"
+                x2="16"
+                y2="12"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </div>
+          <h2 class="choice-card__title">Connect this vCenter to existing Tanzu Hub</h2>
+          <p class="choice-card__desc">
+            Already have Tanzu Hub deployed? Click here to connect this vCenter to the existing
+            Tanzu Hub.
+          </p>
+        </a>
       </div>
     </main>
 
-    <dialog class="ova-modal" id="ova-modal" aria-labelledby="ova-modal-title">
-      <div class="ova-modal__inner">
-        <header class="ova-modal__header">
-          <h2 class="ova-modal__title" id="ova-modal-title">Install Tanzu Hub</h2>
-          <button type="button" class="ova-modal__close" id="ova-modal-close" aria-label="Close">
-            ×
-          </button>
-        </header>
-        <form id="ova-install-form" class="form" method="dialog">
-          <label>
-            OVA name
-            <input type="text" name="ovaName" required autocomplete="off" placeholder="e.g. tanzu-platform-eval" />
-          </label>
-          <label>
-            OVA URL or Content Library path
-            <input type="url" name="ovaUrl" placeholder="https://…/appliance.ova" />
-          </label>
-          <label>
-            Target VM name
-            <input type="text" name="vmName" placeholder="vm-name-in-vcenter" />
-          </label>
-          <label>
-            Notes
-            <textarea name="notes" rows="3" placeholder="Datastore, network, DNS, sizing…"></textarea>
-          </label>
-          <div class="ova-modal__actions">
-            <button type="button" class="btn-secondary" id="ova-modal-cancel">Cancel</button>
-            <button type="button" class="btn-primary" id="stub-action">Validate (stub)</button>
-          </div>
-        </form>
-        <pre id="log" class="log" aria-live="polite"></pre>
-      </div>
-    </dialog>
-
-    <script type="module" src="main.js"></script>
+    <script type="module" src="landing.js"></script>
   </body>
 </html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="VMware Tanzu Platform is an AI-ready, integrated private cloud Platform-as-a-Service (PaaS) designed to accelerate development, deployment, and management of secure applications."
+    />
+    <title>App Platform as a Service</title>
+    <style>
+      html:not([data-theme]),
+      body:not([cds-theme]) {
+        background: transparent;
+      }
+    </style>
+    <script type="text/javascript" src="/api/ui/htmlClientSdk.js"></script>
+    <script>
+      (function () {
+        var base = document.createElement("base");
+        base.href =
+          htmlClientSdk.getProxiedPluginServerOrigin() + "/tanzu-hub-poc-ui/";
+        document.head.appendChild(base);
+      })();
+    </script>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+  </head>
+  <body class="usecase-page">
+    <nav class="subpage-nav" aria-label="Breadcrumb">
+      <a class="subpage-nav__link" href="index.html">← Back to start</a>
+    </nav>
+    <header class="header usecase-hero">
+      <p class="usecase-hero__eyebrow">Tanzu Platform use cases</p>
+      <h1 data-i18n="plugin.name">App Platform as a Service</h1>
+      <p class="muted usecase-hero__lead" data-i18n="plugin.summary">
+        VMware Tanzu Platform is an AI-ready, integrated private cloud Platform-as-a-Service (PaaS)
+        designed to accelerate development, deployment, and management of secure applications.
+      </p>
+    </header>
+
+    <main class="main-content usecase-main">
+      <div class="card-row">
+        <section class="assess-card assess-card--theme-assess" aria-label="Application assessment">
+          <button
+            type="button"
+            class="assess-card__surface assess-card__surface--stacked"
+            id="assess-card-open"
+          >
+            <span class="assess-card__copy">
+              <span class="assess-card__eyebrow">Assess &amp; rationalize</span>
+              <span class="assess-card__title">
+                Assess your applications for viability for deployment on to Tanzu Platform.
+              </span>
+            </span>
+            <img
+              class="assess-card__figure assess-card__figure--svg"
+              src="images/usecase-app-assessment.svg"
+              alt=""
+              width="480"
+              height="200"
+              loading="lazy"
+            />
+          </button>
+        </section>
+        <section class="assess-card assess-card--theme-ai" aria-label="AI-powered applications on Tanzu Platform">
+          <button
+            type="button"
+            class="assess-card__surface assess-card__surface--stacked"
+            id="data-intel-card-open"
+          >
+            <span class="assess-card__copy">
+              <span class="assess-card__eyebrow">AI-ready delivery</span>
+              <span class="assess-card__title">
+                Accelerate the development, deployment, and management of AI-powered applications.
+              </span>
+            </span>
+            <img
+              class="assess-card__figure assess-card__figure--svg"
+              src="images/usecase-ai-acceleration.svg"
+              alt=""
+              width="480"
+              height="200"
+              loading="lazy"
+            />
+          </button>
+        </section>
+        <section class="assess-card assess-card--theme-secure" aria-label="Secure images and enterprise services">
+          <button
+            type="button"
+            class="assess-card__surface assess-card__surface--stacked"
+            id="secure-enterprise-card-open"
+          >
+            <span class="assess-card__copy">
+              <span class="assess-card__eyebrow">Secure supply chain</span>
+              <span class="assess-card__title">
+                Unlock the power of secure images and enterprise service offerings with Tanzu Platform.
+              </span>
+            </span>
+            <img
+              class="assess-card__figure assess-card__figure--svg"
+              src="images/usecase-secure-services.svg"
+              alt=""
+              width="480"
+              height="200"
+              loading="lazy"
+            />
+          </button>
+        </section>
+      </div>
+    </main>
+
+    <dialog class="ova-modal" id="ova-modal" aria-labelledby="ova-modal-title">
+      <div class="ova-modal__inner">
+        <header class="ova-modal__header">
+          <h2 class="ova-modal__title" id="ova-modal-title">Tanzu Platform evaluation appliance</h2>
+          <button type="button" class="ova-modal__close" id="ova-modal-close" aria-label="Close">
+            ×
+          </button>
+        </header>
+        <p id="ova-modal-status" class="ova-modal__status" role="status" aria-live="polite"></p>
+        <form id="ova-install-form" class="form ova-modal__form" enctype="multipart/form-data">
+          <fieldset class="ova-modal__fieldset">
+            <legend class="ova-modal__legend">Appliance package</legend>
+            <p class="ova-modal__help">
+              Choose an <strong>.ova</strong> or <strong>.ovf</strong> from this machine. It is uploaded to the
+              plug-in server (the host running <code>npm start</code>), then deployed with
+              <strong>ovftool</strong>. Large packages can take several minutes to upload.
+              Evaluation builds are listed on the
+              <a
+                class="ova-modal__link"
+                href="https://support.broadcom.com/group/ecx/productfiles?subFamily=VMware%20Tanzu%20Platform%20evaluation%20appliances&amp;displayGroup=VMware%20Tanzu%20Platform%20evaluation%20appliances&amp;release=10.4.0&amp;os=&amp;servicePk=542821&amp;language=EN"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Tanzu Platform evaluation appliances</a>
+              portal (download separately, then browse here).
+            </p>
+            <label class="ova-modal__file-label">
+              OVA / OVF file
+              <input
+                class="ova-modal__file-input"
+                type="file"
+                id="ova-file-input"
+                name="ovaFile"
+                accept=".ova,.OVF,.ovf,.OVA,application/ovf"
+                required
+              />
+            </label>
+            <div class="ova-modal__actions">
+              <button type="button" class="btn-primary" id="ova-file-continue">Continue</button>
+              <button type="button" class="btn-secondary" id="ova-modal-cancel">Cancel</button>
+            </div>
+          </fieldset>
+
+          <fieldset id="ova-modal-step-deploy" class="ova-modal__fieldset" hidden>
+            <legend class="ova-modal__legend">Deploy</legend>
+            <p class="ova-modal__help">
+              Enter vCenter connection and placement. The plug-in server runs
+              <strong>VMware OVF Tool</strong> (<code>ovftool</code>) against vCenter using these values. Install
+              <code>ovftool</code> on the server (<code>PATH</code>, <code>tools/ovftool</code>, or
+              <code>OVFTOOL_PATH</code>). The OVF <strong>network label</strong> must match the package (often
+              <code>VM Network</code>).
+            </p>
+            <label>
+              vCenter hostname or IP
+              <input
+                type="text"
+                id="vc-host-input"
+                name="vcHost"
+                autocomplete="off"
+                placeholder="e.g. vcenter.example.com"
+              />
+            </label>
+            <label>
+              vCenter username
+              <input type="text" id="vc-user-input" name="vcUsername" autocomplete="username" />
+            </label>
+            <label>
+              vCenter password
+              <input type="password" id="vc-pass-input" name="vcPassword" autocomplete="current-password" />
+            </label>
+            <label>
+              Datacenter name
+              <input type="text" id="datacenter-input" name="datacenter" autocomplete="off" placeholder="e.g. Datacenter" />
+            </label>
+            <label>
+              Compute path (under datacenter)
+              <input
+                type="text"
+                id="compute-path-input"
+                name="computePath"
+                autocomplete="off"
+                placeholder="e.g. host/ClusterName or host/esxi.fqdn"
+              />
+            </label>
+            <label>
+              New VM name
+              <input type="text" id="vm-name-input" name="vmName" autocomplete="off" placeholder="e.g. tanzu-platform-eval" />
+            </label>
+            <label>
+              Datastore name
+              <input type="text" id="datastore-input" name="datastore" autocomplete="off" />
+            </label>
+            <label>
+              Destination port group name
+              <input type="text" id="network-input" name="network" autocomplete="off" />
+            </label>
+            <label>
+              OVF network label to map (must match OVF)
+              <input
+                type="text"
+                id="ovf-network-label-input"
+                name="ovfNetworkLabel"
+                autocomplete="off"
+                placeholder="VM Network"
+              />
+            </label>
+            <label>
+              OVF properties (optional JSON object)
+              <textarea
+                id="ovf-properties-json"
+                name="ovfPropertiesJson"
+                rows="4"
+                spellcheck="false"
+                placeholder='Example: { "guestinfo.admin.password": "••••••••" }'
+              ></textarea>
+            </label>
+            <div class="ova-modal__actions">
+              <button type="button" class="btn-primary" id="ova-deploy-btn" disabled>
+                Deploy
+              </button>
+            </div>
+          </fieldset>
+        </form>
+        <pre id="log" class="log" aria-live="polite"></pre>
+      </div>
+    </dialog>
+
+    <script type="module" src="main.js"></script>
+  </body>
+</html>

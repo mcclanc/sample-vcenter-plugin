@@ -2,18 +2,22 @@
   "name": "sample-vcenter-plugin",
   "version": "0.1.0",
   "private": true,
-  "description": "Remote vSphere Client plug-in scaffold for Tanzu Hub / evaluation POC appliance workflows",
+  "description": "Remote vSphere Client plug-in (App Platform as a Service) for Tanzu Hub / evaluation POC appliance workflows",
   "type": "module",
   "scripts": {
     "start": "node server/index.mjs",
     "start:https": "SSL_KEY_PATH=certs/dev-key.pem SSL_CERT_PATH=certs/dev-cert.pem node server/index.mjs",
     "dev": "node --watch server/index.mjs",
-    "certs": "bash scripts/gen-dev-certs.sh"
+    "tools:ovftool-mac": "bash tools/download-ovftool-mac.sh",
+    "certs": "bash scripts/gen-dev-certs.sh",
+    "icon:sprite": "python3 scripts/gen_plugin_icon_sprite.py",
+    "icon:compose": "python3 scripts/compose_icon_into_sprite.py"
   },
   "engines": {
     "node": ">=20"
   },
   "dependencies": {
-    "express": "^4.21.0"
+    "express": "^4.21.0",
+    "multer": "^2.1.1"
   }
 }

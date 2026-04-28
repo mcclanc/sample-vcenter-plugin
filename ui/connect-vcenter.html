@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connect vCenter to Tanzu Hub — App Platform as a Service</title>
+    <style>
+      html:not([data-theme]),
+      body:not([cds-theme]) {
+        background: transparent;
+      }
+    </style>
+    <script type="text/javascript" src="/api/ui/htmlClientSdk.js"></script>
+    <script>
+      (function () {
+        var base = document.createElement("base");
+        base.href =
+          htmlClientSdk.getProxiedPluginServerOrigin() + "/tanzu-hub-poc-ui/";
+        document.head.appendChild(base);
+      })();
+    </script>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+  </head>
+  <body>
+    <nav class="subpage-nav" aria-label="Breadcrumb">
+      <a class="subpage-nav__link" href="index.html">← Back to start</a>
+    </nav>
+    <header class="header">
+      <h1>Connect this vCenter to existing Tanzu Hub</h1>
+      <p class="muted">
+        This POC UI does not perform the connection yet. Follow Tanzu Hub product guidance to
+        register this vCenter with your existing hub, then extend this plug-in to drive that flow.
+      </p>
+    </header>
+    <script type="module" src="landing.js"></script>
+  </body>
+</html>

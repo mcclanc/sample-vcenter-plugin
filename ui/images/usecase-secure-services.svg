@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 200" role="img" aria-hidden="true">
+  <defs>
+    <linearGradient id="sec-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#042f2e"/>
+      <stop offset="100%" stop-color="#134e4a"/>
+    </linearGradient>
+    <linearGradient id="sec-gold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="sec-teal" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2dd4bf"/>
+      <stop offset="100%" stop-color="#14b8a6"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="200" rx="12" fill="url(#sec-bg)"/>
+  <rect x="88" y="48" width="304" height="104" rx="10" fill="#0d9488" opacity="0.15" stroke="#2dd4bf" stroke-width="1"/>
+  <rect x="108" y="68" width="88" height="64" rx="6" fill="#115e59" stroke="url(#sec-teal)" stroke-width="1.5"/>
+  <rect x="208" y="68" width="88" height="64" rx="6" fill="#115e59" stroke="url(#sec-teal)" stroke-width="1.5"/>
+  <rect x="308" y="68" width="64" height="64" rx="6" fill="#115e59" stroke="url(#sec-teal)" stroke-width="1.5"/>
+  <path d="M240 42 L260 52 L260 78 C260 92 252 104 240 110 C228 104 220 92 220 78 L220 52 Z" fill="url(#sec-gold)" stroke="#fcd34d" stroke-width="1"/>
+  <path d="M232 72 L240 80 L256 62" fill="none" stroke="#134e4a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="400" cy="48" r="6" fill="#34d399" opacity="0.9"/>
+  <circle cx="80" cy="152" r="5" fill="#fbbf24" opacity="0.8"/>
+  <path d="M48 100 H72 M60 88 V112" stroke="#5eead4" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+</svg>

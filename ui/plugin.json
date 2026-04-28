@@ -23,10 +23,10 @@
       "locales": ["en-US"],
       "definitions": {
         "plugin.name": {
-          "en-US": "Tanzu Platform Integration"
+          "en-US": "App Platform as a Service"
         },
         "plugin.summary": {
-          "en-US": "VMware Tanzu Platform is an AI-ready, integrated private cloud Platform-as-a-Service (PaaS) designed to accelerate development, deployment, and management of secure applications on Kubernetes-based infrastructure."
+          "en-US": "VMware Tanzu Platform is an AI-ready, integrated private cloud Platform-as-a-Service (PaaS) designed to accelerate development, deployment, and management of secure applications."
         }
       }
     }

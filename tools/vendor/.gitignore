@@ -1,0 +1,3 @@
+# Populated by tools/download-ovftool-mac.sh — do not commit Broadcom binaries.
+*
+!.gitignore
