@@ -2,6 +2,9 @@
 # Lab helper: register this repo's remote plug-in with vCenter using Broadcom's extension-registration tool.
 # Run from a host that resolves your vCenter FQDN and can reach the plug-in HTTPS URL.
 #
+# On Windows / Windows Server, use:  powershell -File scripts/register-extension-lab.ps1
+#   (or:  npm run register:lab  from the repo root)
+#
 # Interactive (default on a terminal): prompts for values; press Enter to keep [bracketed] defaults.
 # Non-interactive: set REGISTER_NON_INTERACTIVE=1 and export VC_PASSWORD, PLUGIN_SERVER_TP (and overrides as needed).
 # Re-register / refresh an existing extension: REGISTER_ACTION=updatePlugin (same PLUGIN_KEY as the first registration).

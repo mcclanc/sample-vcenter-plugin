@@ -54,11 +54,30 @@ export PLUGIN_SERVER_TP='3A:6B:67:…'   # SHA-1 of the plug-in host cert (colon
 ./scripts/register-extension-lab.sh
 ```
 
-**Interactive prompts:** from a normal terminal, run `./scripts/register-extension-lab.sh` with no `VC_PASSWORD` / `PLUGIN_SERVER_TP` (or leave them unset) and it will ask for vCenter URL, SSO user/password, manifest URL, thumbprint, extension key, version, and display name—press Enter to keep each `[default]`. Pre-set any variable in the environment to skip that prompt. For CI or scripts, set `REGISTER_NON_INTERACTIVE=1` and export `VC_PASSWORD` and `PLUGIN_SERVER_TP` at minimum.
+**Windows / Windows Server** (same env vars; uses `html-client-sdk/.../prebuilt/extension-registration.bat` and `java` on `PATH`):
 
-Override defaults with `VC_SDK_URL`, `PLUGIN_URL`, `PLUGIN_KEY`, etc. See `scripts/register-extension-lab.sh`.
+```powershell
+cd sample-vcenter-plugin
+.\scripts\register-extension-lab.ps1
+```
 
-If the vCenter **FQDN does not resolve** from the machine that runs registration (common on laptops without split‑DNS), use **`VCENTER_IP=<vCenter-IP>`** so the script uses `https://<IP>/sdk` instead of the hostname (patched JAR “insecure” still applies to vCenter TLS). Example: `VCENTER_IP=172.16.30.14 ./scripts/register-extension-lab.sh`.
+Or from the repo root: `npm run register:lab`
+
+Non-interactive example (PowerShell):
+
+```powershell
+$env:REGISTER_NON_INTERACTIVE = "1"
+$env:VC_PASSWORD = "your-sso-password"
+$env:PLUGIN_SERVER_TP = "AA:BB:…"
+# optional: $env:VCENTER_IP = "172.16.30.14"
+.\scripts\register-extension-lab.ps1
+```
+
+**Interactive prompts:** from a normal terminal, run `./scripts/register-extension-lab.sh` or `.\scripts\register-extension-lab.ps1` with no `VC_PASSWORD` / `PLUGIN_SERVER_TP` (or leave them unset) and it will ask for vCenter URL, SSO user/password, manifest URL, thumbprint, extension key, version, and display name—press Enter to keep each `[default]`. Pre-set any variable in the environment to skip that prompt. For CI or scripts, set `REGISTER_NON_INTERACTIVE=1` and export `VC_PASSWORD` and `PLUGIN_SERVER_TP` at minimum.
+
+Override defaults with `VC_SDK_URL`, `PLUGIN_URL`, `PLUGIN_KEY`, etc. See `scripts/register-extension-lab.sh` or `scripts/register-extension-lab.ps1`.
+
+If the vCenter **FQDN does not resolve** from the machine that runs registration (common on laptops without split‑DNS), use **`VCENTER_IP=<vCenter-IP>`** so the script uses `https://<IP>/sdk` instead of the hostname (patched JAR “insecure” still applies to vCenter TLS). Examples: `VCENTER_IP=172.16.30.14 ./scripts/register-extension-lab.sh` or `$env:VCENTER_IP='172.16.30.14'; .\scripts\register-extension-lab.ps1`.
 
 ### If registration fails with a TLS / FQDN message
 

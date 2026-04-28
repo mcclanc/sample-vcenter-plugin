@@ -26,13 +26,158 @@
       <a class="subpage-nav__link" href="index.html">← Back to start</a>
     </nav>
     <header class="header">
-      <h1>Deploy a Production Ready Tanzu Hub</h1>
+      <h1>Deploy Tanzu Hub (production checklist)</h1>
       <p class="muted">
-        This POC UI does not run a production install yet. Use Broadcom documentation and your
-        platform runbooks to deploy an HA, scaled-out Tanzu Hub, then return here to connect
-        vCenter if needed.
+        Tanzu Hub is installed as a tile on Foundation Core. Use
+        <a
+          href="https://techdocs.broadcom.com/us/en/vmware-tanzu/platform/tanzu-hub/10-4/tnz-hub/install-overview.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Install and run Tanzu Hub (10.4)</a
+        >
+        for architecture, planning, tile install, load balancers, and blob store. This form only
+        captures the minimum parameters you will need when following that documentation; it does
+        not run the install.
       </p>
     </header>
+
+    <main class="main-content">
+      <form id="hub-deploy-form" class="form" novalidate>
+        <label for="ops-url">
+          Operations Manager / Foundation URL
+          <input
+            id="ops-url"
+            name="operationsManagerUrl"
+            type="url"
+            required
+            placeholder="https://ops.example.com"
+            autocomplete="url"
+            inputmode="url"
+          />
+        </label>
+        <span class="field-hint muted"
+          >Base URL of the environment where you install the Tanzu Hub tile (per
+          <a
+            href="https://techdocs.broadcom.com/us/en/vmware-tanzu/platform/tanzu-hub/10-4/tnz-hub/install-install.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Install the Tanzu Hub tile</a
+          >).</span
+        >
+
+        <label for="hub-version">
+          Tanzu Hub product version
+          <input
+            id="hub-version"
+            name="tanzuHubVersion"
+            type="text"
+            value="10.4"
+            required
+            pattern="[0-9]+(\.[0-9]+)*"
+            title="e.g. 10.4"
+          />
+        </label>
+
+        <label for="hub-public-url">
+          Hub public HTTPS URL
+          <input
+            id="hub-public-url"
+            name="hubPublicUrl"
+            type="url"
+            required
+            placeholder="https://tanzu-hub.example.com"
+            autocomplete="url"
+          />
+        </label>
+        <span class="field-hint muted"
+          >External URL users and integrations will use after you configure DNS and
+          <a
+            href="https://techdocs.broadcom.com/us/en/vmware-tanzu/platform/tanzu-hub/10-4/tnz-hub/install-hub-lb-configure-hub-lb.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            >load balancers</a
+          >.</span
+        >
+
+        <label for="profile">
+          Deployment profile
+          <select id="profile" name="deploymentProfile" required>
+            <option value="standard">Standard (single-site)</option>
+            <option value="ha">Production HA / multi-AZ</option>
+          </select>
+        </label>
+        <span class="field-hint muted"
+          >Matches sizing and availability choices in
+          <a
+            href="https://techdocs.broadcom.com/us/en/vmware-tanzu/platform/tanzu-hub/10-4/tnz-hub/install-planning.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Plan your Tanzu Hub deployment</a
+          >
+          and
+          <a
+            href="https://techdocs.broadcom.com/us/en/vmware-tanzu/platform/tanzu-hub/10-4/tnz-hub/install-optimizing-ha.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Optimize for high availability</a
+          >.</span
+        >
+
+        <label for="blob-endpoint">
+          External S3-compatible blob store (optional)
+          <input
+            id="blob-endpoint"
+            name="blobStoreEndpoint"
+            type="url"
+            placeholder="https://s3.example.com or leave empty to decide in tile"
+            autocomplete="off"
+          />
+        </label>
+        <span class="field-hint muted"
+          >If you will externalize storage, record the endpoint here; see
+          <a
+            href="https://techdocs.broadcom.com/us/en/vmware-tanzu/platform/tanzu-hub/10-4/tnz-hub/install-blobstore.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Configure the Tanzu Hub blob store</a
+          >.</span
+        >
+
+        <button type="submit" class="btn-primary">Deploy Tanzu Hub into Production</button>
+      </form>
+
+      <div id="deploy-result" class="log" hidden aria-live="polite"></div>
+    </main>
+
     <script type="module" src="landing.js"></script>
+    <script>
+      (function () {
+        var form = document.getElementById("hub-deploy-form");
+        var out = document.getElementById("deploy-result");
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          if (!form.reportValidity()) return;
+          var fd = new FormData(form);
+          var o = {};
+          fd.forEach(function (v, k) {
+            o[k] = v;
+          });
+          if (!o.blobStoreEndpoint) delete o.blobStoreEndpoint;
+          out.textContent = JSON.stringify(o, null, 2);
+          out.hidden = false;
+        });
+      })();
+    </script>
+    <style>
+      .field-hint {
+        display: block;
+        font-size: 0.82rem;
+        margin: -0.35rem 0 0.15rem;
+        line-height: 1.4;
+      }
+      .field-hint a {
+        color: #0f62fe;
+      }
+    </style>
   </body>
 </html>

@@ -25,7 +25,7 @@ docs/REGISTRATION.md
 
 ## Machine setup
 
-See **[docs/DEV_SETUP.md](docs/DEV_SETUP.md)** (Homebrew **Node** + **mkcert**, `PATH`, HTTPS dev server, SDK download notes).
+See **[docs/DEV_SETUP.md](docs/DEV_SETUP.md)** (Node **20+**, **mkcert**, HTTPS dev server; **Windows** and **macOS**).
 
 ## Quick start
 

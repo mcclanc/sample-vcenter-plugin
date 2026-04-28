@@ -1,8 +1,32 @@
-# Development machine setup (macOS)
+# Development machine setup
 
 This project’s plug-in host is **Node.js** + static `ui/`. vCenter registration expects **HTTPS** for the manifest URL in most setups.
 
-## Installed via Homebrew (this repo)
+The repo includes an **`.npmrc`** that pins the public npm registry so `npm install` works even when your user-level npm config points at a private mirror (if installs still fail with **403**, run `npm install --registry https://registry.npmjs.org/`).
+
+## Windows
+
+| Tool | Purpose |
+|------|---------|
+| **Node.js** 20+ (`node`, `npm`) | From [nodejs.org](https://nodejs.org/) or `winget install OpenJS.NodeJS.LTS` |
+| **mkcert** | Local TLS for `npm run start:https`. Example: `winget install FiloSottile.mkcert` |
+
+Open a **new** terminal after installing tools so `PATH` includes `mkcert`. Trust the local CA once (browsers / vSphere Client may require it):
+
+```powershell
+mkcert -install
+```
+
+Project setup (PowerShell):
+
+```powershell
+cd sample-vcenter-plugin
+npm install
+npm run certs
+npm run start:https
+```
+
+## Installed via Homebrew (macOS)
 
 | Tool | Purpose |
 |------|--------|
@@ -46,7 +70,7 @@ npm run start:https
 - Health: `https://localhost:8443/health`
 - Manifest: `https://localhost:8443/tanzu-hub-poc-ui/plugin.json`
 
-`npm run start:https` sets `SSL_KEY_PATH` and `SSL_CERT_PATH` to the files under `certs/`.
+`npm run start:https` loads TLS key and cert from `certs/dev-key.pem` and `certs/dev-cert.pem` (via `scripts/start-https.mjs`).
 
 ## Broadcom vSphere Client SDK
 

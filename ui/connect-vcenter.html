@@ -26,12 +26,197 @@
       <a class="subpage-nav__link" href="index.html">← Back to start</a>
     </nav>
     <header class="header">
-      <h1>Connect this vCenter to existing Tanzu Hub</h1>
+      <h1>Connect this vCenter to Tanzu Hub</h1>
       <p class="muted">
-        This POC UI does not perform the connection yet. Follow Tanzu Hub product guidance to
-        register this vCenter with your existing hub, then extend this plug-in to drive that flow.
+        In Tanzu Hub you add a vCenter under
+        <strong>Administration &gt; VCF Instances &gt; Connect VCF Instance</strong> and choose
+        <strong>vCenter</strong> (or use vCenter for the first connection). The fields below match
+        the product form described in
+        <a
+          href="https://techdocs.broadcom.com/us/en/vmware-tanzu/platform/tanzu-hub/10-4/tnz-hub/connect-vcf-instance.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Connect and manage VMware Cloud Foundation (VCF) instances</a
+        >. This page only captures values for your runbook; it does not call Tanzu Hub.
       </p>
     </header>
+
+    <main class="main-content">
+      <form id="vc-hub-form" class="form" novalidate>
+        <label for="vcf-display-name">
+          Name
+          <input
+            id="vcf-display-name"
+            name="vcfInstanceName"
+            type="text"
+            required
+            autocomplete="off"
+            placeholder="Display name for this VCF instance in Tanzu Hub"
+          />
+        </label>
+
+        <label for="vcf-description">
+          Description <span class="label-optional">(optional)</span>
+          <input
+            id="vcf-description"
+            name="description"
+            type="text"
+            autocomplete="off"
+            placeholder="Short description shown in Tanzu Hub"
+          />
+        </label>
+
+        <label for="vcenter-host">
+          vCenter host name
+          <input
+            id="vcenter-host"
+            name="vcenterHostname"
+            type="text"
+            required
+            autocomplete="off"
+            placeholder="hostname.domain.tld or IP address"
+            spellcheck="false"
+          />
+        </label>
+        <span class="field-hint muted"
+          >Use the FQDN or IP that Tanzu Hub can reach (TLS on port 443).</span
+        >
+
+        <label class="checkbox-label">
+          <input
+            id="foundation-vending"
+            name="useForFoundationVending"
+            type="checkbox"
+            value="true"
+          />
+          Use this vCenter for foundation vending
+        </label>
+        <span class="field-hint muted"
+          >If selected, the vCenter user must have
+          <strong>read/write</strong> permissions; otherwise
+          <strong>read-only</strong> is enough for inventory collection.</span
+        >
+
+        <label for="vcenter-user">
+          vCenter user name
+          <input
+            id="vcenter-user"
+            name="vcenterUsername"
+            type="text"
+            required
+            autocomplete="username"
+            placeholder="e.g. administrator@vsphere.local"
+            spellcheck="false"
+          />
+        </label>
+
+        <label for="vcenter-password">
+          Password
+          <input
+            id="vcenter-password"
+            name="vcenterPassword"
+            type="password"
+            required
+            autocomplete="current-password"
+            placeholder="vCenter account password"
+          />
+        </label>
+
+        <label for="vcenter-cert">
+          vCenter certificate
+          <textarea
+            id="vcenter-cert"
+            name="vcenterCertificate"
+            required
+            rows="8"
+            spellcheck="false"
+            placeholder="Paste PEM server certificate (from vCenter login page before sign-in, or openssl s_client -connect [vcenter-fqdn]:443 …)"
+          ></textarea>
+        </label>
+        <span class="field-hint muted"
+          >Tanzu Hub validates TLS using this certificate. Obtain it from the vCenter login page or
+          <code>openssl s_client -connect [vcenter-fqdn]:443</code> per the
+          <a
+            href="https://techdocs.broadcom.com/us/en/vmware-tanzu/platform/tanzu-hub/10-4/tnz-hub/connect-vcf-instance.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            >documentation</a
+          >.</span
+        >
+
+        <button type="submit" class="btn-primary">Save endpoint details (browser only)</button>
+      </form>
+
+      <div id="vc-hub-result" class="log" hidden aria-live="polite"></div>
+    </main>
+
     <script type="module" src="landing.js"></script>
+    <script>
+      (function () {
+        var form = document.getElementById("vc-hub-form");
+        var out = document.getElementById("vc-hub-result");
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          if (!form.reportValidity()) return;
+          var fd = new FormData(form);
+          var o = {};
+          fd.forEach(function (v, k) {
+            if (k === "useForFoundationVending") {
+              o[k] = true;
+            } else {
+              o[k] = v;
+            }
+          });
+          if (!fd.has("useForFoundationVending")) {
+            o.useForFoundationVending = false;
+          }
+          o.vcenterCertificateChars = o.vcenterCertificate
+            ? String(o.vcenterCertificate).length
+            : 0;
+          delete o.vcenterPassword;
+          delete o.vcenterCertificate;
+          o.note =
+            "Password and certificate PEM omitted from export; re-enter in Tanzu Hub when connecting.";
+          out.textContent = JSON.stringify(o, null, 2);
+          out.hidden = false;
+        });
+      })();
+    </script>
+    <style>
+      .field-hint {
+        display: block;
+        font-size: 0.82rem;
+        margin: -0.35rem 0 0.15rem;
+        line-height: 1.45;
+      }
+      .field-hint code {
+        font-size: 0.78rem;
+      }
+      .field-hint a {
+        color: #0f62fe;
+      }
+      .label-optional {
+        font-weight: 400;
+        color: #5c5c5c;
+      }
+      .checkbox-label {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        cursor: pointer;
+      }
+      .checkbox-label input {
+        margin-top: 0.2rem;
+      }
+      textarea {
+        font-family: ui-monospace, Consolas, monospace;
+        font-size: 0.8rem;
+        line-height: 1.4;
+        resize: vertical;
+        min-height: 6rem;
+      }
+    </style>
   </body>
 </html>

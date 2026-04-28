@@ -6,10 +6,11 @@
   "type": "module",
   "scripts": {
     "start": "node server/index.mjs",
-    "start:https": "SSL_KEY_PATH=certs/dev-key.pem SSL_CERT_PATH=certs/dev-cert.pem node server/index.mjs",
+    "start:https": "node scripts/start-https.mjs",
     "dev": "node --watch server/index.mjs",
     "tools:ovftool-mac": "bash tools/download-ovftool-mac.sh",
-    "certs": "bash scripts/gen-dev-certs.sh",
+    "certs": "node scripts/gen-dev-certs.mjs",
+    "register:lab": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/register-extension-lab.ps1",
     "icon:sprite": "python3 scripts/gen_plugin_icon_sprite.py",
     "icon:compose": "python3 scripts/compose_icon_into_sprite.py"
   },
