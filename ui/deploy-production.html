@@ -27,6 +27,7 @@
     </nav>
     <header class="header">
       <h1>Deploy Tanzu Hub (production checklist)</h1>
+      <p id="deploy-mode-intro" class="muted deploy-mode-callout" hidden></p>
       <p class="muted">
         Tanzu Hub is installed as a tile on Foundation Core. Use
         <a
@@ -102,12 +103,14 @@
         <label for="profile">
           Deployment profile
           <select id="profile" name="deploymentProfile" required>
+            <option value="lightweight">Lightweight — content &amp; services focus</option>
             <option value="standard">Standard (single-site)</option>
-            <option value="ha">Production HA / multi-AZ</option>
+            <option value="ha">Full production HA / multi-AZ</option>
           </select>
         </label>
         <span class="field-hint muted"
-          >Matches sizing and availability choices in
+          ><strong>Lightweight:</strong> smaller footprint for marketplace content and service
+          integrations. <strong>Standard / HA:</strong> see
           <a
             href="https://techdocs.broadcom.com/us/en/vmware-tanzu/platform/tanzu-hub/10-4/tnz-hub/install-planning.html"
             target="_blank"
@@ -152,6 +155,29 @@
     <script type="module" src="landing.js"></script>
     <script>
       (function () {
+        var params = new URLSearchParams(window.location.search);
+        var mode = params.get("mode");
+        var profile = document.getElementById("profile");
+        var intro = document.getElementById("deploy-mode-intro");
+        if (mode === "production-ha" && profile) {
+          profile.value = "ha";
+          if (intro) {
+            intro.textContent =
+              "You selected full production HA. The deployment profile below is preset to Full production HA / multi-AZ—you can change it before continuing.";
+            intro.hidden = false;
+          }
+        } else if (mode === "lightweight" && profile) {
+          profile.value = "lightweight";
+          if (intro) {
+            intro.textContent =
+              "You selected a lightweight Tanzu Hub (content and services). The deployment profile below is preset accordingly—you can change it before continuing.";
+            intro.hidden = false;
+          }
+        }
+      })();
+    </script>
+    <script>
+      (function () {
         var form = document.getElementById("hub-deploy-form");
         var out = document.getElementById("deploy-result");
         form.addEventListener("submit", function (e) {
@@ -177,6 +203,20 @@
       }
       .field-hint a {
         color: #0f62fe;
+      }
+      .deploy-mode-callout:not([hidden]) {
+        padding: 0.65rem 0.75rem;
+        margin: 0 0 0.75rem;
+        background: #edf5ff;
+        border: 1px solid #c4d9ff;
+        border-radius: 6px;
+        max-width: 52rem;
+      }
+      .subpage-nav--split {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem 1.25rem;
+        align-items: center;
       }
     </style>
   </body>

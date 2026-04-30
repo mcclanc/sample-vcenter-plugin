@@ -34,6 +34,23 @@ const ovaModalOpenIds = [
   "secure-enterprise-card-open",
 ];
 
+const pathModal = document.getElementById("usecase-path-modal");
+const pathModalClose = document.getElementById("usecase-path-modal-close");
+const pathPocBtn = document.getElementById("usecase-path-poc");
+const pathProductionBtn = document.getElementById("usecase-path-production");
+const pathCancelBtn = document.getElementById("usecase-path-cancel");
+
+function openUsecasePathModal() {
+  if (!(pathModal instanceof HTMLDialogElement)) return;
+  pathModal.showModal();
+  pathPocBtn?.focus();
+}
+
+function closeUsecasePathModal() {
+  if (!(pathModal instanceof HTMLDialogElement)) return;
+  pathModal.close();
+}
+
 /** Resolve POST URL for the dev Express handler (must match server/index.mjs routes). */
 function candidateDeployUrls() {
   const urls = [];
@@ -94,8 +111,23 @@ function closeOvaModal() {
 }
 
 for (const id of ovaModalOpenIds) {
-  document.getElementById(id)?.addEventListener("click", openOvaModal);
+  document.getElementById(id)?.addEventListener("click", openUsecasePathModal);
 }
+pathModalClose?.addEventListener("click", closeUsecasePathModal);
+pathCancelBtn?.addEventListener("click", closeUsecasePathModal);
+pathPocBtn?.addEventListener("click", () => {
+  closeUsecasePathModal();
+  openOvaModal();
+});
+pathProductionBtn?.addEventListener("click", () => {
+  closeUsecasePathModal();
+  globalThis.location.assign("deploy-production.html?mode=production-ha");
+});
+
+pathModal?.addEventListener("click", (e) => {
+  if (e.target === pathModal) closeUsecasePathModal();
+});
+
 closeBtn?.addEventListener("click", closeOvaModal);
 cancelBtn?.addEventListener("click", closeOvaModal);
 

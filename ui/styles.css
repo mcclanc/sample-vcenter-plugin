@@ -268,6 +268,248 @@ body {
   margin-top: 0.25rem;
 }
 
+/* “How to deploy” chooser — card-style options (usecase.html) */
+.usecase-path-modal {
+  max-width: min(28rem, calc(100vw - 2rem));
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.16), 0 0 0 1px rgba(15, 23, 42, 0.04);
+}
+
+.usecase-path-modal::backdrop {
+  background: rgba(15, 23, 42, 0.48);
+  backdrop-filter: blur(2px);
+}
+
+.usecase-path-modal__inner {
+  padding: 0;
+  background: linear-gradient(180deg, #f8fafc 0%, #fff 38%, #fff 100%);
+}
+
+.usecase-path-modal__hero {
+  position: relative;
+  padding: 1.15rem 1.15rem 0.85rem;
+  background: linear-gradient(135deg, #f0f9ff 0%, #ecfdf5 45%, #f5f3ff 100%);
+  border-bottom: 1px solid rgba(15, 98, 254, 0.08);
+}
+
+.usecase-path-modal__header {
+  position: relative;
+  margin: 0;
+  padding: 0 2.25rem 0 0;
+}
+
+.usecase-path-modal__eyebrow {
+  margin: 0 0 0.2rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #0369a1;
+}
+
+.usecase-path-modal__title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: #0f172a;
+}
+
+.usecase-path-modal__close {
+  position: absolute;
+  top: -0.1rem;
+  right: 0;
+}
+
+.usecase-path-modal__lead {
+  margin: 0.75rem 0 0;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #475569;
+}
+
+.usecase-path-modal__lead strong {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.usecase-path-modal__options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 1rem 1.15rem 0.5rem;
+}
+
+.usecase-path-modal__option {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.85rem 0.7rem 0.85rem 0.75rem;
+  text-align: left;
+  font: inherit;
+  color: #0f172a;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.18s ease;
+}
+
+.usecase-path-modal__option-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(20, 184, 166, 0.12) 0%, rgba(6, 182, 212, 0.06) 100%);
+  transition: opacity 0.2s ease;
+}
+
+.usecase-path-modal__option-glow--prod {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.14) 0%, rgba(15, 98, 254, 0.06) 100%);
+}
+
+.usecase-path-modal__option:hover .usecase-path-modal__option-glow,
+.usecase-path-modal__option:focus-visible .usecase-path-modal__option-glow {
+  opacity: 1;
+}
+
+.usecase-path-modal__option:hover {
+  border-color: #94a3b8;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+  transform: translateY(-1px);
+}
+
+.usecase-path-modal__option:focus-visible {
+  outline: 2px solid #0f62fe;
+  outline-offset: 2px;
+  border-color: #0f62fe;
+}
+
+.usecase-path-modal__option:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
+}
+
+.usecase-path-modal__option-icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 10px;
+  color: #0d9488;
+  background: linear-gradient(145deg, #ecfdf5 0%, #d1fae5 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.usecase-path-modal__option-icon svg {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
+.usecase-path-modal__option-icon--prod {
+  color: #4f46e5;
+  background: linear-gradient(145deg, #eef2ff 0%, #e0e7ff 100%);
+}
+
+.usecase-path-modal__option-text {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.usecase-path-modal__option-kicker {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.usecase-path-modal__option-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #0f172a;
+}
+
+.usecase-path-modal__option-hint {
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: #64748b;
+}
+
+.usecase-path-modal__option-go {
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #0f62fe;
+  transition: transform 0.2s ease;
+}
+
+.usecase-path-modal__option:hover .usecase-path-modal__option-go,
+.usecase-path-modal__option:focus-visible .usecase-path-modal__option-go {
+  transform: translateX(2px);
+}
+
+.usecase-path-modal__dismiss-wrap {
+  margin: 0;
+  padding: 0.35rem 1.15rem 1.1rem;
+  text-align: center;
+}
+
+.usecase-path-modal__dismiss {
+  margin: 0;
+  padding: 0.35rem 0.5rem;
+  font: inherit;
+  font-size: 0.88rem;
+  color: #64748b;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.usecase-path-modal__dismiss:hover {
+  color: #0f172a;
+}
+
+.usecase-path-modal__dismiss:focus-visible {
+  outline: 2px solid #0f62fe;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .usecase-path-modal,
+  .usecase-path-modal__option,
+  .usecase-path-modal__option-go {
+    transition: none;
+  }
+
+  .usecase-path-modal__option:hover,
+  .usecase-path-modal__option:focus-visible {
+    transform: none;
+  }
+
+  .usecase-path-modal__option:hover .usecase-path-modal__option-go,
+  .usecase-path-modal__option:focus-visible .usecase-path-modal__option-go {
+    transform: none;
+  }
+}
+
 .form {
   display: grid;
   gap: 0.75rem;
@@ -664,10 +906,6 @@ textarea {
   border-top: 4px solid #14b8a6;
 }
 
-.landing-page .choice-card--deploy {
-  border-top: 4px solid #6366f1;
-}
-
 .landing-page .choice-card--connect {
   border-top: 4px solid #f59e0b;
 }
@@ -683,11 +921,6 @@ textarea {
   flex-shrink: 0;
   color: #0f766e;
   background: linear-gradient(145deg, #ecfdf5 0%, #d1fae5 100%);
-}
-
-.landing-page .choice-card--deploy .choice-card__icon {
-  color: #4f46e5;
-  background: linear-gradient(145deg, #eef2ff 0%, #e0e7ff 100%);
 }
 
 .landing-page .choice-card--connect .choice-card__icon {

@@ -91,7 +91,7 @@
             id="secure-enterprise-card-open"
           >
             <span class="assess-card__copy">
-              <span class="assess-card__eyebrow">Secure supply chain</span>
+              <span class="assess-card__eyebrow">Secure Content and Services</span>
               <span class="assess-card__title">
                 Unlock the power of secure images and enterprise service offerings with Tanzu Platform.
               </span>
@@ -108,6 +108,99 @@
         </section>
       </div>
     </main>
+
+    <dialog
+      class="ova-modal usecase-path-modal"
+      id="usecase-path-modal"
+      aria-labelledby="usecase-path-title"
+    >
+      <div class="ova-modal__inner usecase-path-modal__inner">
+        <div class="usecase-path-modal__hero">
+          <header class="usecase-path-modal__header">
+            <p class="usecase-path-modal__eyebrow">Deployment</p>
+            <h2 class="usecase-path-modal__title" id="usecase-path-title">How do you want to deploy?</h2>
+            <button
+              type="button"
+              class="usecase-path-modal__close ova-modal__close"
+              id="usecase-path-modal-close"
+              aria-label="Close"
+            >
+              ×
+            </button>
+          </header>
+          <p class="usecase-path-modal__lead">
+            Pick a path to explore this use case: a quick <strong>evaluation appliance</strong> or a
+            guided <strong>full production (HA)</strong> checklist.
+          </p>
+        </div>
+        <div
+          class="usecase-path-modal__options"
+          role="group"
+          aria-label="Choose deployment type"
+        >
+          <button type="button" class="usecase-path-modal__option" id="usecase-path-poc">
+            <span class="usecase-path-modal__option-glow" aria-hidden="true"></span>
+            <span class="usecase-path-modal__option-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 4v4m-4-2v4M8 20h8a2 2 0 002-2V9a2 2 0 00-1-1.72l-4-2.31-4 2.31A2 2 0 006 9v9a2 2 0 002 2z"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M9 15h6M12 12v6"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </span>
+            <span class="usecase-path-modal__option-text">
+              <span class="usecase-path-modal__option-kicker">Evaluation</span>
+              <span class="usecase-path-modal__option-name">Proof of concept (OVA)</span>
+              <span class="usecase-path-modal__option-hint">
+                Upload the appliance package, then deploy to vCenter with the plug-in server.
+              </span>
+            </span>
+            <span class="usecase-path-modal__option-go" aria-hidden="true">→</span>
+          </button>
+          <button type="button" class="usecase-path-modal__option" id="usecase-path-production">
+            <span class="usecase-path-modal__option-glow usecase-path-modal__option-glow--prod" aria-hidden="true"></span>
+            <span class="usecase-path-modal__option-icon usecase-path-modal__option-icon--prod" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M4 6h5v4H4V6zm11 0h5v4h-5V6zM4 14h5v4H4v-4zm11 0h5v4h-5v-4z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M9.5 8h5M9.5 16h5"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </span>
+            <span class="usecase-path-modal__option-text">
+              <span class="usecase-path-modal__option-kicker">Full deployment</span>
+              <span class="usecase-path-modal__option-name">Production (HA / multi-AZ)</span>
+              <span class="usecase-path-modal__option-hint">
+                Open the production checklist and sizing aligned with full HA guidance.
+              </span>
+            </span>
+            <span class="usecase-path-modal__option-go" aria-hidden="true">→</span>
+          </button>
+        </div>
+        <p class="usecase-path-modal__dismiss-wrap">
+          <button type="button" class="usecase-path-modal__dismiss" id="usecase-path-cancel">
+            Cancel
+          </button>
+        </p>
+      </div>
+    </dialog>
 
     <dialog class="ova-modal" id="ova-modal" aria-labelledby="ova-modal-title">
       <div class="ova-modal__inner">
