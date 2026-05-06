@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "start": "node server/index.mjs",
+    "start:system-ca": "node --use-system-ca server/index.mjs",
     "start:https": "node scripts/start-https.mjs",
+    "start:https:system-ca": "node --use-system-ca scripts/start-https.mjs",
     "dev": "node --watch server/index.mjs",
     "tools:ovftool-mac": "bash tools/download-ovftool-mac.sh",
     "certs": "node scripts/gen-dev-certs.mjs",

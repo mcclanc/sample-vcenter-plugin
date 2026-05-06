@@ -45,7 +45,14 @@
         return [];
       },
       getApiEndpoints: function () {
-        return {};
+        return {
+          uiApiEndpoint: {
+            origin: "",
+            pathname: "",
+            queryParams: [],
+            fullUrl: "",
+          },
+        };
       },
       getSessionInfo: function (callback) {
         if (typeof callback === "function") {
@@ -54,9 +61,10 @@
       },
       getPluginBackendInfo: function (callback) {
         if (typeof callback === "function") {
+          var origin = global.location && global.location.origin ? global.location.origin : "";
           callback({
             allPluginBackendServers: [
-              { proxiedBaseUrl: "", type: "local-dev-stub" },
+              { proxiedBaseUrl: origin, type: "local-dev-stub" },
             ],
             backendServersPerVc: {},
           });

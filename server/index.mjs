@@ -10,6 +10,7 @@ const root = path.join(__dirname, "..");
 const ui = path.join(root, "ui");
 
 import { evalApplianceDeployHandler } from "./eval-appliance/deployHandler.mjs";
+import { vcenterInventoryHandler } from "./eval-appliance/vcenterInventoryHandler.mjs";
 import { ovaUpload, ovaUploadMaxBytes } from "./eval-appliance/upload.mjs";
 
 const GIB = 1024 * 1024 * 1024;
@@ -22,6 +23,41 @@ function formatOvaSizeLimit(bytes) {
 }
 
 const app = express();
+
+/**
+ * vSphere Client loads the UI from the vCenter origin while deploy/inventory POSTs target the
+ * remote plug-in host — browsers require CORS. multipart/form-data triggers a preflight OPTIONS.
+ */
+app.use((req, res, next) => {
+  const p = req.path || "";
+  const isPluginApi =
+    p.startsWith("/api/eval-appliance/") ||
+    p.startsWith("/api/vcenter/") ||
+    p.startsWith("/tanzu-hub-poc-ui/api/eval-appliance/") ||
+    p.startsWith("/tanzu-hub-poc-ui/api/vcenter/");
+  if (!isPluginApi) return next();
+
+  const origin = req.get("Origin");
+  if (origin) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader("Vary", "Origin");
+  } else {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+  }
+  res.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, OPTIONS");
+  const reqHdrs = req.get("Access-Control-Request-Headers");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    reqHdrs || "Content-Type, Accept, Authorization, X-Allow-Insecure-Vc-Tls",
+  );
+  res.setHeader("Access-Control-Max-Age", "7200");
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+  next();
+});
 
 app.use(express.json({ limit: "256kb" }));
 
@@ -50,6 +86,10 @@ app.get("/health", (_req, res) => {
       requiresSupportPortalRegistryToken: false,
       maxUploadBytes: ovaUploadMaxBytes,
     },
+    vcenterInventory: {
+      path: "POST /api/vcenter/inventory (and /tanzu-hub-poc-ui/...)",
+      body: "{ vcHost, vcUsername, vcPassword, datacenter?, allowInsecureVcTls? }",
+    },
   });
 });
 
@@ -61,6 +101,20 @@ app.get("/api/ui/htmlClientSdk.js", (_req, res) => {
 
 app.post("/tanzu-hub-poc-ui/api/eval-appliance/deploy", handleOvaDeployPost);
 app.post("/api/eval-appliance/deploy", handleOvaDeployPost);
+
+function vcenterInventoryPing(_req, res) {
+  res.json({
+    ok: true,
+    method: "GET",
+    message: "vCenter inventory API is mounted here; use POST with JSON body { vcHost, vcUsername, vcPassword, datacenter? }.",
+  });
+}
+
+app.get("/tanzu-hub-poc-ui/api/vcenter/inventory", vcenterInventoryPing);
+app.get("/api/vcenter/inventory", vcenterInventoryPing);
+
+app.post("/tanzu-hub-poc-ui/api/vcenter/inventory", (req, res) => void vcenterInventoryHandler(req, res));
+app.post("/api/vcenter/inventory", (req, res) => void vcenterInventoryHandler(req, res));
 
 app.use("/tanzu-hub-poc-ui", express.static(ui, { index: false }));
 
@@ -80,10 +134,16 @@ const server = useTls
     )
   : http.createServer(app);
 
+/** Node 18+ defaults `requestTimeout` to 5m — large OVA multipart + ovftool needs much longer. */
+const PLUGIN_HTTP_LONG_MS = Number(process.env.PLUGIN_HTTP_SERVER_TIMEOUT_MS) || 4 * 60 * 60 * 1000;
+if ("requestTimeout" in server) server.requestTimeout = PLUGIN_HTTP_LONG_MS;
+if ("headersTimeout" in server) server.headersTimeout = PLUGIN_HTTP_LONG_MS + 120_000;
+server.timeout = PLUGIN_HTTP_LONG_MS;
+
 server.listen(port, () => {
   const scheme = useTls ? "https" : "http";
   console.log(
-    `${scheme}://localhost:${port}/tanzu-hub-poc-ui/plugin.json (manifest) | /health`,
+    `${scheme}://localhost:${port}/tanzu-hub-poc-ui/plugin.json (manifest) | /health | deploy upload+ovftool request timeout≈${Math.round(PLUGIN_HTTP_LONG_MS / 60000)}min (PLUGIN_HTTP_SERVER_TIMEOUT_MS)`,
   );
   if (!useTls) {
     console.warn(

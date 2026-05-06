@@ -132,6 +132,11 @@
             Pick a path to explore this use case: a quick <strong>evaluation appliance</strong> or a
             guided <strong>full production (HA)</strong> checklist.
           </p>
+          <p class="usecase-path-modal__help-link-wrap">
+            <button type="button" class="usecase-path-modal__help-link" id="deploy-help-open">
+              Help me choose what to deploy
+            </button>
+          </p>
         </div>
         <div
           class="usecase-path-modal__options"
@@ -213,11 +218,9 @@
         <p id="ova-modal-status" class="ova-modal__status" role="status" aria-live="polite"></p>
         <form id="ova-install-form" class="form ova-modal__form" enctype="multipart/form-data">
           <fieldset class="ova-modal__fieldset">
-            <legend class="ova-modal__legend">Appliance package</legend>
+            <legend class="ova-modal__legend">Appliance OVA</legend>
             <p class="ova-modal__help">
-              Choose an <strong>.ova</strong> or <strong>.ovf</strong> from this machine. It is uploaded to the
-              plug-in server (the host running <code>npm start</code>), then deployed with
-              <strong>ovftool</strong>. Large packages can take several minutes to upload.
+              Choose an <strong>.ova</strong> or <strong>.ovf</strong> from this machine. Large packages can take several minutes to upload.
               Evaluation builds are listed on the
               <a
                 class="ova-modal__link"
@@ -238,21 +241,10 @@
                 required
               />
             </label>
-            <div class="ova-modal__actions">
-              <button type="button" class="btn-primary" id="ova-file-continue">Continue</button>
-              <button type="button" class="btn-secondary" id="ova-modal-cancel">Cancel</button>
-            </div>
           </fieldset>
 
           <fieldset id="ova-modal-step-deploy" class="ova-modal__fieldset" hidden>
             <legend class="ova-modal__legend">Deploy</legend>
-            <p class="ova-modal__help">
-              Enter vCenter connection and placement. The plug-in server runs
-              <strong>VMware OVF Tool</strong> (<code>ovftool</code>) against vCenter using these values. Install
-              <code>ovftool</code> on the server (<code>PATH</code>, <code>tools/ovftool</code>, or
-              <code>OVFTOOL_PATH</code>). The OVF <strong>network label</strong> must match the package (often
-              <code>VM Network</code>).
-            </p>
             <label>
               vCenter hostname or IP
               <input
@@ -271,52 +263,78 @@
               vCenter password
               <input type="password" id="vc-pass-input" name="vcPassword" autocomplete="current-password" />
             </label>
+            <label class="ova-modal__checkbox-label">
+              <input type="checkbox" id="vc-insecure-tls" name="vcInsecureTls" />
+              Allow Insecure Connection
+            </label>
+            <div class="ova-modal__connect-row">
+              <button type="button" class="btn-secondary" id="vc-connect-btn">Connect</button>
+              <p class="ova-modal__connect-hint" id="vc-connect-hint">
+                Loads datacenters, clusters/hosts, datastores, and port groups from vCenter (vSphere REST API). Requires
+                HTTPS reachability from the plug-in server.
+              </p>
+            </div>
             <label>
-              Datacenter name
-              <input type="text" id="datacenter-input" name="datacenter" autocomplete="off" placeholder="e.g. Datacenter" />
+              Datacenter
+              <select id="datacenter-input" name="datacenter" autocomplete="off">
+                <option value="">Select datacenter…</option>
+              </select>
             </label>
             <label>
-              Compute path (under datacenter)
-              <input
-                type="text"
-                id="compute-path-input"
-                name="computePath"
-                autocomplete="off"
-                placeholder="e.g. host/ClusterName or host/esxi.fqdn"
-              />
+              Cluster or standalone host
+              <select id="compute-path-input" name="computePath" autocomplete="off">
+                <option value="">Select compute…</option>
+              </select>
             </label>
             <label>
               New VM name
               <input type="text" id="vm-name-input" name="vmName" autocomplete="off" placeholder="e.g. tanzu-platform-eval" />
             </label>
             <label>
-              Datastore name
-              <input type="text" id="datastore-input" name="datastore" autocomplete="off" />
+              Datastore
+              <select id="datastore-input" name="datastore" autocomplete="off">
+                <option value="">Select datastore…</option>
+              </select>
             </label>
-            <label>
-              Destination port group name
-              <input type="text" id="network-input" name="network" autocomplete="off" />
-            </label>
-            <label>
-              OVF network label to map (must match OVF)
-              <input
-                type="text"
-                id="ovf-network-label-input"
-                name="ovfNetworkLabel"
-                autocomplete="off"
-                placeholder="VM Network"
-              />
-            </label>
-            <label>
-              OVF properties (optional JSON object)
-              <textarea
-                id="ovf-properties-json"
-                name="ovfPropertiesJson"
-                rows="4"
-                spellcheck="false"
-                placeholder='Example: { "guestinfo.admin.password": "••••••••" }'
-              ></textarea>
-            </label>
+            <div id="ova-network-rows-wrap" class="ova-network-rows-wrap" hidden>
+              <p class="ova-modal__legend ova-modal__legend--sub" id="ova-network-rows-title">Map OVF networks</p>
+              <div id="ova-network-rows" class="ova-network-rows" aria-live="polite"></div>
+            </div>
+            <div id="ova-network-static" class="ova-network-static">
+              <label>
+                Destination port group
+                <select id="network-input" name="network" autocomplete="off">
+                  <option value="">Select port group…</option>
+                </select>
+              </label>
+              <label>
+                OVF network label to map (must match OVF)
+                <input
+                  type="text"
+                  id="ovf-network-label-input"
+                  name="ovfNetworkLabel"
+                  autocomplete="off"
+                  placeholder="VM Network"
+                />
+              </label>
+            </div>
+            <div id="ovf-dynamic-properties-wrap" class="ovf-dynamic-properties-wrap" hidden>
+              <p class="ova-modal__legend ova-modal__legend--sub">POC Appliance inputs</p>
+              <div id="ovf-dynamic-properties" class="ovf-dynamic-properties"></div>
+            </div>
+            <details class="ova-modal__advanced">
+              <summary>Advanced: OVF properties as JSON</summary>
+              <label>
+                Optional JSON object (merged with fields above; values here win on duplicate keys)
+                <textarea
+                  id="ovf-properties-json"
+                  name="ovfPropertiesJson"
+                  rows="4"
+                  spellcheck="false"
+                  placeholder='Example: { "guestinfo.extra": "value" }'
+                ></textarea>
+              </label>
+            </details>
             <div class="ova-modal__actions">
               <button type="button" class="btn-primary" id="ova-deploy-btn" disabled>
                 Deploy
@@ -324,7 +342,112 @@
             </div>
           </fieldset>
         </form>
+        <!-- Deploy progress (shown during upload and ovftool phases) -->
+        <div id="deploy-progress-wrap" class="deploy-progress-wrap" hidden>
+          <div class="deploy-progress__phases">
+            <span id="deploy-phase-upload" class="deploy-phase deploy-phase--active">
+              <span class="deploy-phase__icon">⬆</span> Upload
+            </span>
+            <span class="deploy-phase__sep">›</span>
+            <span id="deploy-phase-ovftool" class="deploy-phase">
+              <span class="deploy-phase__icon">⚙</span> Deploy
+            </span>
+          </div>
+          <div class="deploy-progress__bar-row">
+            <progress id="deploy-progress-bar" class="deploy-progress__bar" max="100" value="0"></progress>
+            <span id="deploy-progress-pct" class="deploy-progress__pct">0%</span>
+          </div>
+          <p id="deploy-progress-detail" class="deploy-progress__detail"></p>
+        </div>
         <pre id="log" class="log" aria-live="polite"></pre>
+      </div>
+    </dialog>
+
+    <!-- Help me choose modal -->
+    <dialog class="deploy-help-modal" id="deploy-help-modal" aria-labelledby="deploy-help-title">
+      <div class="deploy-help-modal__inner">
+        <header class="deploy-help-modal__header">
+          <div>
+            <p class="deploy-help-modal__eyebrow">Tanzu Platform</p>
+            <h2 class="deploy-help-modal__title" id="deploy-help-title">Hub Deployment Types</h2>
+            <p class="deploy-help-modal__subtitle">Plus supported capabilities</p>
+          </div>
+          <button type="button" class="ova-modal__close" id="deploy-help-close" aria-label="Close">×</button>
+        </header>
+
+        <div class="deploy-help-modal__columns">
+          <!-- POC Appliance -->
+          <div class="deploy-help-col deploy-help-col--poc">
+            <h3 class="deploy-help-col__title deploy-help-col__title--poc">POC Appliance</h3>
+            <div class="deploy-help-col__divider deploy-help-col__divider--poc"></div>
+            <p class="deploy-help-col__section-label">Functionality:</p>
+            <ul class="deploy-help-col__list">
+              <li>Designed for specific use case for evaluation only.</li>
+              <li>Single appliance</li>
+              <li>90 day license included for evaluation.</li>
+              <li>No HA / DR</li>
+            </ul>
+            <a
+              class="deploy-help-col__link deploy-help-col__link--poc"
+              href="https://techdocs.broadcom.com/us/en/vmware-tanzu/platform/tanzu-platform/10-4/about-tnz-platform/index.html"
+              target="_blank"
+              rel="noopener noreferrer"
+            >See POC Guide</a>
+            <div class="deploy-help-col__cta">
+              <button type="button" class="deploy-help-col__choose-btn" id="deploy-help-choose-poc">
+                Choose POC Appliance →
+              </button>
+            </div>
+          </div>
+
+          <!-- VSI / TSE -->
+          <div class="deploy-help-col deploy-help-col--vsi">
+            <h3 class="deploy-help-col__title deploy-help-col__title--vsi">VSI / TSE Deployment <span class="deploy-help-col__badge">(Appliance)</span></h3>
+            <div class="deploy-help-col__divider deploy-help-col__divider--vsi"></div>
+            <p class="deploy-help-col__section-label">Functionality:</p>
+            <ul class="deploy-help-col__list">
+              <li>Designed for small environments:
+                <ul class="deploy-help-col__sublist">
+                  <li>10 connected Kubernetes clusters for VMware Secure Image service.</li>
+                </ul>
+              </li>
+              <li>Single appliance</li>
+              <li>Requires license key</li>
+              <li>DR capability based on backup and restore.</li>
+              <li>No HA available</li>
+            </ul>
+          </div>
+
+          <!-- Full Enterprise -->
+          <div class="deploy-help-col deploy-help-col--enterprise">
+            <h3 class="deploy-help-col__title deploy-help-col__title--enterprise">Full Enterprise Deployment</h3>
+            <div class="deploy-help-col__divider deploy-help-col__divider--enterprise"></div>
+            <p class="deploy-help-col__section-label">Functionality:</p>
+            <ul class="deploy-help-col__list">
+              <li>Designed for full Tanzu Platform functionality</li>
+              <li>Requires license key</li>
+              <li>DR capability available through active / passive</li>
+              <li>HA available through multi-AZ deployment</li>
+              <li>Comes in multiple resource sizes based on need.
+                (<a
+                  class="deploy-help-col__link deploy-help-col__link--enterprise"
+                  href="https://techdocs.broadcom.com/us/en/vmware-tanzu/platform/tanzu-platform/10-4/about-tnz-platform/index.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >See sizing guide</a>)
+              </li>
+            </ul>
+            <div class="deploy-help-col__cta">
+              <button type="button" class="deploy-help-col__choose-btn deploy-help-col__choose-btn--enterprise" id="deploy-help-choose-prod">
+                Choose Full Enterprise →
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <p class="deploy-help-modal__footer-note">
+          Not sure? Start with the <strong>POC Appliance</strong> — it includes a 90-day license and deploys in minutes.
+        </p>
       </div>
     </dialog>
 
