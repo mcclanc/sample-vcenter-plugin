@@ -1,0 +1,41 @@
+{
+  "manifestVersion": "1.0.0",
+  "requirements": {
+    "plugin.api.version": "1.0.0"
+  },
+  "configuration": {
+    "nameKey": "plugin.name",
+    "icon": {
+      "name": "main"
+    }
+  },
+  "definitions": {
+    "iconSpriteSheet": {
+      "uri": "images/sprites.png",
+      "definitions": {
+        "main": {
+          "x": 0,
+          "y": 96
+        }
+      }
+    },
+    "i18n": {
+      "locales": ["en-US"],
+      "definitions": {
+        "plugin.name": {
+          "en-US": "Data Intelligence"
+        },
+        "plugin.summary": {
+          "en-US": "A pre-engineered, agent-ready data lakehouse that leverages vSAN to provide highly scaled, governed access to enterprise data."
+        }
+      }
+    }
+  },
+  "global": {
+    "view": {
+      "navigationId": "tanzuDataIntelligence",
+      "uri": "index.html",
+      "navigationVisible": true
+    }
+  }
+}

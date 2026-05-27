@@ -1,0 +1,41 @@
+{
+  "manifestVersion": "1.0.0",
+  "requirements": {
+    "plugin.api.version": "1.0.0"
+  },
+  "configuration": {
+    "nameKey": "plugin.name",
+    "icon": {
+      "name": "main"
+    }
+  },
+  "definitions": {
+    "iconSpriteSheet": {
+      "uri": "images/sprites.png",
+      "definitions": {
+        "main": {
+          "x": 0,
+          "y": 96
+        }
+      }
+    },
+    "i18n": {
+      "locales": ["en-US"],
+      "definitions": {
+        "plugin.name": {
+          "en-US": "Secure Images"
+        },
+        "plugin.summary": {
+          "en-US": "150+ hardened Kubernetes utilities and applications that can easily be deployed to VKS clusters."
+        }
+      }
+    }
+  },
+  "global": {
+    "view": {
+      "navigationId": "vmwareSecureImages",
+      "uri": "index.html",
+      "navigationVisible": true
+    }
+  }
+}

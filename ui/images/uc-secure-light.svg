@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 180" role="img" aria-hidden="true">
+  <rect width="480" height="180" fill="#fef7e0"/>
+  <!-- Plus sign -->
+  <line x1="148" y1="65" x2="148" y2="121" stroke="#c8a840" stroke-width="8" stroke-linecap="round"/>
+  <line x1="120" y1="93" x2="176" y2="93" stroke="#c8a840" stroke-width="8" stroke-linecap="round"/>
+  <!-- Box 1 -->
+  <rect x="216" y="58" width="82" height="72" rx="7" fill="#fff" stroke="#d4b84a" stroke-width="2"/>
+  <line x1="230" y1="78" x2="284" y2="78" stroke="#e0cc80" stroke-width="2" stroke-linecap="round"/>
+  <line x1="230" y1="90" x2="275" y2="90" stroke="#e0cc80" stroke-width="2" stroke-linecap="round"/>
+  <line x1="230" y1="102" x2="280" y2="102" stroke="#e0cc80" stroke-width="2" stroke-linecap="round"/>
+  <!-- Box 2 -->
+  <rect x="310" y="58" width="82" height="72" rx="7" fill="#fff" stroke="#d4b84a" stroke-width="2"/>
+  <line x1="324" y1="78" x2="378" y2="78" stroke="#e0cc80" stroke-width="2" stroke-linecap="round"/>
+  <line x1="324" y1="90" x2="369" y2="90" stroke="#e0cc80" stroke-width="2" stroke-linecap="round"/>
+  <line x1="324" y1="102" x2="374" y2="102" stroke="#e0cc80" stroke-width="2" stroke-linecap="round"/>
+  <!-- Shield checkmark -->
+  <circle cx="412" cy="132" r="22" fill="#c8a840" opacity="0.15"/>
+  <path d="M400 132 L410 142 L426 122" stroke="#b8961c" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <circle cx="412" cy="132" r="18" fill="none" stroke="#c8a840" stroke-width="2.5"/>
+</svg>

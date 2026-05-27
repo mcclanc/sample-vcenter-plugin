@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Choose how to work with Tanzu Platform and Tanzu Hub from vSphere."
+      content="VMware Tanzu Platform is an AI-ready, integrated private cloud Platform-as-a-Service (PaaS) designed to accelerate development, deployment, and management of secure applications."
     />
     <title>App Platform as a Service</title>
     <style>
@@ -25,82 +25,345 @@
     </script>
     <link rel="stylesheet" type="text/css" href="styles.css" />
   </head>
-  <body class="landing-page">
-    <header class="header landing-hero">
-      <p class="landing-hero__eyebrow">Tanzu Platform</p>
-      <h1 data-i18n="plugin.name">App Platform as a Service</h1>
-      <p class="muted landing-hero__lead" data-i18n="plugin.summary">
-        VMware Tanzu Platform is an AI-ready, integrated private cloud Platform-as-a-Service (PaaS)
-        designed to accelerate development, deployment, and management of secure applications.
-      </p>
-      <p class="landing-hero__more">
+  <body class="lp2-page">
+    <!-- Page header -->
+    <header class="lp2-header">
+      <div class="lp2-header__row">
+        <span class="lp2-header__icon" aria-hidden="true">
+          <svg width="36" height="36" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip0_11_148)">
+              <path d="M53.1607 35.7203L40.3175 51.8108L39.2594 49.6216L50.7891 35.173L53.1607 35.7203ZM14.631 49.6216L3.13774 35.2095L0.766113 35.7568L13.5729 51.8473L14.631 49.6216Z" fill="#61A60E"/>
+              <path d="M0 32.4L4.56081 12.3689L6.45811 13.9013L2.33513 31.8892L0 32.4ZM53.927 32.4L49.3662 12.3689L47.4689 13.9013L51.5919 31.8892L53.927 32.4Z" fill="#A468EE"/>
+              <path d="M37.2528 53.3068H16.7109L17.769 51.1176H36.1947L37.2528 53.3068ZM47.2136 9.66893L28.6785 0.729736V3.17433L45.3163 11.1649L47.2136 9.66893ZM25.2488 3.17433L8.61092 11.1649L6.71362 9.66893L25.2488 0.729736V3.17433Z" fill="#0098C7"/>
+              <path d="M36.1215 46.9216H17.8418L6.45801 32.6189L10.508 14.7771L26.9999 6.823L43.4918 14.7771L47.5053 32.6554L36.1215 46.9216ZM18.8634 44.7325H35.0269L45.1337 32.1081L41.5215 16.346L26.9634 9.34057L12.3688 16.346L8.79314 32.1081L18.8634 44.7325Z" fill="#0088EF"/>
+            </g>
+            <defs>
+              <clipPath id="clip0_11_148">
+                <rect width="54" height="54" fill="white"/>
+              </clipPath>
+            </defs>
+          </svg>
+        </span>
+        <h1 class="lp2-header__title">App Platform as a Service</h1>
+      </div>
+      <p class="lp2-header__eyebrow">Tanzu. Platform</p>
+      <p class="lp2-header__desc">
+        VMware Tanzu Platform is an AI-ready, integrated private cloud Platform as a Service(PaaS)
+        designed to accelerate development, deployment, and manage of secure applications.
         <a
-          class="landing-hero__more-link"
+          class="lp2-header__learn-more"
           href="https://techdocs.broadcom.com/us/en/vmware-tanzu/platform/tanzu-platform/10-4/about-tnz-platform/index.html"
           target="_blank"
           rel="noopener noreferrer"
-        >
-          Learn More
-        </a>
+        >Learn more &#8599;</a>
       </p>
     </header>
 
-    <main class="main-content landing-main">
-      <p class="landing-intro landing-intro--splash">Choose a path to get started.</p>
-      <div class="choice-grid">
-        <a class="choice-card choice-card--usecases" href="usecase.html">
-          <div class="choice-card__icon" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M4 6h16M4 12h12M4 18h8"
-              />
-            </svg>
+    <!-- Divider -->
+    <hr class="lp2-divider" />
+
+    <main class="lp2-main">
+
+      <!-- Use cases section -->
+      <section class="lp2-section" aria-labelledby="lp2-uc-heading">
+        <h2 class="lp2-section__heading" id="lp2-uc-heading">Use cases</h2>
+        <p class="lp2-section__sub">Get started by checking out some of the use cases Tanzu Platform can provide.</p>
+
+        <div class="lp2-uc-grid">
+
+          <!-- Card: Assess & Rationalize -->
+          <div class="lp2-uc-card">
+            <div class="lp2-uc-card__text">
+              <h3 class="lp2-uc-card__title">Assess &amp; Rationalize</h3>
+              <p class="lp2-uc-card__desc">Assess your applications for viability for deployment on to Tanzu Platform.</p>
+            </div>
+            <div class="lp2-uc-card__fig lp2-uc-card__fig--assess">
+              <img src="images/uc-assess-light.svg" alt="" width="480" height="180" loading="lazy" />
+            </div>
+            <div class="lp2-uc-card__foot">
+              <button type="button" class="lp2-btn-try" data-uc="assess">TRY NOW</button>
+            </div>
           </div>
-          <h2 class="choice-card__title">Get started by checking out some of the use cases Tanzu Platform can provide.</h2>
-          <p class="choice-card__desc">
-            Tanzu Platform is the PaaS solution for VCF. It provides several use cases for
-            developers. Click here to check out specific use cases and evaluate them.
-          </p>
-        </a>
-        <a class="choice-card choice-card--connect" href="connect-vcenter.html">
-          <div class="choice-card__icon" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                d="M9 17H7a5 5 0 0 1 0-10h2"
-              />
-              <path
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                d="M15 7h2a5 5 0 0 1 0 10h-2"
-              />
-              <line
-                x1="8"
-                y1="12"
-                x2="16"
-                y2="12"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-              />
-            </svg>
+
+          <!-- Card: AI-Ready delivery -->
+          <div class="lp2-uc-card">
+            <div class="lp2-uc-card__text">
+              <h3 class="lp2-uc-card__title">AI-Ready delivery</h3>
+              <p class="lp2-uc-card__desc">Accelerate the development, deployment, and management of AI-powered applications.</p>
+            </div>
+            <div class="lp2-uc-card__fig lp2-uc-card__fig--ai">
+              <img src="images/uc-ai-light.svg" alt="" width="480" height="180" loading="lazy" />
+            </div>
+            <div class="lp2-uc-card__foot">
+              <button type="button" class="lp2-btn-try" data-uc="ai">TRY NOW</button>
+            </div>
           </div>
-          <h2 class="choice-card__title">Connect this vCenter to existing Tanzu Hub</h2>
-          <p class="choice-card__desc">
-            Already have Tanzu Hub deployed? Click here to connect this vCenter to the existing
-            Tanzu Hub.
-          </p>
-        </a>
-      </div>
+
+          <!-- Card: Secure content and services -->
+          <div class="lp2-uc-card">
+            <div class="lp2-uc-card__text">
+              <h3 class="lp2-uc-card__title">Secure content and services</h3>
+              <p class="lp2-uc-card__desc">Unlock the power of secure images and enterprise service offerings with Tanzu Platform.</p>
+            </div>
+            <div class="lp2-uc-card__fig lp2-uc-card__fig--secure">
+              <img src="images/uc-secure-light.svg" alt="" width="480" height="180" loading="lazy" />
+            </div>
+            <div class="lp2-uc-card__foot">
+              <button type="button" class="lp2-btn-try" data-uc="secure">TRY NOW</button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Connect section -->
+      <hr class="lp2-divider lp2-divider--section" />
+      <section class="lp2-section" aria-labelledby="lp2-connect-heading">
+        <h2 class="lp2-section__heading" id="lp2-connect-heading">Already have Tanzu Platform deployed?</h2>
+
+        <div class="lp2-uc-grid">
+        <div class="lp2-connect-card">
+          <div class="lp2-connect-card__text">
+            <h3 class="lp2-connect-card__title">Connect this vCenter to existing Tanzu Hub</h3>
+            <p class="lp2-connect-card__desc">
+              If you already have Tanzu Hub deployed in your environment, you can connect
+              this vCenter instance to leverage your existing Tanzu Platform infrastructure.
+            </p>
+          </div>
+          <!-- Diagram -->
+          <div class="lp2-connect-card__diagram">
+            <!-- vCenter icon -->
+            <span class="lp2-connect-card__node">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true">
+                <rect x="4" y="6" width="40" height="36" rx="4" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+                <line x1="4" y1="16" x2="44" y2="16" stroke="#3b82f6" stroke-width="1.5"/>
+                <rect x="9"  y="21" width="13" height="10" rx="2" fill="#93c5fd"/>
+                <rect x="26" y="21" width="13" height="4"  rx="1" fill="#bfdbfe"/>
+                <rect x="26" y="29" width="9"  height="3"  rx="1" fill="#bfdbfe"/>
+                <circle cx="11" cy="11" r="2" fill="#3b82f6"/>
+                <circle cx="18" cy="11" r="2" fill="#60a5fa"/>
+                <circle cx="25" cy="11" r="2" fill="#93c5fd"/>
+              </svg>
+              <span class="lp2-connect-card__node-label">vCenter</span>
+            </span>
+            <!-- Arrow -->
+            <span class="lp2-connect-card__arrow" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 16" width="80" height="16">
+                <line x1="0" y1="8" x2="66" y2="8" stroke="#3b82f6" stroke-width="2" stroke-dasharray="5 4"/>
+                <path d="M62 3 L76 8 L62 13" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <!-- Tanzu Hub icon -->
+            <span class="lp2-connect-card__node">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true">
+                <rect x="4" y="6" width="40" height="36" rx="4" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+                <line x1="4" y1="16" x2="44" y2="16" stroke="#3b82f6" stroke-width="1.5"/>
+                <!-- Upload arrow -->
+                <path d="M24 36 L24 22" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M17 29 L24 22 L31 29" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="14" y1="38" x2="34" y2="38" stroke="#93c5fd" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="11" cy="11" r="2" fill="#3b82f6"/>
+                <circle cx="18" cy="11" r="2" fill="#60a5fa"/>
+                <circle cx="25" cy="11" r="2" fill="#93c5fd"/>
+              </svg>
+              <span class="lp2-connect-card__node-label">Tanzu Hub</span>
+            </span>
+          </div>
+          <div class="lp2-connect-card__foot">
+            <a class="lp2-btn-connect" href="connect-vcenter.html">CONNECT</a>
+          </div>
+        </div>
+        </div><!-- end lp2-uc-grid -->
+
+      </section>
     </main>
 
+    <!-- ===== Deploy path modal (opened by TRY NOW) ===== -->
+    <dialog
+      class="ova-modal usecase-path-modal"
+      id="usecase-path-modal"
+      aria-labelledby="usecase-path-title"
+    >
+      <div class="ova-modal__inner usecase-path-modal__inner">
+        <div class="usecase-path-modal__hero">
+          <header class="usecase-path-modal__header">
+            <p class="usecase-path-modal__eyebrow">Deployment</p>
+            <h2 class="usecase-path-modal__title" id="usecase-path-title">How do you want to deploy?</h2>
+            <button
+              type="button"
+              class="usecase-path-modal__close ova-modal__close"
+              id="usecase-path-modal-close"
+              aria-label="Close"
+            >&#215;</button>
+          </header>
+          <p class="usecase-path-modal__lead">
+            Pick a path to explore this use case: a quick <strong>evaluation appliance</strong> or a
+            guided <strong>full production (HA)</strong> checklist.
+          </p>
+          <p class="usecase-path-modal__help-link-wrap">
+            <button type="button" class="usecase-path-modal__help-link" id="deploy-help-open">
+              Help me choose what to deploy
+            </button>
+          </p>
+        </div>
+        <div class="usecase-path-modal__options" role="group" aria-label="Choose deployment type">
+          <button type="button" class="usecase-path-modal__option" id="usecase-path-poc">
+            <span class="usecase-path-modal__option-glow" aria-hidden="true"></span>
+            <span class="usecase-path-modal__option-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                <path d="M12 4v4m-4-2v4M8 20h8a2 2 0 002-2V9a2 2 0 00-1-1.72l-4-2.31-4 2.31A2 2 0 006 9v9a2 2 0 002 2z"
+                  stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9 15h6M12 12v6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <span class="usecase-path-modal__option-text">
+              <span class="usecase-path-modal__option-kicker">Evaluation</span>
+              <span class="usecase-path-modal__option-name">Proof of concept (OVA)</span>
+              <span class="usecase-path-modal__option-hint">
+                Upload the appliance package, then deploy to vCenter with the plug-in server.
+              </span>
+            </span>
+            <span class="usecase-path-modal__option-go" aria-hidden="true">&#8594;</span>
+          </button>
+          <button type="button" class="usecase-path-modal__option" id="usecase-path-production">
+            <span class="usecase-path-modal__option-glow usecase-path-modal__option-glow--prod" aria-hidden="true"></span>
+            <span class="usecase-path-modal__option-icon usecase-path-modal__option-icon--prod" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                <path d="M4 6h5v4H4V6zm11 0h5v4h-5V6zM4 14h5v4H4v-4zm11 0h5v4h-5v-4z"
+                  stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                <path d="M9.5 8h5M9.5 16h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <span class="usecase-path-modal__option-text">
+              <span class="usecase-path-modal__option-kicker">Full deployment</span>
+              <span class="usecase-path-modal__option-name">Production (HA / multi-AZ)</span>
+              <span class="usecase-path-modal__option-hint">
+                Open the production checklist and sizing aligned with full HA guidance.
+              </span>
+            </span>
+            <span class="usecase-path-modal__option-go" aria-hidden="true">&#8594;</span>
+          </button>
+        </div>
+        <p class="usecase-path-modal__dismiss-wrap">
+          <button type="button" class="usecase-path-modal__dismiss" id="usecase-path-cancel">Cancel</button>
+        </p>
+      </div>
+    </dialog>
+
+    <!-- Help me choose modal -->
+    <dialog class="deploy-help-modal" id="deploy-help-modal" aria-labelledby="deploy-help-title">
+      <div class="deploy-help-modal__inner">
+        <header class="deploy-help-modal__header">
+          <div>
+            <p class="deploy-help-modal__eyebrow">Tanzu Platform</p>
+            <h2 class="deploy-help-modal__title" id="deploy-help-title">Hub Deployment Types</h2>
+            <p class="deploy-help-modal__subtitle">Plus supported capabilities</p>
+          </div>
+          <button type="button" class="ova-modal__close" id="deploy-help-close" aria-label="Close">&#215;</button>
+        </header>
+        <div class="deploy-help-modal__columns">
+          <div class="deploy-help-col deploy-help-col--poc">
+            <h3 class="deploy-help-col__title deploy-help-col__title--poc">POC Appliance</h3>
+            <div class="deploy-help-col__divider deploy-help-col__divider--poc"></div>
+            <p class="deploy-help-col__section-label">Functionality:</p>
+            <ul class="deploy-help-col__list">
+              <li>Designed for specific use case for evaluation only.</li>
+              <li>Single appliance</li>
+              <li>90 day license included for evaluation.</li>
+              <li>No HA / DR</li>
+            </ul>
+            <a class="deploy-help-col__link deploy-help-col__link--poc"
+              href="https://techdocs.broadcom.com/us/en/vmware-tanzu/platform/tanzu-platform/10-4/about-tnz-platform/index.html"
+              target="_blank" rel="noopener noreferrer">See POC Guide</a>
+            <div class="deploy-help-col__cta">
+              <button type="button" class="deploy-help-col__choose-btn" id="deploy-help-choose-poc">Choose POC Appliance &#8594;</button>
+            </div>
+          </div>
+          <div class="deploy-help-col deploy-help-col--vsi">
+            <h3 class="deploy-help-col__title deploy-help-col__title--vsi">VSI / TSE Deployment <span class="deploy-help-col__badge">(Appliance)</span></h3>
+            <div class="deploy-help-col__divider deploy-help-col__divider--vsi"></div>
+            <p class="deploy-help-col__section-label">Functionality:</p>
+            <ul class="deploy-help-col__list">
+              <li>Designed for small environments:
+                <ul class="deploy-help-col__sublist"><li>10 connected Kubernetes clusters for VMware Secure Image service.</li></ul>
+              </li>
+              <li>Single appliance</li>
+              <li>Requires license key</li>
+              <li>DR capability based on backup and restore.</li>
+              <li>No HA available</li>
+            </ul>
+          </div>
+          <div class="deploy-help-col deploy-help-col--enterprise">
+            <h3 class="deploy-help-col__title deploy-help-col__title--enterprise">Full Enterprise Deployment</h3>
+            <div class="deploy-help-col__divider deploy-help-col__divider--enterprise"></div>
+            <p class="deploy-help-col__section-label">Functionality:</p>
+            <ul class="deploy-help-col__list">
+              <li>Designed for full Tanzu Platform functionality</li>
+              <li>Requires license key</li>
+              <li>DR capability available through active / passive</li>
+              <li>HA available through multi-AZ deployment</li>
+              <li>Comes in multiple resource sizes based on need.
+                (<a class="deploy-help-col__link deploy-help-col__link--enterprise"
+                  href="https://techdocs.broadcom.com/us/en/vmware-tanzu/platform/tanzu-platform/10-4/about-tnz-platform/index.html"
+                  target="_blank" rel="noopener noreferrer">See sizing guide</a>)
+              </li>
+            </ul>
+            <div class="deploy-help-col__cta">
+              <button type="button" class="deploy-help-col__choose-btn deploy-help-col__choose-btn--enterprise" id="deploy-help-choose-prod">Choose Full Enterprise &#8594;</button>
+            </div>
+          </div>
+        </div>
+        <p class="deploy-help-modal__footer-note">
+          Not sure? Start with the <strong>POC Appliance</strong> — it includes a 90-day license and deploys in minutes.
+        </p>
+      </div>
+    </dialog>
+
     <script type="module" src="landing.js"></script>
+    <script>
+      (function () {
+        var pathModal = document.getElementById("usecase-path-modal");
+        var helpModal = document.getElementById("deploy-help-modal");
+        var activeUc  = null;
+
+        document.querySelectorAll(".lp2-btn-try").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            activeUc = btn.dataset.uc;
+            pathModal.showModal();
+          });
+        });
+
+        function closePathModal() { pathModal.close(); }
+
+        document.getElementById("usecase-path-modal-close").addEventListener("click", closePathModal);
+        document.getElementById("usecase-path-cancel").addEventListener("click", closePathModal);
+        pathModal.addEventListener("click", function (e) { if (e.target === pathModal) closePathModal(); });
+
+        document.getElementById("usecase-path-poc").addEventListener("click", function () {
+          closePathModal();
+          window.location.href = "usecase.html?uc=" + (activeUc || "assess") + "&path=poc";
+        });
+
+        document.getElementById("usecase-path-production").addEventListener("click", function () {
+          closePathModal();
+          window.location.href = "deploy-production.html";
+        });
+
+        document.getElementById("deploy-help-open").addEventListener("click", function () {
+          helpModal.showModal();
+        });
+        document.getElementById("deploy-help-close").addEventListener("click", function () { helpModal.close(); });
+        helpModal.addEventListener("click", function (e) { if (e.target === helpModal) helpModal.close(); });
+
+        document.getElementById("deploy-help-choose-poc").addEventListener("click", function () {
+          helpModal.close(); closePathModal();
+          window.location.href = "usecase.html?uc=" + (activeUc || "assess") + "&path=poc";
+        });
+        document.getElementById("deploy-help-choose-prod").addEventListener("click", function () {
+          helpModal.close(); closePathModal();
+          window.location.href = "deploy-production.html";
+        });
+      })();
+    </script>
   </body>
 </html>

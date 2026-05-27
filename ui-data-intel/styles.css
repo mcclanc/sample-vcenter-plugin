@@ -1,0 +1,161 @@
+:root {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color: #1b1b1b;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 0.75rem 1.25rem 2.5rem;
+  background: #f9fafb;
+  min-height: 100vh;
+}
+
+/* ── Page header ─────────────────────────────────────────────────────────── */
+.di-header { margin-bottom: 0.75rem; }
+
+.di-header__row {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.1rem;
+}
+
+.di-header__icon { display: flex; align-items: center; flex-shrink: 0; }
+
+.di-header__title {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #1b1b1b;
+}
+
+.di-header__badge {
+  display: inline-block;
+  margin: 0 0 0.45rem;
+  padding: 0.1rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #5b21b6;
+  background: #ede9fe;
+  border: 1px solid #ddd6fe;
+  border-radius: 999px;
+  margin-left: 2.4rem;
+}
+
+.di-header__desc {
+  margin: 0;
+  font-size: 0.87rem;
+  color: #4a4a4a;
+  line-height: 1.55;
+  max-width: 65rem;
+}
+
+.di-header__learn-more {
+  color: #0f62fe;
+  text-decoration: none;
+  font-size: 0.87rem;
+}
+.di-header__learn-more:hover { text-decoration: underline; }
+
+/* ── Divider ─────────────────────────────────────────────────────────────── */
+.di-divider {
+  border: none;
+  border-top: 1px solid #e0e0e0;
+  margin: 0.75rem 0 1.25rem;
+}
+
+/* ── Main container ──────────────────────────────────────────────────────── */
+.di-main { max-width: 72rem; }
+
+/* ── Card ────────────────────────────────────────────────────────────────── */
+.di-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid #dde4ec;
+  border-radius: 8px;
+  overflow: hidden;
+  max-width: 27.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+  padding: 0.9rem 1rem 0.9rem;
+}
+
+.di-card__title {
+  margin: 0 0 0.65rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #1b1b1b;
+  line-height: 1.3;
+}
+
+/* ── License notice banner ───────────────────────────────────────────────── */
+.di-card__notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  padding: 0.45rem 0.65rem;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  color: #1e40af;
+  line-height: 1.45;
+  margin-bottom: 0.7rem;
+}
+
+.di-card__notice-icon { flex-shrink: 0; margin-top: 0.05rem; }
+
+/* ── Description ─────────────────────────────────────────────────────────── */
+.di-card__desc {
+  margin: 0 0 0.75rem;
+  font-size: 0.82rem;
+  color: #5c5c5c;
+  line-height: 1.5;
+}
+
+/* ── Illustration area ───────────────────────────────────────────────────── */
+.di-card__illustration {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  background: #f5f3ff;
+  border-radius: 6px;
+  padding: 1rem 0.75rem;
+  margin-bottom: 0.75rem;
+  min-height: 90px;
+}
+
+.di-ill__node {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.di-ill__dots {
+  font-size: 1.4rem;
+  color: #a78bfa;
+  line-height: 1;
+}
+
+/* ── CTA button ──────────────────────────────────────────────────────────── */
+.di-card__footer { padding-top: 0.1rem; }
+
+.di-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.75rem;
+  background: #0f62fe;
+  color: #fff;
+  border-radius: 3px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  transition: background 0.14s ease;
+}
+.di-btn-primary:hover  { background: #0353e9; }
+.di-btn-primary:focus  { outline: 2px solid #0f62fe; outline-offset: 2px; }

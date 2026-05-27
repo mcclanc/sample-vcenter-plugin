@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="150+ hardened Kubernetes utilities and applications that can easily be deployed to VKS clusters."
+    />
+    <title>VMware Secure Images</title>
+    <style>
+      html:not([data-theme]),
+      body:not([cds-theme]) {
+        background: transparent;
+      }
+    </style>
+    <script type="text/javascript" src="/api/ui/htmlClientSdk.js"></script>
+    <script>
+      (function () {
+        var base = document.createElement("base");
+        base.href =
+          htmlClientSdk.getProxiedPluginServerOrigin() + "/secure-images-ui/";
+        document.head.appendChild(base);
+      })();
+    </script>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+  </head>
+  <body class="si-page">
+
+    <!-- Page header -->
+    <header class="si-header">
+      <div class="si-header__row">
+        <span class="si-header__icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 37 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19.0652 1.89136C21.061 3.14882 23.1502 4.25143 25.3142 5.19019C27.5138 6.17616 29.789 6.98364 32.1179 7.60522L32.8884 7.80054V16.3728C32.8883 30.1449 18.9933 35.3347 18.8494 35.3347L18.4998 35.4587L18.1501 35.3347C17.9884 35.2729 4.11123 30.1204 4.11108 16.3728V7.80054L4.88159 7.60522C7.21372 6.98751 9.49283 6.18391 11.696 5.20093C13.8601 4.26217 15.9493 3.15859 17.9451 1.90112L18.4998 1.54175L19.0652 1.89136ZM18.4998 3.9978C16.578 5.15989 14.5797 6.1907 12.5183 7.08179C10.4571 7.9983 8.33477 8.77102 6.16675 9.39429V16.3728C6.16688 27.6673 16.4434 32.4154 18.4998 33.2585C20.5553 32.4158 30.8336 27.6782 30.8337 16.3728V9.39429C28.6657 8.77101 26.5425 7.99832 24.4812 7.08179C22.4199 6.19072 20.4214 5.15985 18.4998 3.9978ZM25.6941 12.6726C26.1028 12.2753 26.7567 12.2844 27.1541 12.6931C27.5512 13.1017 27.5418 13.7548 27.1335 14.1521L15.9001 24.9548L9.73315 18.7878C9.38394 18.3801 9.40724 17.772 9.78687 17.3923C10.1665 17.0128 10.7746 16.9894 11.1824 17.3386L15.9617 22.1179L25.6941 12.6726Z" fill="#1b1b1b"/>
+          </svg>
+        </span>
+        <h1 class="si-header__title">VMware Secure Images</h1>
+      </div>
+      <p class="si-header__badge">Secure Images</p>
+      <p class="si-header__desc">
+        150+ hardened Kubernetes utilities and applications that can easily be deployed to VKS clusters.
+        <a
+          class="si-header__learn-more"
+          href="https://techdocs.broadcom.com/us/en/vmware-tanzu/platform/tanzu-hub/10-4/tnz-hub/vsi-overview.html"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Learn more &#8599;</a>
+      </p>
+    </header>
+
+    <hr class="si-divider" />
+
+    <!-- Main content -->
+    <main class="si-main">
+      <div class="si-card">
+        <h2 class="si-card__title">Get started with VMware Secure Images</h2>
+
+        <!-- License notice -->
+        <div class="si-card__notice" role="note">
+          <svg class="si-card__notice-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" aria-hidden="true" width="14" height="14">
+            <circle cx="8" cy="8" r="6.5" stroke="#0f62fe" stroke-width="1.25"/>
+            <rect x="7.25" y="4.5" width="1.5" height="1.5" rx="0.75" fill="#0f62fe"/>
+            <rect x="7.25" y="7" width="1.5" height="4.5" rx="0.5" fill="#0f62fe"/>
+          </svg>
+          <span>This plugin requires a license, but a free trial is available to get started.</span>
+        </div>
+
+        <!-- Description -->
+        <p class="si-card__desc">
+          Access a curated collection of hardened, security-validated Kubernetes
+          images ready for enterprise deployment.
+        </p>
+
+        <!-- Illustration -->
+        <div class="si-card__illustration" aria-hidden="true">
+          <!-- NAS / image store icon -->
+          <span class="si-ill__node">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="44" height="44">
+              <rect x="6" y="10" width="36" height="9" rx="3" fill="#c6f0d0" stroke="#4cad6e" stroke-width="1.2"/>
+              <rect x="6" y="22" width="36" height="9" rx="3" fill="#c6f0d0" stroke="#4cad6e" stroke-width="1.2"/>
+              <rect x="6" y="34" width="36" height="9" rx="3" fill="#c6f0d0" stroke="#4cad6e" stroke-width="1.2"/>
+              <circle cx="38" cy="14.5" r="2" fill="#4cad6e"/>
+              <circle cx="38" cy="26.5" r="2" fill="#4cad6e"/>
+              <circle cx="38" cy="38.5" r="2" fill="#4cad6e"/>
+            </svg>
+          </span>
+          <!-- Dotted connector -->
+          <span class="si-ill__dots" aria-hidden="true">&#183;&#183;&#183;</span>
+          <!-- Shield + check icon -->
+          <span class="si-ill__node">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37 37" width="44" height="44">
+              <path d="M19.0652 1.89136C21.061 3.14882 23.1502 4.25143 25.3142 5.19019C27.5138 6.17616 29.789 6.98364 32.1179 7.60522L32.8884 7.80054V16.3728C32.8883 30.1449 18.9933 35.3347 18.8494 35.3347L18.4998 35.4587L18.1501 35.3347C17.9884 35.2729 4.11123 30.1204 4.11108 16.3728V7.80054L4.88159 7.60522C7.21372 6.98751 9.49283 6.18391 11.696 5.20093C13.8601 4.26217 15.9493 3.15859 17.9451 1.90112L18.4998 1.54175L19.0652 1.89136ZM18.4998 3.9978C16.578 5.15989 14.5797 6.1907 12.5183 7.08179C10.4571 7.9983 8.33477 8.77102 6.16675 9.39429V16.3728C6.16688 27.6673 16.4434 32.4154 18.4998 33.2585C20.5553 32.4158 30.8336 27.6782 30.8337 16.3728V9.39429C28.6657 8.77101 26.5425 7.99832 24.4812 7.08179C22.4199 6.19072 20.4214 5.15985 18.4998 3.9978ZM25.6941 12.6726C26.1028 12.2753 26.7567 12.2844 27.1541 12.6931C27.5512 13.1017 27.5418 13.7548 27.1335 14.1521L15.9001 24.9548L9.73315 18.7878C9.38394 18.3801 9.40724 17.772 9.78687 17.3923C10.1665 17.0128 10.7746 16.9894 11.1824 17.3386L15.9617 22.1179L25.6941 12.6726Z" fill="#4cad6e"/>
+            </svg>
+          </span>
+          <!-- Dotted connector -->
+          <span class="si-ill__dots" aria-hidden="true">&#183;&#183;&#183;</span>
+          <!-- Database / registry icon -->
+          <span class="si-ill__node">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="44" height="44">
+              <ellipse cx="24" cy="12" rx="14" ry="5" fill="#c6f0d0" stroke="#4cad6e" stroke-width="1.2"/>
+              <path d="M10 12v24c0 2.76 6.27 5 14 5s14-2.24 14-5V12" fill="#c6f0d0" stroke="#4cad6e" stroke-width="1.2"/>
+              <ellipse cx="24" cy="12" rx="14" ry="5" fill="#d8f5e4" stroke="#4cad6e" stroke-width="1.2"/>
+              <path d="M10 24c0 2.76 6.27 5 14 5s14-2.24 14-5" fill="none" stroke="#4cad6e" stroke-width="1" stroke-dasharray="3 2"/>
+              <!-- checkmark badge -->
+              <circle cx="36" cy="36" r="7" fill="#4cad6e"/>
+              <path d="M32 36l3 3 5-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </span>
+        </div>
+
+        <!-- CTA -->
+        <div class="si-card__footer">
+          <button
+            type="button"
+            id="secure-enterprise-card-open"
+            class="si-btn-primary"
+          >GET STARTED</button>
+        </div>
+      </div>
+    </main>
+
+    <!-- ===== Deploy path modal (single option: Production Deployment) ===== -->
+    <dialog
+      class="ova-modal usecase-path-modal"
+      id="usecase-path-modal"
+      aria-labelledby="usecase-path-title"
+    >
+      <div class="ova-modal__inner usecase-path-modal__inner">
+        <div class="usecase-path-modal__hero">
+          <header class="usecase-path-modal__header">
+            <p class="usecase-path-modal__eyebrow">Deployment</p>
+            <h2 class="usecase-path-modal__title" id="usecase-path-title">How do you want to deploy?</h2>
+            <button
+              type="button"
+              class="usecase-path-modal__close ova-modal__close"
+              id="usecase-path-modal-close"
+              aria-label="Close"
+            >&#215;</button>
+          </header>
+          <p class="usecase-path-modal__lead">
+            Deploy the <strong>Tanzu Hub OVA appliance</strong> to your vCenter — upload the package
+            and configure deployment options below.
+          </p>
+        </div>
+        <div
+          class="usecase-path-modal__options"
+          role="group"
+          aria-label="Choose deployment type"
+        >
+          <!-- Single option: Production Deployment / Tanzu Hub Deployment (OVA) -->
+          <button type="button" class="usecase-path-modal__option" id="usecase-path-poc">
+            <span class="usecase-path-modal__option-glow" aria-hidden="true"></span>
+            <span class="usecase-path-modal__option-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 4v4m-4-2v4M8 20h8a2 2 0 002-2V9a2 2 0 00-1-1.72l-4-2.31-4 2.31A2 2 0 006 9v9a2 2 0 002 2z"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M9 15h6M12 12v6"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </span>
+            <span class="usecase-path-modal__option-text">
+              <span class="usecase-path-modal__option-kicker">Production Deployment</span>
+              <span class="usecase-path-modal__option-name">Tanzu Hub Deployment (OVA)</span>
+              <span class="usecase-path-modal__option-hint">
+                Upload the appliance package, then deploy to vCenter with the plug-in server.
+              </span>
+            </span>
+            <span class="usecase-path-modal__option-go" aria-hidden="true">&#8594;</span>
+          </button>
+        </div>
+        <p class="usecase-path-modal__dismiss-wrap">
+          <button type="button" class="usecase-path-modal__dismiss" id="usecase-path-cancel">Cancel</button>
+        </p>
+      </div>
+    </dialog>
+
+    <!-- ===== OVA deploy form modal ===== -->
+    <dialog class="ova-modal" id="ova-modal" aria-labelledby="ova-modal-title">
+      <div class="ova-modal__inner">
+        <header class="ova-modal__header">
+          <h2 class="ova-modal__title" id="ova-modal-title">Tanzu Hub Deployment (OVA)</h2>
+          <button type="button" class="ova-modal__close" id="ova-modal-close" aria-label="Close">
+            &#215;
+          </button>
+        </header>
+        <p id="ova-modal-status" class="ova-modal__status" role="status" aria-live="polite"></p>
+        <form id="ova-install-form" class="form ova-modal__form" enctype="multipart/form-data">
+          <fieldset class="ova-modal__fieldset">
+            <legend class="ova-modal__legend">Appliance OVA</legend>
+            <p class="ova-modal__help">
+              Choose an <strong>.ova</strong> or <strong>.ovf</strong> from this machine. Large packages can take several minutes to upload.
+              Evaluation builds are listed on the
+              <a
+                class="ova-modal__link"
+                href="https://support.broadcom.com/group/ecx/productfiles?subFamily=VMware%20Secure%20Images&displayGroup=VMware%20Secure%20Images&release=&os=&servicePk=&language=EN"
+                target="_blank"
+                rel="noopener noreferrer"
+                >VMware Secure Images</a>
+              portal (download separately, then browse here).
+            </p>
+            <label class="ova-modal__file-label">
+              OVA / OVF file
+              <input
+                class="ova-modal__file-input"
+                type="file"
+                id="ova-file-input"
+                name="ovaFile"
+                accept=".ova,.OVF,.ovf,.OVA,application/ovf"
+                required
+              />
+            </label>
+          </fieldset>
+
+          <fieldset id="ova-modal-step-deploy" class="ova-modal__fieldset" hidden>
+            <legend class="ova-modal__legend">Deploy</legend>
+            <label>
+              vCenter hostname or IP
+              <input
+                type="text"
+                id="vc-host-input"
+                name="vcHost"
+                autocomplete="off"
+                placeholder="e.g. vcenter.example.com"
+              />
+            </label>
+            <label>
+              vCenter username
+              <input type="text" id="vc-user-input" name="vcUsername" autocomplete="username" />
+            </label>
+            <label>
+              vCenter password
+              <input type="password" id="vc-pass-input" name="vcPassword" autocomplete="current-password" />
+            </label>
+            <label class="ova-modal__checkbox-label">
+              <input type="checkbox" id="vc-insecure-tls" name="vcInsecureTls" />
+              Allow Insecure Connection
+            </label>
+            <div class="ova-modal__connect-row">
+              <button type="button" class="btn-secondary" id="vc-connect-btn">Connect</button>
+              <p class="ova-modal__connect-hint" id="vc-connect-hint">
+                Loads datacenters, clusters/hosts, datastores, and port groups from vCenter (vSphere REST API). Requires
+                HTTPS reachability from the plug-in server.
+              </p>
+            </div>
+            <label>
+              Datacenter
+              <select id="datacenter-input" name="datacenter" autocomplete="off">
+                <option value="">Select datacenter…</option>
+              </select>
+            </label>
+            <label>
+              Cluster or standalone host
+              <select id="compute-path-input" name="computePath" autocomplete="off">
+                <option value="">Select compute…</option>
+              </select>
+            </label>
+            <label>
+              New VM name
+              <input type="text" id="vm-name-input" name="vmName" autocomplete="off" placeholder="e.g. tanzu-secure-images" />
+            </label>
+            <label>
+              Datastore
+              <select id="datastore-input" name="datastore" autocomplete="off">
+                <option value="">Select datastore…</option>
+              </select>
+            </label>
+            <div id="ova-network-rows-wrap" class="ova-network-rows-wrap" hidden>
+              <p class="ova-modal__legend ova-modal__legend--sub" id="ova-network-rows-title">Map OVF networks</p>
+              <div id="ova-network-rows" class="ova-network-rows" aria-live="polite"></div>
+            </div>
+            <div id="ova-network-static" class="ova-network-static">
+              <label>
+                Destination port group
+                <select id="network-input" name="network" autocomplete="off">
+                  <option value="">Select port group…</option>
+                </select>
+              </label>
+              <label>
+                OVF network label to map (must match OVF)
+                <input
+                  type="text"
+                  id="ovf-network-label-input"
+                  name="ovfNetworkLabel"
+                  autocomplete="off"
+                  placeholder="VM Network"
+                />
+              </label>
+            </div>
+            <div id="ovf-dynamic-properties-wrap" class="ovf-dynamic-properties-wrap" hidden>
+              <p class="ova-modal__legend ova-modal__legend--sub">Appliance inputs</p>
+              <div id="ovf-dynamic-properties" class="ovf-dynamic-properties"></div>
+            </div>
+            <details class="ova-modal__advanced">
+              <summary>Advanced: OVF properties as JSON</summary>
+              <label>
+                Optional JSON object (merged with fields above; values here win on duplicate keys)
+                <textarea
+                  id="ovf-properties-json"
+                  name="ovfPropertiesJson"
+                  rows="4"
+                  spellcheck="false"
+                  placeholder='Example: { "guestinfo.extra": "value" }'
+                ></textarea>
+              </label>
+            </details>
+            <div class="ova-modal__actions">
+              <button type="button" class="btn-primary" id="ova-deploy-btn" disabled>
+                Deploy
+              </button>
+            </div>
+          </fieldset>
+        </form>
+        <div id="deploy-progress-wrap" class="deploy-progress-wrap" hidden>
+          <div class="deploy-progress__phases">
+            <span id="deploy-phase-upload" class="deploy-phase deploy-phase--active">
+              <span class="deploy-phase__icon">&#11014;</span> Upload
+            </span>
+            <span class="deploy-phase__sep">&#8250;</span>
+            <span id="deploy-phase-ovftool" class="deploy-phase">
+              <span class="deploy-phase__icon">&#9881;</span> Deploy
+            </span>
+          </div>
+          <div class="deploy-progress__bar-row">
+            <progress id="deploy-progress-bar" class="deploy-progress__bar" max="100" value="0"></progress>
+            <span id="deploy-progress-pct" class="deploy-progress__pct">0%</span>
+          </div>
+          <p id="deploy-progress-detail" class="deploy-progress__detail"></p>
+        </div>
+        <pre id="log" class="log" aria-live="polite"></pre>
+      </div>
+    </dialog>
+
+    <script type="module" src="landing.js"></script>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>

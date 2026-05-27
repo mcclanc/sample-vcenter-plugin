@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 180" role="img" aria-hidden="true">
+  <rect width="480" height="180" fill="#daeeff"/>
+  <!-- Document icon -->
+  <rect x="70" y="38" width="88" height="110" rx="6" fill="#fff" stroke="#b0cce4" stroke-width="1.5"/>
+  <line x1="84" y1="66"  x2="144" y2="66"  stroke="#9bb8cc" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="84" y1="80"  x2="138" y2="80"  stroke="#b8d0e0" stroke-width="2" stroke-linecap="round"/>
+  <line x1="84" y1="93"  x2="141" y2="93"  stroke="#b8d0e0" stroke-width="2" stroke-linecap="round"/>
+  <line x1="84" y1="106" x2="127" y2="106" stroke="#b8d0e0" stroke-width="2" stroke-linecap="round"/>
+  <line x1="84" y1="119" x2="134" y2="119" stroke="#c8dde8" stroke-width="2" stroke-linecap="round"/>
+  <!-- Magnifying glass -->
+  <circle cx="230" cy="94" r="30" fill="none" stroke="#8aaccb" stroke-width="3"/>
+  <circle cx="230" cy="94" r="18" fill="#ecf7ff"/>
+  <line x1="252" y1="116" x2="268" y2="132" stroke="#8aaccb" stroke-width="4" stroke-linecap="round"/>
+  <!-- Connector dots -->
+  <circle cx="316" cy="94" r="7" fill="#6ba8cc"/>
+  <line x1="326" y1="94" x2="342" y2="94" stroke="#8aaccb" stroke-width="2" stroke-dasharray="4 3"/>
+  <circle cx="352" cy="94" r="7" fill="#4a94be"/>
+  <line x1="362" y1="94" x2="378" y2="94" stroke="#8aaccb" stroke-width="2" stroke-dasharray="4 3"/>
+  <circle cx="388" cy="94" r="7" fill="#2a7db0"/>
+</svg>
