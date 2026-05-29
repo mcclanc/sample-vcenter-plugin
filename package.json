@@ -6,15 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node server/index.mjs",
-    "start:system-ca": "node --use-system-ca server/index.mjs",
-    "start:https": "node scripts/start-https.mjs",
-    "start:https:system-ca": "node --use-system-ca scripts/start-https.mjs",
-    "dev": "node --watch server/index.mjs",
-    "tools:ovftool-mac": "bash tools/download-ovftool-mac.sh",
-    "certs": "node scripts/gen-dev-certs.mjs",
-    "register:lab": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/register-extension-lab.ps1",
-    "icon:sprite": "python3 scripts/gen_plugin_icon_sprite.py",
-    "icon:compose": "python3 scripts/compose_icon_into_sprite.py"
+    "dev": "node --watch server/index.mjs"
   },
   "engines": {
     "node": ">=20"
@@ -23,7 +15,6 @@
     "express": "^4.21.0",
     "multer": "^2.1.1"
   },
-  "devDependencies": {
-    "@resvg/resvg-js": "^2.6.2"
-  }
+  "devDependencies": {}
+
 }

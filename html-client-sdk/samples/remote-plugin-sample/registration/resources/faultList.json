@@ -1,8 +1,0 @@
-[
-  {
-    "faultId": "com.vmware.sample.remote.1.0.0.0.faults.RelatedChassisDeletionFault"
-  },
-  {
-    "faultId": "com.vmware.sample.remote.1.0.0.0.faults.ChassisAlreadyExistsFault"
-  }
-]

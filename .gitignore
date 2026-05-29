@@ -11,23 +11,29 @@ certs/
 .env.*
 *.jar.bak*
 
-# Packer build outputs and runtime cache
-appliance/packer/packer_cache/
-appliance/packer/.terraform/
+# Appliance build lives in vcenter-plugin-appliance repo
+appliance/
 plugin-appliance-ovf/
+plugin-appliance-ovf-backup/
 plugin-appliance.ova
 
-# Packer vars file contains credentials — commit only the .example template
-appliance/packer/plugin-appliance.auto.pkrvars.hcl
-!appliance/packer/plugin-appliance.auto.pkrvars.hcl.example
+# AI agent/tooling artifacts
+.agents/
+_bmad/
+_bmad-output/
 
-# Local OVF Tool / Windows extract under tools/ (keep scripts: download-ovftool-mac.sh, tools/vendor/.gitignore)
-tools/*.exe
-tools/*.dll
-tools/env/
-tools/schemas/
-tools/icudt*.dat
-tools/open_source_licenses.txt
-tools/vmware-eula.rtf
-tools/vmware.eula
-tools/README.txt
+# Dev/build utilities not needed for running plugins
+docs/
+tools/
+html-client-sdk/
+scripts/compose_icon_into_sprite.py
+scripts/gen-dev-certs.sh
+scripts/gen_dataintel_illustration.py
+scripts/gen_plugin_icon_sprite.py
+scripts/register-all-plugins.ps1
+scripts/register-extension-lab.ps1
+scripts/register-extension-lab.sh
+scripts/requirements-icons.txt
+scripts/set_dataintel_icon.mjs
+scripts/set_plugin_icon.py
+scripts/set_secureimages_icon.mjs
