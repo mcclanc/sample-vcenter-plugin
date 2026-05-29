@@ -8,6 +8,8 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
 const ui = path.join(root, "ui");
+const uiSecureImages = path.join(root, "ui-secure-images");
+const uiDataIntel = path.join(root, "ui-data-intel");
 
 import { evalApplianceDeployHandler } from "./eval-appliance/deployHandler.mjs";
 import { vcenterInventoryHandler } from "./eval-appliance/vcenterInventoryHandler.mjs";
@@ -34,7 +36,9 @@ app.use((req, res, next) => {
     p.startsWith("/api/eval-appliance/") ||
     p.startsWith("/api/vcenter/") ||
     p.startsWith("/tanzu-hub-poc-ui/api/eval-appliance/") ||
-    p.startsWith("/tanzu-hub-poc-ui/api/vcenter/");
+    p.startsWith("/tanzu-hub-poc-ui/api/vcenter/") ||
+    p.startsWith("/secure-images-ui/api/") ||
+    p.startsWith("/data-intel-ui/api/");
   if (!isPluginApi) return next();
 
   const origin = req.get("Origin");
@@ -80,6 +84,11 @@ app.get("/health", (_req, res) => {
   res.json({
     ok: true,
     service: "sample-vcenter-plugin",
+    plugins: [
+      { name: "App Platform as a Service", manifest: "/tanzu-hub-poc-ui/plugin.json" },
+      { name: "Secure Images",             manifest: "/secure-images-ui/plugin.json" },
+      { name: "Data Intelligence",         manifest: "/data-intel-ui/plugin.json" },
+    ],
     evalApplianceDeploy: {
       mode: "multipart-ova",
       formField: "ovaFile",
@@ -116,7 +125,9 @@ app.get("/api/vcenter/inventory", vcenterInventoryPing);
 app.post("/tanzu-hub-poc-ui/api/vcenter/inventory", (req, res) => void vcenterInventoryHandler(req, res));
 app.post("/api/vcenter/inventory", (req, res) => void vcenterInventoryHandler(req, res));
 
-app.use("/tanzu-hub-poc-ui", express.static(ui, { index: false }));
+app.use("/tanzu-hub-poc-ui",  express.static(ui,              { index: false }));
+app.use("/secure-images-ui", express.static(uiSecureImages, { index: false }));
+app.use("/data-intel-ui",    express.static(uiDataIntel,    { index: false }));
 
 const port = Number(process.env.PORT || 8443);
 const keyPath = process.env.SSL_KEY_PATH;
@@ -143,7 +154,7 @@ server.timeout = PLUGIN_HTTP_LONG_MS;
 server.listen(port, () => {
   const scheme = useTls ? "https" : "http";
   console.log(
-    `${scheme}://localhost:${port}/tanzu-hub-poc-ui/plugin.json (manifest) | /health | deploy upload+ovftool request timeout≈${Math.round(PLUGIN_HTTP_LONG_MS / 60000)}min (PLUGIN_HTTP_SERVER_TIMEOUT_MS)`,
+    `${scheme}://localhost:${port} | manifests: /tanzu-hub-poc-ui/plugin.json  /secure-images-ui/plugin.json  /data-intel-ui/plugin.json | /health | deploy timeout≈${Math.round(PLUGIN_HTTP_LONG_MS / 60000)}min`,
   );
   if (!useTls) {
     console.warn(

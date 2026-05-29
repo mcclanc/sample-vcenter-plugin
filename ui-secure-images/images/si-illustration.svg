@@ -1,0 +1,42 @@
+<svg width="293" height="180" viewBox="0 0 293 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background swoosh -->
+  <ellipse cx="152" cy="90" rx="132" ry="54" transform="rotate(-22 152 90)" fill="#C0E4F6"/>
+
+  <!-- Shield left half (blue) -->
+  <path d="M92 28 L128 28 L128 150 Q92 133 92 100 Z" fill="#2E6BBF"/>
+  <!-- Shield right half (purple) -->
+  <path d="M128 28 L164 28 L164 100 Q164 133 128 150 Z" fill="#7248C4"/>
+  <!-- Shield border -->
+  <path d="M92 28 L164 28 L164 100 Q164 133 128 150 Q92 133 92 100 Z" stroke="white" stroke-width="2" fill="none"/>
+  <!-- Shield center divider -->
+  <line x1="128" y1="28" x2="128" y2="150" stroke="rgba(255,255,255,0.55)" stroke-width="1.5"/>
+
+  <!-- Checklist  top right -->
+  <!-- Item 1: filled circle with checkmark -->
+  <circle cx="207" cy="50" r="10" fill="#3578C4"/>
+  <path d="M202 50 L205.5 53.5 L213 44.5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="222" y1="47" x2="260" y2="47" stroke="#9BBDD6" stroke-width="3" stroke-linecap="round"/>
+  <line x1="222" y1="54" x2="248" y2="54" stroke="#9BBDD6" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Item 2: open circle -->
+  <circle cx="207" cy="76" r="10" fill="none" stroke="#9BBDD6" stroke-width="1.8"/>
+  <circle cx="207" cy="76" r="3.5" fill="#9BBDD6"/>
+  <line x1="222" y1="73" x2="260" y2="73" stroke="#9BBDD6" stroke-width="3" stroke-linecap="round"/>
+  <line x1="222" y1="80" x2="248" y2="80" stroke="#9BBDD6" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Checkbox items  bottom left -->
+  <!-- Item 1: open circle with center dot -->
+  <circle cx="40" cy="120" r="9.5" fill="none" stroke="#8BAFC6" stroke-width="1.8"/>
+  <circle cx="40" cy="120" r="3" fill="#8BAFC6"/>
+  <circle cx="59" cy="120" r="3" fill="#516878"/>
+
+  <!-- Item 2: filled circle with checkmark -->
+  <circle cx="40" cy="145" r="9.5" fill="#3578C4"/>
+  <path d="M35 145 L38.5 148.5 L46 140" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="59" cy="145" r="3" fill="#516878"/>
+
+  <!-- Scattered dots -->
+  <circle cx="83" cy="36" r="3.5" fill="#8BBACF"/>
+  <circle cx="183" cy="153" r="3.5" fill="#8BBACF"/>
+  <circle cx="167" cy="40" r="2.5" fill="#8BBACF"/>
+</svg>

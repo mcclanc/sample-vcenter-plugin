@@ -8,18 +8,39 @@ Remote **vSphere Client** plug-in scaffold for a **Tanzu Hub / Tanzu Platform ev
 - **Manifest shape:** [Sample manifest file for a remote plug-in](https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere-sdks-tools/8-0/developing-remote-plug-ins-with-the-vsphere-client-sdk-8-0/creating-a-remote-plug-in-for-the-vsphere-client/sample-manifest-file-for-a-remote-plug-in.html)
 - **Tanzu evaluation / POC appliances on vSphere:** [Deploying Tanzu Platform evaluation appliances on vSphere](https://techdocs.broadcom.com/us/en/vmware-tanzu/platform/tanzu-platform-evaluation-appliances/10-3/tp-evaluation-appliances/deploy.html)
 
+## Three vCenter plugin entries
+
+This server registers **three separate plugins** in vCenter — each appears as its own entry in the vSphere Client Plugins sidebar:
+
+| # | Plugin name | vCenter key | Manifest URL path | Description |
+|---|---|---|---|---|
+| 1 | **Secure Images** | `com.cmaclabs.remote.secureimages` | `/secure-images-ui/plugin.json` | VMware Secure Images landing with "Get started" |
+| 2 | **Data Intelligence** | `com.cmaclabs.remote.dataintelligence` | `/data-intel-ui/plugin.json` | Tanzu Data Intelligence landing with "Get started" |
+| 3 | **App Platform as a Service** | `com.cmaclabs.remote.paasforvcf` | `/tanzu-hub-poc-ui/plugin.json` | Full use-case grid + OVA deploy flow |
+
+All three are served by the **same Node.js server process**. Each has its own `plugin.json` manifest pointing to its own `index.html` entry view.
+
 ## Layout
 
 ```
-html-client-sdk/         # Unpacked Broadcom vSphere HTML Client SDK (samples, docs, tools)
-ui/plugin.json           # Your remote plug-in manifest
-ui/index.html            # Entry view: three paths (htmlClientSdk + base href)
-ui/usecase.html          # Use cases view (opened from card 1 on index)
-ui/images/sprites.png    # Icon sprite (from SDK starter sample)
-server/index.mjs         # Static host, /health, dev stub for /api/ui/htmlClientSdk.js
-server/htmlClientSdk.stub.js
-docs/SDK_LAYOUT.md       # How html-client-sdk/ relates to ui/
-docs/ARCHITECTURE.md
+html-client-sdk/              # Unpacked Broadcom vSphere HTML Client SDK
+ui/                           # App Platform as a Service plugin
+  plugin.json                 #   manifest (navigationId: tanzuHubPoc)
+  index.html                  #   landing — use-case cards + connect flow
+  usecase.html                #   use-cases view + OVA deploy modal
+  images/sprites.png          #   icon sprite
+ui-secure-images/             # Secure Images plugin
+  plugin.json                 #   manifest (navigationId: vmwareSecureImages)
+  index.html                  #   product landing page
+  images/sprites.png          #   icon sprite
+ui-data-intel/                # Data Intelligence plugin
+  plugin.json                 #   manifest (navigationId: tanzuDataIntelligence)
+  index.html                  #   product landing page
+  images/sprites.png          #   icon sprite
+server/index.mjs              # Express server — serves all three plugin paths
+scripts/register-all-plugins.ps1   # Register all three plugins at once (Windows)
+scripts/register-extension-lab.ps1 # Register a single plugin (existing, Windows)
+scripts/register-extension-lab.sh  # Register a single plugin (existing, macOS/Linux)
 docs/REGISTRATION.md
 ```
 
@@ -36,9 +57,40 @@ npm run certs          # first time: localhost TLS files under certs/
 npm run start:https    # HTTPS on port 8443
 ```
 
-- Health: `https://localhost:8443/health`
-- Manifest: `https://localhost:8443/tanzu-hub-poc-ui/plugin.json`  
-  Plain HTTP (`npm start`) is only for quick checks; vCenter registration usually needs **HTTPS** — [docs/REGISTRATION.md](docs/REGISTRATION.md).
+- Health (lists all three plugins): `https://localhost:8443/health`
+- App Platform manifest: `https://localhost:8443/tanzu-hub-poc-ui/plugin.json`
+- Secure Images manifest: `https://localhost:8443/secure-images-ui/plugin.json`
+- Data Intelligence manifest: `https://localhost:8443/data-intel-ui/plugin.json`
+
+Plain HTTP (`npm start`) is only for quick checks; vCenter registration requires **HTTPS** — [docs/REGISTRATION.md](docs/REGISTRATION.md).
+
+## Register all three plugins
+
+Run the combined registration script to register all three entries in one pass:
+
+```powershell
+# Windows — interactive (prompts for credentials once, then registers all three)
+.\scripts\register-all-plugins.ps1
+
+# Non-interactive
+$env:REGISTER_NON_INTERACTIVE = "1"
+$env:VC_SDK_URL               = "https://your-vcenter/sdk"
+$env:VC_USER                  = "administrator@vsphere.local"
+$env:VC_PASSWORD              = "your-password"
+$env:PLUGIN_SERVER_TP         = "AA:BB:CC:..."   # cert SHA-1 thumbprint
+$env:PLUGIN_SERVER_HOST       = "192.168.68.5:8443"
+.\scripts\register-all-plugins.ps1
+
+# To update already-registered plugins
+$env:REGISTER_ACTION = "updatePlugin"
+.\scripts\register-all-plugins.ps1
+```
+
+To register a single plugin (or choose a custom key), use the existing script:
+
+```powershell
+.\scripts\register-extension-lab.ps1
+```
 
 ## Credentials (safe for GitHub)
 
