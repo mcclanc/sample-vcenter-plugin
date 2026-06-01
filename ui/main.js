@@ -140,7 +140,7 @@ document.getElementById("deploy-help-choose-poc")?.addEventListener("click", () 
 document.getElementById("deploy-help-choose-prod")?.addEventListener("click", () => {
   closeDeployHelpModal();
   closeUsecasePathModal();
-  globalThis.location.assign("deploy-production.html?mode=production-ha");
+  openOvaModal();
 });
 
 /** vSphere Client: real backend base from SDK (often correct when getProxiedPluginServerOrigin matches UI host). */
@@ -601,7 +601,7 @@ pathPocBtn?.addEventListener("click", () => {
 });
 pathProductionBtn?.addEventListener("click", () => {
   closeUsecasePathModal();
-  globalThis.location.assign("deploy-production.html?mode=production-ha");
+  openOvaModal();
 });
 
 pathModal?.addEventListener("click", (e) => {

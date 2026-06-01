@@ -468,30 +468,8 @@
         document.getElementById("usecase-path-cancel").addEventListener("click", closePathModal);
         pathModal.addEventListener("click", function (e) { if (e.target === pathModal) closePathModal(); });
 
-        document.getElementById("usecase-path-poc").addEventListener("click", function () {
-          closePathModal();
-          window.location.href = "usecase.html?uc=" + (activeUc || "assess") + "&path=poc";
-        });
-
-        document.getElementById("usecase-path-production").addEventListener("click", function () {
-          closePathModal();
-          window.location.href = "deploy-production.html";
-        });
-
-        document.getElementById("deploy-help-open").addEventListener("click", function () {
-          helpModal.showModal();
-        });
-        document.getElementById("deploy-help-close").addEventListener("click", function () { helpModal.close(); });
-        helpModal.addEventListener("click", function (e) { if (e.target === helpModal) helpModal.close(); });
-
-        document.getElementById("deploy-help-choose-poc").addEventListener("click", function () {
-          helpModal.close(); closePathModal();
-          window.location.href = "usecase.html?uc=" + (activeUc || "assess") + "&path=poc";
-        });
-        document.getElementById("deploy-help-choose-prod").addEventListener("click", function () {
-          helpModal.close(); closePathModal();
-          window.location.href = "deploy-production.html";
-        });
+        /* usecase-path-poc and usecase-path-production are handled by main.js (module),
+           which opens the OVA deploy modal for both options. */
       })();
     </script>
   </body>
