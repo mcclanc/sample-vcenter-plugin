@@ -14,6 +14,8 @@ const uiDataIntel = path.join(root, "ui-data-intel");
 import { evalApplianceDeployHandler } from "./eval-appliance/deployHandler.mjs";
 import { vcenterInventoryHandler } from "./eval-appliance/vcenterInventoryHandler.mjs";
 import { ovaUpload, ovaUploadMaxBytes } from "./eval-appliance/upload.mjs";
+import { hubGraphqlProxyHandler } from "./hub-proxy/hubGraphqlProxyHandler.mjs";
+import { vcenterCertHandler } from "./vcenter-cert/vcenterCertHandler.mjs";
 
 const GIB = 1024 * 1024 * 1024;
 const MIB = 1024 * 1024;
@@ -35,8 +37,11 @@ app.use((req, res, next) => {
   const isPluginApi =
     p.startsWith("/api/eval-appliance/") ||
     p.startsWith("/api/vcenter/") ||
+    p.startsWith("/api/hub/") ||
+    p.startsWith("/api/vcenter-cert/") ||
     p.startsWith("/tanzu-hub-poc-ui/api/eval-appliance/") ||
     p.startsWith("/tanzu-hub-poc-ui/api/vcenter/") ||
+    p.startsWith("/tanzu-hub-poc-ui/api/hub/") ||
     p.startsWith("/secure-images-ui/api/") ||
     p.startsWith("/data-intel-ui/api/");
   if (!isPluginApi) return next();
@@ -125,9 +130,15 @@ app.get("/api/vcenter/inventory", vcenterInventoryPing);
 app.post("/tanzu-hub-poc-ui/api/vcenter/inventory", (req, res) => void vcenterInventoryHandler(req, res));
 app.post("/api/vcenter/inventory", (req, res) => void vcenterInventoryHandler(req, res));
 
-app.use("/tanzu-hub-poc-ui",  express.static(ui,              { index: false }));
-app.use("/secure-images-ui", express.static(uiSecureImages, { index: false }));
-app.use("/data-intel-ui",    express.static(uiDataIntel,    { index: false }));
+app.post("/tanzu-hub-poc-ui/api/hub/graphql-proxy", (req, res) => void hubGraphqlProxyHandler(req, res));
+app.post("/api/hub/graphql-proxy", (req, res) => void hubGraphqlProxyHandler(req, res));
+
+app.post("/tanzu-hub-poc-ui/api/vcenter-cert", (req, res) => vcenterCertHandler(req, res));
+app.post("/api/vcenter-cert", (req, res) => vcenterCertHandler(req, res));
+
+app.use("/tanzu-hub-poc-ui",  express.static(ui,              { index: "index.html" }));
+app.use("/secure-images-ui", express.static(uiSecureImages, { index: "index.html" }));
+app.use("/data-intel-ui",    express.static(uiDataIntel,    { index: "index.html" }));
 
 const port = Number(process.env.PORT || 8443);
 const keyPath = process.env.SSL_KEY_PATH;

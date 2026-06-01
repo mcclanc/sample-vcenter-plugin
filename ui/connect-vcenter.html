@@ -28,16 +28,16 @@
     <header class="header">
       <h1>Connect this vCenter to Tanzu Hub</h1>
       <p class="muted">
-        In Tanzu Hub you add a vCenter under
-        <strong>Administration &gt; VCF Instances &gt; Connect VCF Instance</strong> and choose
-        <strong>vCenter</strong> (or use vCenter for the first connection). The fields below match
-        the product form described in
+        Registers this vCenter as a Management Endpoint in Tanzu Hub via the
+        <code>upsertEndpointWithCredential</code> GraphQL mutation. Fill in the fields below and
+        click <strong>Connect</strong> — the endpoint and its credential will be created (or
+        updated if one with the same name already exists). See
         <a
           href="https://techdocs.broadcom.com/us/en/vmware-tanzu/platform/tanzu-hub/10-4/tnz-hub/connect-vcf-instance.html"
           target="_blank"
           rel="noopener noreferrer"
-          >Connect and manage VMware Cloud Foundation (VCF) instances</a
-        >. This page only captures values for your runbook; it does not call Tanzu Hub.
+          >Connect and manage VCF instances</a
+        > for background.
       </p>
     </header>
 
@@ -130,21 +130,52 @@
             required
             rows="8"
             spellcheck="false"
-            placeholder="Paste PEM server certificate (from vCenter login page before sign-in, or openssl s_client -connect [vcenter-fqdn]:443 …)"
+            placeholder="Click 'Fetch Certificate' above, or paste PEM manually."
           ></textarea>
         </label>
+        <div style="display:flex;align-items:center;gap:0.65rem;margin:-0.25rem 0 0.25rem">
+          <button type="button" id="fetch-cert-btn" class="btn-secondary" style="font-size:0.82rem;padding:0.3rem 0.7rem">
+            Fetch Certificate from vCenter
+          </button>
+          <span id="fetch-cert-status" style="font-size:0.82rem;color:#374151"></span>
+        </div>
         <span class="field-hint muted"
-          >Tanzu Hub validates TLS using this certificate. Obtain it from the vCenter login page or
-          <code>openssl s_client -connect [vcenter-fqdn]:443</code> per the
-          <a
-            href="https://techdocs.broadcom.com/us/en/vmware-tanzu/platform/tanzu-hub/10-4/tnz-hub/connect-vcf-instance.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            >documentation</a
-          >.</span
+          >Click the button to retrieve the certificate automatically, or paste a PEM manually.</span
         >
 
-        <button type="submit" class="btn-primary">Connect this vCenter to Tanzu Hub</button>
+        <fieldset style="border:1px solid #e0e0e0;border-radius:6px;padding:0.75rem 1rem;margin-top:0.5rem">
+          <legend style="font-size:0.82rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:#525252;padding:0 0.35rem">Tanzu Hub connection</legend>
+
+          <label for="hub-api-url">
+            Tanzu Hub GraphQL API URL
+            <input
+              id="hub-api-url"
+              name="hubApiUrl"
+              type="text"
+              required
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="https://your-tanzu-hub/hub/graphql"
+            />
+          </label>
+          <span class="field-hint muted">The GraphQL endpoint for your Tanzu Hub instance.</span>
+
+          <label for="hub-api-token">
+            API Bearer Token
+            <input
+              id="hub-api-token"
+              name="hubApiToken"
+              type="password"
+              required
+              autocomplete="off"
+              placeholder="CSP or OAuth bearer token"
+            />
+          </label>
+          <span class="field-hint muted">Sent as <code>Authorization: Bearer &lt;token&gt;</code>.</span>
+        </fieldset>
+
+        <div id="vc-hub-status" style="display:none;padding:0.6rem 0.85rem;border-radius:5px;font-size:0.88rem;line-height:1.4;margin-bottom:0.5rem;border:1px solid currentColor"></div>
+        <button type="submit" id="vc-hub-submit" class="btn-primary">Connect this vCenter to Tanzu Hub</button>
       </form>
 
       <div id="vc-hub-result" class="log" hidden aria-live="polite"></div>
@@ -153,32 +184,187 @@
     <script type="module" src="landing.js"></script>
     <script>
       (function () {
-        var form = document.getElementById("vc-hub-form");
-        var out = document.getElementById("vc-hub-result");
+        var MUTATION = [
+          "mutation upsertEndpointWithCredential($input: ManagementEndpointUpsertWithCredentialInput) {",
+          "  managementEndpointMutation {",
+          "    upsertEndpointWithCredential(input: $input) {",
+          "      managementEndpoint {",
+          "        id managementEndpointId endpointName endpointType creationTime lastUpdateTime",
+          "        managementEndpointStatus { status }",
+          "        properties { name value }",
+          "      }",
+          "      managementEndpointCredential { credentialName credentialType }",
+          "    }",
+          "  }",
+          "}"
+        ].join("\n");
+
+        function setStatus(msg, isError) {
+          var el = document.getElementById("vc-hub-status");
+          el.textContent = msg;
+          el.style.display = msg ? "block" : "none";
+          el.style.color = isError ? "#b42318" : "#374151";
+        }
+
+        var form     = document.getElementById("vc-hub-form");
+        var out      = document.getElementById("vc-hub-result");
+        var btn      = document.getElementById("vc-hub-submit");
+        var fetchBtn = document.getElementById("fetch-cert-btn");
+        var fetchSt  = document.getElementById("fetch-cert-status");
+
+        fetchBtn.addEventListener("click", function () {
+          var vcHost = (document.getElementById("vcenter-host").value || "").trim();
+          if (!vcHost) {
+            fetchSt.textContent = "Enter the vCenter host name first.";
+            fetchSt.style.color = "#b42318";
+            return;
+          }
+          fetchBtn.disabled = true;
+          fetchSt.style.color = "#374151";
+          fetchSt.textContent = "Fetching…";
+
+          var certUrl = new URL("api/vcenter-cert", document.baseURI).href;
+
+          fetch(certUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ vcHost: vcHost })
+          })
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            if (data.error) {
+              fetchSt.style.color = "#b42318";
+              fetchSt.textContent = data.error + (data.hint ? " — " + data.hint : "");
+              return;
+            }
+            document.getElementById("vcenter-cert").value = data.pem || "";
+            var fp = data.meta && data.meta.fingerprint ? " (" + data.meta.fingerprint + ")" : "";
+            fetchSt.style.color = "#15803d";
+            fetchSt.textContent = "✓ Certificate retrieved" + fp;
+          })
+          .catch(function (err) {
+            fetchSt.style.color = "#b42318";
+            fetchSt.textContent = "Request failed: " + err.message;
+          })
+          .finally(function () {
+            fetchBtn.disabled = false;
+          });
+        });
+
         form.addEventListener("submit", function (e) {
           e.preventDefault();
-          if (!form.reportValidity()) return;
+
+          // Collect values first so we can show inline errors rather than relying on
+          // native browser validation tooltips (which can disappear unnoticed).
           var fd = new FormData(form);
-          var o = {};
-          fd.forEach(function (v, k) {
-            if (k === "useForFoundationVending") {
-              o[k] = true;
-            } else {
-              o[k] = v;
-            }
-          });
-          if (!fd.has("useForFoundationVending")) {
-            o.useForFoundationVending = false;
+          var endpointName = (fd.get("vcfInstanceName") || "").trim();
+          var description  = (fd.get("description") || "").trim();
+          var vcHost       = (fd.get("vcenterHostname") || "").trim();
+          var vcUser       = (fd.get("vcenterUsername") || "").trim();
+          var vcPass       = fd.get("vcenterPassword") || "";
+          var vcCertPem    = (fd.get("vcenterCertificate") || "").trim();
+          var hubUrl       = (fd.get("hubApiUrl") || "").trim();
+          var hubToken     = (fd.get("hubApiToken") || "").trim();
+
+          var missing = [];
+          if (!endpointName) missing.push("Name");
+          if (!vcHost)        missing.push("vCenter host name");
+          if (!vcUser)        missing.push("vCenter user name");
+          if (!vcPass)        missing.push("Password");
+          if (!vcCertPem)     missing.push("vCenter certificate");
+          if (!hubUrl)        missing.push("Tanzu Hub GraphQL API URL");
+          if (!hubToken)      missing.push("API Bearer Token");
+
+          if (missing.length) {
+            setStatus("Please fill in: " + missing.join(", "), true);
+            return;
           }
-          o.vcenterCertificateChars = o.vcenterCertificate
-            ? String(o.vcenterCertificate).length
-            : 0;
-          delete o.vcenterPassword;
-          delete o.vcenterCertificate;
-          o.note =
-            "Password and certificate PEM omitted from export; re-enter in Tanzu Hub when connecting.";
-          out.textContent = JSON.stringify(o, null, 2);
-          out.hidden = false;
+
+          if (!/^https?:\/\//i.test(hubUrl)) {
+            setStatus("Tanzu Hub GraphQL API URL must start with https:// (or http://)", true);
+            return;
+          }
+
+          var credProps = [
+            { name: "userName",  value: vcUser },
+            { name: "_password", value: vcPass },
+            { name: "cert",      value: btoa(vcCertPem) }
+          ];
+
+          var endpointProps = [
+            { name: "serverAddress", value: vcHost }
+          ];
+          if (description) endpointProps.push({ name: "description", value: description });
+
+          var variables = {
+            input: {
+              endpoint: {
+                endpointName: endpointName,
+                endpointType: "VC",
+                properties: endpointProps
+              },
+              credential: {
+                credentialName: endpointName,
+                credentialType: "VC_USER_CREDENTIAL",
+                properties: credProps,
+                permissionType: "ADMINISTRATION"
+              }
+            }
+          };
+
+          btn.disabled = true;
+          out.hidden = true;
+          setStatus("Connecting to Tanzu Hub…", false);
+
+          // Route through the plugin server proxy to avoid browser CORS restrictions.
+          // The server forwards the GraphQL request from Node (no CORS).
+          var proxyUrl = new URL("api/hub/graphql-proxy", document.baseURI).href;
+
+          fetch(proxyUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ hubUrl: hubUrl, hubToken: hubToken, query: MUTATION, variables: variables })
+          })
+          .then(function (res) {
+            return res.text().then(function (text) {
+              var data;
+              try { data = JSON.parse(text); } catch (_) { data = { raw: text }; }
+              return { ok: res.ok, status: res.status, data: data };
+            });
+          })
+          .then(function (r) {
+            out.textContent = JSON.stringify(r.data, null, 2);
+            out.hidden = false;
+
+            if (!r.ok) {
+              setStatus("HTTP " + r.status + " — check the URL and token.", true);
+              return;
+            }
+            var errors = r.data && r.data.errors;
+            if (errors && errors.length) {
+              var msg = errors.map(function (er) { return er.message; }).join("; ");
+              setStatus("GraphQL error: " + msg, true);
+              return;
+            }
+            var ep = r.data &&
+                     r.data.data &&
+                     r.data.data.managementEndpointMutation &&
+                     r.data.data.managementEndpointMutation.upsertEndpointWithCredential &&
+                     r.data.data.managementEndpointMutation.upsertEndpointWithCredential.managementEndpoint;
+            var id = ep ? (ep.managementEndpointId || ep.id || "–") : "–";
+            setStatus("✓ Endpoint registered successfully. ID: " + id, false);
+          })
+          .catch(function (err) {
+            var hint = /failed to fetch|networkerror|load failed/i.test(err.message)
+              ? " (CORS or network error — confirm the Tanzu Hub URL is reachable from this browser and allows cross-origin requests)"
+              : "";
+            setStatus("Request failed: " + err.message + hint, true);
+            out.textContent = err.message;
+            out.hidden = false;
+          })
+          .finally(function () {
+            btn.disabled = false;
+          });
         });
       })();
     </script>

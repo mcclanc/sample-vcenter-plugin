@@ -148,8 +148,8 @@
             >&#215;</button>
           </header>
           <p class="usecase-path-modal__lead">
-            Deploy the <strong>Tanzu Hub OVA appliance</strong> to your vCenter — upload the package
-            and configure deployment options below.
+            Deploy the <strong>Secure Images OVA appliance</strong> to your vCenter — upload the package
+            and configure deployment options.
           </p>
         </div>
         <div
@@ -157,31 +157,22 @@
           role="group"
           aria-label="Choose deployment type"
         >
-          <!-- Single option: Production Deployment / Tanzu Hub Deployment (OVA) -->
+          <!-- Single option: Production (HA / multi-AZ) — opens OVA deploy form -->
           <button type="button" class="usecase-path-modal__option" id="usecase-path-poc">
-            <span class="usecase-path-modal__option-glow" aria-hidden="true"></span>
-            <span class="usecase-path-modal__option-icon" aria-hidden="true">
+            <span class="usecase-path-modal__option-glow usecase-path-modal__option-glow--prod" aria-hidden="true"></span>
+            <span class="usecase-path-modal__option-icon usecase-path-modal__option-icon--prod" aria-hidden="true">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M12 4v4m-4-2v4M8 20h8a2 2 0 002-2V9a2 2 0 00-1-1.72l-4-2.31-4 2.31A2 2 0 006 9v9a2 2 0 002 2z"
-                  stroke="currentColor"
-                  stroke-width="1.75"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M9 15h6M12 12v6"
-                  stroke="currentColor"
-                  stroke-width="1.75"
-                  stroke-linecap="round"
-                />
+                <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.75"/>
+                <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.75"/>
+                <rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.75"/>
+                <rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.75"/>
               </svg>
             </span>
             <span class="usecase-path-modal__option-text">
-              <span class="usecase-path-modal__option-kicker">Production Deployment</span>
-              <span class="usecase-path-modal__option-name">Tanzu Hub Deployment (OVA)</span>
+              <span class="usecase-path-modal__option-kicker">Full Deployment</span>
+              <span class="usecase-path-modal__option-name">Production (HA / multi-AZ)</span>
               <span class="usecase-path-modal__option-hint">
-                Upload the appliance package, then deploy to vCenter with the plug-in server.
+                Open the production checklist and sizing aligned with full HA guidance.
               </span>
             </span>
             <span class="usecase-path-modal__option-go" aria-hidden="true">&#8594;</span>

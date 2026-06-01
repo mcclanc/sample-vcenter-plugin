@@ -80,16 +80,226 @@
 
         <!-- CTA -->
         <div class="di-card__footer">
-          <a
+          <button
+            type="button"
+            id="di-get-started-btn"
             class="di-btn-primary"
-            href="https://support.broadcom.com/group/ecx/productfiles?subFamily=VMware%20Tanzu%20Platform&displayGroup=VMware%20Tanzu%20Platform&release=&os=&servicePk=&language=EN"
-            target="_blank"
-            rel="noopener noreferrer"
-          >GET STARTED</a>
+          >GET STARTED</button>
         </div>
       </div>
     </main>
 
+    <!-- ===== Deploy path modal (single option: Production HA) ===== -->
+    <dialog
+      class="ova-modal usecase-path-modal"
+      id="usecase-path-modal"
+      aria-labelledby="usecase-path-title"
+    >
+      <div class="ova-modal__inner usecase-path-modal__inner">
+        <div class="usecase-path-modal__hero">
+          <header class="usecase-path-modal__header">
+            <p class="usecase-path-modal__eyebrow">Deployment</p>
+            <h2 class="usecase-path-modal__title" id="usecase-path-title">How do you want to deploy?</h2>
+            <button
+              type="button"
+              class="usecase-path-modal__close ova-modal__close"
+              id="usecase-path-modal-close"
+              aria-label="Close"
+            >&#215;</button>
+          </header>
+          <p class="usecase-path-modal__lead">
+            Deploy the <strong>Tanzu Data Intelligence OVA appliance</strong> to your vCenter — upload the package
+            and configure deployment options.
+          </p>
+        </div>
+        <div
+          class="usecase-path-modal__options"
+          role="group"
+          aria-label="Choose deployment type"
+        >
+          <button type="button" class="usecase-path-modal__option" id="usecase-path-poc">
+            <span class="usecase-path-modal__option-glow usecase-path-modal__option-glow--prod" aria-hidden="true"></span>
+            <span class="usecase-path-modal__option-icon usecase-path-modal__option-icon--prod" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.75"/>
+                <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.75"/>
+                <rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.75"/>
+                <rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.75"/>
+              </svg>
+            </span>
+            <span class="usecase-path-modal__option-text">
+              <span class="usecase-path-modal__option-kicker">Full Deployment</span>
+              <span class="usecase-path-modal__option-name">Production (HA / multi-AZ)</span>
+              <span class="usecase-path-modal__option-hint">
+                Open the production checklist and sizing aligned with full HA guidance.
+              </span>
+            </span>
+            <span class="usecase-path-modal__option-go" aria-hidden="true">&#8594;</span>
+          </button>
+        </div>
+        <p class="usecase-path-modal__dismiss-wrap">
+          <button type="button" class="usecase-path-modal__dismiss" id="usecase-path-cancel">Cancel</button>
+        </p>
+      </div>
+    </dialog>
+
+    <!-- ===== OVA deploy form modal ===== -->
+    <dialog class="ova-modal" id="ova-modal" aria-labelledby="ova-modal-title">
+      <div class="ova-modal__inner">
+        <header class="ova-modal__header">
+          <h2 class="ova-modal__title" id="ova-modal-title">Tanzu Data Intelligence Deployment (OVA)</h2>
+          <button type="button" class="ova-modal__close" id="ova-modal-close" aria-label="Close">
+            &#215;
+          </button>
+        </header>
+        <p id="ova-modal-status" class="ova-modal__status" role="status" aria-live="polite"></p>
+        <form id="ova-install-form" class="form ova-modal__form" enctype="multipart/form-data">
+          <fieldset class="ova-modal__fieldset">
+            <legend class="ova-modal__legend">Appliance OVA</legend>
+            <p class="ova-modal__help">
+              Choose an <strong>.ova</strong> or <strong>.ovf</strong> from this machine. Large packages can take several minutes to upload.
+              Evaluation builds are listed on the
+              <a
+                class="ova-modal__link"
+                href="https://support.broadcom.com/group/ecx/productfiles?subFamily=VMware%20Tanzu%20Platform&displayGroup=VMware%20Tanzu%20Platform&release=&os=&servicePk=&language=EN"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Tanzu Data Intelligence</a>
+              portal (download separately, then browse here).
+            </p>
+            <label class="ova-modal__file-label">
+              OVA / OVF file
+              <input
+                class="ova-modal__file-input"
+                type="file"
+                id="ova-file-input"
+                name="ovaFile"
+                accept=".ova,.OVF,.ovf,.OVA,application/ovf"
+                required
+              />
+            </label>
+          </fieldset>
+
+          <fieldset id="ova-modal-step-deploy" class="ova-modal__fieldset" hidden>
+            <legend class="ova-modal__legend">Deploy</legend>
+            <label>
+              vCenter hostname or IP
+              <input
+                type="text"
+                id="vc-host-input"
+                name="vcHost"
+                autocomplete="off"
+                placeholder="e.g. vcenter.example.com"
+              />
+            </label>
+            <label>
+              vCenter username
+              <input type="text" id="vc-user-input" name="vcUsername" autocomplete="username" />
+            </label>
+            <label>
+              vCenter password
+              <input type="password" id="vc-pass-input" name="vcPassword" autocomplete="current-password" />
+            </label>
+            <label class="ova-modal__checkbox-label">
+              <input type="checkbox" id="vc-insecure-tls" name="vcInsecureTls" />
+              Allow Insecure Connection
+            </label>
+            <div class="ova-modal__connect-row">
+              <button type="button" class="btn-secondary" id="vc-connect-btn">Connect</button>
+              <p class="ova-modal__connect-hint" id="vc-connect-hint">
+                Loads datacenters, clusters/hosts, datastores, and port groups from vCenter (vSphere REST API).
+              </p>
+            </div>
+            <label>
+              Datacenter
+              <select id="datacenter-input" name="datacenter" autocomplete="off">
+                <option value="">Select datacenter…</option>
+              </select>
+            </label>
+            <label>
+              Cluster or standalone host
+              <select id="compute-path-input" name="computePath" autocomplete="off">
+                <option value="">Select compute…</option>
+              </select>
+            </label>
+            <label>
+              New VM name
+              <input type="text" id="vm-name-input" name="vmName" autocomplete="off" placeholder="e.g. tanzu-data-intel" />
+            </label>
+            <label>
+              Datastore
+              <select id="datastore-input" name="datastore" autocomplete="off">
+                <option value="">Select datastore…</option>
+              </select>
+            </label>
+            <div id="ova-network-rows-wrap" class="ova-network-rows-wrap" hidden>
+              <p class="ova-modal__legend ova-modal__legend--sub" id="ova-network-rows-title">Map OVF networks</p>
+              <div id="ova-network-rows" class="ova-network-rows" aria-live="polite"></div>
+            </div>
+            <div id="ova-network-static" class="ova-network-static">
+              <label>
+                Destination port group
+                <select id="network-input" name="network" autocomplete="off">
+                  <option value="">Select port group…</option>
+                </select>
+              </label>
+              <label>
+                OVF network label to map (must match OVF)
+                <input
+                  type="text"
+                  id="ovf-network-label-input"
+                  name="ovfNetworkLabel"
+                  autocomplete="off"
+                  placeholder="VM Network"
+                />
+              </label>
+            </div>
+            <div id="ovf-dynamic-properties-wrap" class="ovf-dynamic-properties-wrap" hidden>
+              <p class="ova-modal__legend ova-modal__legend--sub">Appliance inputs</p>
+              <div id="ovf-dynamic-properties" class="ovf-dynamic-properties"></div>
+            </div>
+            <details class="ova-modal__advanced">
+              <summary>Advanced: OVF properties as JSON</summary>
+              <label>
+                Optional JSON object (merged with fields above; values here win on duplicate keys)
+                <textarea
+                  id="ovf-properties-json"
+                  name="ovfPropertiesJson"
+                  rows="4"
+                  spellcheck="false"
+                  placeholder='Example: { "guestinfo.extra": "value" }'
+                ></textarea>
+              </label>
+            </details>
+            <div class="ova-modal__actions">
+              <button type="button" class="btn-primary" id="ova-deploy-btn" disabled>
+                Deploy
+              </button>
+            </div>
+          </fieldset>
+        </form>
+        <div id="deploy-progress-wrap" class="deploy-progress-wrap" hidden>
+          <div class="deploy-progress__phases">
+            <span id="deploy-phase-upload" class="deploy-phase deploy-phase--active">
+              <span class="deploy-phase__icon">&#11014;</span> Upload
+            </span>
+            <span class="deploy-phase__sep">&#8250;</span>
+            <span id="deploy-phase-ovftool" class="deploy-phase">
+              <span class="deploy-phase__icon">&#9881;</span> Deploy
+            </span>
+          </div>
+          <div class="deploy-progress__bar-row">
+            <progress id="deploy-progress-bar" class="deploy-progress__bar" max="100" value="0"></progress>
+            <span id="deploy-progress-pct" class="deploy-progress__pct">0%</span>
+          </div>
+          <p id="deploy-progress-detail" class="deploy-progress__detail"></p>
+        </div>
+        <pre id="log" class="log" aria-live="polite"></pre>
+      </div>
+    </dialog>
+
     <script type="module" src="landing.js"></script>
+    <script type="module" src="ova-inspect.js"></script>
+    <script type="module" src="main.js"></script>
   </body>
 </html>
