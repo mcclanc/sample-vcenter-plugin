@@ -1,16 +1,16 @@
-# sample-vcenter-plugin
+﻿# sample-vcenter-plugin
 
 Remote **vSphere Client** plug-in scaffold for a **Tanzu Hub / Tanzu Platform evaluation POC** style workflow: extend the HTML5 vSphere Client with a global view, then connect your own deploy logic (SDK in the browser, or a trusted backend for OVF).
 
 ## References
 
-- **vSphere 9 — remote plug-ins:** [Developing Remote Plug-ins with the vSphere Client SDK](https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere-sdks-tools/9-0/developing-remote-plug-ins-with-the-vsphere-client-sdk-8-0.html)
+- **vSphere 9 â€” remote plug-ins:** [Developing Remote Plug-ins with the vSphere Client SDK](https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere-sdks-tools/9-0/developing-remote-plug-ins-with-the-vsphere-client-sdk-8-0.html)
 - **Manifest shape:** [Sample manifest file for a remote plug-in](https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere-sdks-tools/8-0/developing-remote-plug-ins-with-the-vsphere-client-sdk-8-0/creating-a-remote-plug-in-for-the-vsphere-client/sample-manifest-file-for-a-remote-plug-in.html)
 - **Tanzu evaluation / POC appliances on vSphere:** [Deploying Tanzu Platform evaluation appliances on vSphere](https://techdocs.broadcom.com/us/en/vmware-tanzu/platform/tanzu-platform-evaluation-appliances/10-3/tp-evaluation-appliances/deploy.html)
 
 ## Three vCenter plugin entries
 
-This server registers **three separate plugins** in vCenter — each appears as its own entry in the vSphere Client Plugins sidebar:
+This server registers **three separate plugins** in vCenter â€” each appears as its own entry in the vSphere Client Plugins sidebar:
 
 | # | Plugin name | vCenter key | Manifest URL path | Description |
 |---|---|---|---|---|
@@ -26,7 +26,7 @@ All three are served by the **same Node.js server process**. Each has its own `p
 html-client-sdk/              # Unpacked Broadcom vSphere HTML Client SDK
 ui/                           # App Platform as a Service plugin
   plugin.json                 #   manifest (navigationId: tanzuHubPoc)
-  index.html                  #   landing — use-case cards + connect flow
+  index.html                  #   landing â€” use-case cards + connect flow
   usecase.html                #   use-cases view + OVA deploy modal
   images/sprites.png          #   icon sprite
 ui-secure-images/             # Secure Images plugin
@@ -37,7 +37,7 @@ ui-data-intel/                # Data Intelligence plugin
   plugin.json                 #   manifest (navigationId: tanzuDataIntelligence)
   index.html                  #   product landing page
   images/sprites.png          #   icon sprite
-server/index.mjs              # Express server — serves all three plugin paths
+server/index.mjs              # Express server â€” serves all three plugin paths
 scripts/register-all-plugins.ps1   # Register all three plugins at once (Windows)
 scripts/register-extension-lab.ps1 # Register a single plugin (existing, Windows)
 scripts/register-extension-lab.sh  # Register a single plugin (existing, macOS/Linux)
@@ -62,14 +62,14 @@ npm run start:https    # HTTPS on port 8443
 - Secure Images manifest: `https://localhost:8443/secure-images-ui/plugin.json`
 - Data Intelligence manifest: `https://localhost:8443/data-intel-ui/plugin.json`
 
-Plain HTTP (`npm start`) is only for quick checks; vCenter registration requires **HTTPS** — [docs/REGISTRATION.md](docs/REGISTRATION.md).
+Plain HTTP (`npm start`) is only for quick checks; vCenter registration requires **HTTPS** â€” [docs/REGISTRATION.md](docs/REGISTRATION.md).
 
 ## Register all three plugins
 
 Run the combined registration script to register all three entries in one pass:
 
 ```powershell
-# Windows — interactive (prompts for credentials once, then registers all three)
+# Windows â€” interactive (prompts for credentials once, then registers all three)
 .\scripts\register-all-plugins.ps1
 
 # Non-interactive
@@ -78,7 +78,7 @@ $env:VC_SDK_URL               = "https://your-vcenter/sdk"
 $env:VC_USER                  = "administrator@vsphere.local"
 $env:VC_PASSWORD              = "your-password"
 $env:PLUGIN_SERVER_TP         = "AA:BB:CC:..."   # cert SHA-1 thumbprint
-$env:PLUGIN_SERVER_HOST       = "192.168.68.5:8443"
+$env:PLUGIN_SERVER_HOST       = "your-plugin-server:8443"
 .\scripts\register-all-plugins.ps1
 
 # To update already-registered plugins
@@ -94,12 +94,13 @@ To register a single plugin (or choose a custom key), use the existing script:
 
 ## Credentials (safe for GitHub)
 
-- **Do not commit** real vCenter or SSO passwords, API tokens, or `.env` files. This repo’s `.gitignore` excludes `.env*`, `*.pem`, and `certs/`.
+- **Do not commit** real vCenter or SSO passwords, API tokens, or `.env` files. This repoâ€™s `.gitignore` excludes `.env*`, `*.pem`, and `certs/`.
 - **Registration:** use environment variables (for example `VC_PASSWORD` for [scripts/register-extension-lab.sh](scripts/register-extension-lab.sh)), not literals in tracked files.
-- **HTML Client SDK Java samples** under `html-client-sdk/samples/` use `server.ssl.key-store-password=${KEYSTORE_PASSWORD}`. Export `KEYSTORE_PASSWORD` before running Spring Boot. For the **bundled sample `keystore.jks`**, use the passphrase from Broadcom’s upstream remote plug-in sample `application.properties` in the official SDK bundle (or replace the keystore with your own and set this variable accordingly).
+- **HTML Client SDK Java samples** under `html-client-sdk/samples/` use `server.ssl.key-store-password=${KEYSTORE_PASSWORD}`. Export `KEYSTORE_PASSWORD` before running Spring Boot. For the **bundled sample `keystore.jks`**, use the passphrase from Broadcomâ€™s upstream remote plug-in sample `application.properties` in the official SDK bundle (or replace the keystore with your own and set this variable accordingly).
 
 ## Next implementation steps
 
 1. Add the **vSphere Client Remote Plug-in** JavaScript SDK (from the Broadcom SDK bundle) to `ui/` and replace the stub UI with real inventory pickers and task monitoring.
 2. Implement deploy either via **SDK-supported APIs** or a **backend** that performs OVF deploy to vCenter using your approved automation (REST, govc, pyVmomi).
 3. Register the plug-in with vCenter using the SDK registration flow; iterate on **privileges** and **extension points** (global vs object workspace) per the same documentation set.
+
