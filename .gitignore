@@ -30,8 +30,6 @@ scripts/compose_icon_into_sprite.py
 scripts/gen-dev-certs.sh
 scripts/gen_dataintel_illustration.py
 scripts/gen_plugin_icon_sprite.py
-scripts/register-all-plugins.ps1
-scripts/register-extension-lab.ps1
 scripts/register-extension-lab.sh
 scripts/requirements-icons.txt
 scripts/set_dataintel_icon.mjs
