@@ -3,6 +3,77 @@ import { inspectOvaOrOvfFile } from "./ova-inspect.js";
 /** Max characters kept in #log to avoid huge DOM. */
 const MODAL_LOG_MAX_CHARS = 56_000;
 
+// ── OVA deploy modal: persist non-sensitive fields across refresh / navigation ──
+const OVA_FORM_STORAGE_KEY = "ova-deploy-form-v1";
+
+/** Fields saved to / restored from localStorage. Passwords are intentionally excluded. */
+const OVA_PERSIST_FIELDS = [
+  { id: "vc-host-input",           type: "text"     },
+  { id: "vc-user-input",           type: "text"     },
+  { id: "vc-insecure-tls",         type: "checkbox" },
+  { id: "vm-name-input",           type: "text"     },
+  { id: "ovf-network-label-input", type: "text"     },
+  { id: "ovf-properties-json",     type: "text"     },
+  // Dynamic selects: saved here, re-applied after each fill
+  { id: "datacenter-input",        type: "select"   },
+  { id: "compute-path-input",      type: "select"   },
+  { id: "datastore-input",         type: "select"   },
+  { id: "network-input",           type: "select"   },
+];
+
+/** True while resetOvaModal is running — prevents the programmatic form.reset()
+ *  from overwriting saved storage with blank values. */
+let ovaFormResetting = false;
+
+function saveOvaFormToStorage() {
+  if (ovaFormResetting) return;
+  try {
+    const data = {};
+    for (const f of OVA_PERSIST_FIELDS) {
+      const el = document.getElementById(f.id);
+      if (!el) continue;
+      data[f.id] = f.type === "checkbox"
+        ? /** @type {HTMLInputElement} */ (el).checked
+        : /** @type {HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement} */ (el).value;
+    }
+    localStorage.setItem(OVA_FORM_STORAGE_KEY, JSON.stringify(data));
+  } catch (_) {}
+}
+
+function loadOvaFormStorage() {
+  try {
+    const raw = localStorage.getItem(OVA_FORM_STORAGE_KEY);
+    return raw ? /** @type {Record<string,unknown>} */ (JSON.parse(raw)) : null;
+  } catch (_) { return null; }
+}
+
+/** Restore text / checkbox fields immediately (select options aren't available yet). */
+function restoreOvaFormStaticFields() {
+  const data = loadOvaFormStorage();
+  if (!data) return;
+  for (const f of OVA_PERSIST_FIELDS) {
+    if (f.type === "select") continue;
+    const el = document.getElementById(f.id);
+    if (!el) continue;
+    if (f.type === "checkbox") {
+      /** @type {HTMLInputElement} */ (el).checked = Boolean(data[f.id]);
+    } else if (data[f.id] != null && data[f.id] !== "") {
+      /** @type {HTMLInputElement|HTMLTextAreaElement} */ (el).value = String(data[f.id]);
+    }
+  }
+}
+
+/** After a dynamic select has been populated with options, try to re-apply the stored value. */
+function tryRestoreSelectValue(sel) {
+  const data = loadOvaFormStorage();
+  if (!data) return;
+  const saved = data[sel.id];
+  if (typeof saved === "string" && saved && [...sel.options].some((o) => o.value === saved)) {
+    sel.value = saved;
+  }
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 /**
  * Append a line to the modal activity log (#log). Newest lines first.
  * @param {string} msg
@@ -400,7 +471,11 @@ function fillStringSelect(sel, placeholder, values) {
     o.textContent = v;
     sel.appendChild(o);
   }
-  if (prev && [...sel.options].some((opt) => opt.value === prev)) sel.value = prev;
+  if (prev && [...sel.options].some((opt) => opt.value === prev)) {
+    sel.value = prev;
+  } else {
+    tryRestoreSelectValue(sel);
+  }
 }
 
 /**
@@ -420,7 +495,11 @@ function fillComputeSelect(sel, compute) {
     o.textContent = c.label;
     sel.appendChild(o);
   }
-  if (prev && [...sel.options].some((opt) => opt.value === prev)) sel.value = prev;
+  if (prev && [...sel.options].some((opt) => opt.value === prev)) {
+    sel.value = prev;
+  } else {
+    tryRestoreSelectValue(sel);
+  }
 }
 
 /**
@@ -441,7 +520,11 @@ function fillDatacenterSelect(sel, placeholder, datacenters) {
     o.textContent = d.name;
     sel.appendChild(o);
   }
-  if (prev && [...sel.options].some((opt) => opt.value === prev)) sel.value = prev;
+  if (prev && [...sel.options].some((opt) => opt.value === prev)) {
+    sel.value = prev;
+  } else {
+    tryRestoreSelectValue(sel);
+  }
 }
 
 /**
@@ -566,7 +649,9 @@ function resetOvaModal() {
   pluginBackendSdkProbeDone = false;
   vcNetworkChoices = [];
   const form = document.getElementById("ova-install-form");
+  ovaFormResetting = true;
   if (form instanceof HTMLFormElement) form.reset();
+  ovaFormResetting = false;
   clearDescriptorUi();
   if (deployBtn instanceof HTMLButtonElement) deployBtn.disabled = true;
 }
@@ -574,6 +659,7 @@ function resetOvaModal() {
 function openOvaModal() {
   if (!(modal instanceof HTMLDialogElement)) return;
   resetOvaModal();
+  restoreOvaFormStaticFields();   // restore before prefill so SDK fill only runs on truly empty fields
   if (deployStep instanceof HTMLElement) deployStep.hidden = false;
   prefillVcHostIfEmpty();
   setStatus(
@@ -1234,3 +1320,13 @@ deployBtn?.addEventListener("click", async () => {
     if (deployBtn instanceof HTMLButtonElement) deployBtn.disabled = false;
   }
 });
+
+// ── Wire up storage listeners for the OVA deploy modal fields ────────────────
+// Attach once at page load (elements are in the DOM even before the modal opens).
+for (const f of OVA_PERSIST_FIELDS) {
+  const el = document.getElementById(f.id);
+  if (!el) continue;
+  el.addEventListener("input",  saveOvaFormToStorage);
+  el.addEventListener("change", saveOvaFormToStorage);
+}
+// ─────────────────────────────────────────────────────────────────────────────

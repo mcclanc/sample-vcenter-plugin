@@ -28,8 +28,7 @@
     <header class="header">
       <h1>Connect this vCenter to Tanzu Hub</h1>
       <p class="muted">
-        Registers this vCenter as a Management Endpoint in Tanzu Hub via the
-        <code>upsertEndpointWithCredential</code> GraphQL mutation. Fill in the fields below and
+        Registers this vCenter as a Management Endpoint in Tanzu Hub. Fill in the fields below and
         click <strong>Connect</strong> — the endpoint and its credential will be created (or
         updated if one with the same name already exists). See
         <a
@@ -42,6 +41,44 @@
     </header>
 
     <main class="main-content">
+      <!-- ── Status screen (shown after a successful connection) ───────── -->
+      <div id="vc-hub-connected" hidden>
+        <div class="conn-badge-row">
+          <span class="conn-badge">Connected</span>
+        </div>
+        <h2 class="conn-title" id="status-endpoint-name"></h2>
+
+        <dl class="conn-details">
+          <div class="conn-detail-row">
+            <dt>vCenter Host</dt>
+            <dd id="status-vcenter-host"></dd>
+          </div>
+          <div class="conn-detail-row">
+            <dt>Connection Status</dt>
+            <dd id="status-connection-status"></dd>
+          </div>
+          <div class="conn-detail-row">
+            <dt>Endpoint ID</dt>
+            <dd id="status-endpoint-id" class="conn-mono"></dd>
+          </div>
+          <div class="conn-detail-row">
+            <dt>Tanzu Hub</dt>
+            <dd id="status-hub-url"></dd>
+          </div>
+          <div class="conn-detail-row">
+            <dt>Last Updated</dt>
+            <dd id="status-last-updated"></dd>
+          </div>
+        </dl>
+
+        <div class="conn-actions">
+          <button type="button" id="update-connection-btn" class="btn-secondary">
+            Update Connection
+          </button>
+        </div>
+      </div>
+      <!-- ── Connection form (hidden after success, restored on Update) ── -->
+      <div id="vc-hub-form-wrap">
       <form id="vc-hub-form" class="form" novalidate>
         <label for="vcf-display-name">
           Name
@@ -179,6 +216,7 @@
       </form>
 
       <div id="vc-hub-result" class="log" hidden aria-live="polite"></div>
+      </div><!-- /#vc-hub-form-wrap -->
     </main>
 
     <script type="module" src="landing.js"></script>
@@ -206,11 +244,181 @@
           el.style.color = isError ? "#b42318" : "#374151";
         }
 
-        var form     = document.getElementById("vc-hub-form");
-        var out      = document.getElementById("vc-hub-result");
-        var btn      = document.getElementById("vc-hub-submit");
-        var fetchBtn = document.getElementById("fetch-cert-btn");
-        var fetchSt  = document.getElementById("fetch-cert-status");
+        var form        = document.getElementById("vc-hub-form");
+        var formWrap    = document.getElementById("vc-hub-form-wrap");
+        var connectedEl = document.getElementById("vc-hub-connected");
+        var out         = document.getElementById("vc-hub-result");
+        var btn         = document.getElementById("vc-hub-submit");
+        var fetchBtn    = document.getElementById("fetch-cert-btn");
+        var fetchSt     = document.getElementById("fetch-cert-status");
+        var updateBtn   = document.getElementById("update-connection-btn");
+
+        // ── Show / hide form vs. status screen ───────────────────────────
+        // Called with a live GraphQL endpoint object after a successful submit.
+        function showStatusScreen(ep, submittedVcHost, submittedHubUrl) {
+          saveConnectionStatus(ep, submittedVcHost, submittedHubUrl);
+          var saved = loadConnectionStatus();
+          renderStatusScreen(saved);
+        }
+
+        // Populate and reveal the status screen from a plain data object
+        // (used both after submit and on page load from localStorage).
+        function renderStatusScreen(data) {
+          if (!data) return;
+          if (formWrap)    formWrap.hidden    = true;
+          if (connectedEl) connectedEl.hidden = false;
+
+          setText("status-endpoint-name",     data.endpointName || data.vcHost || "—");
+          setText("status-vcenter-host",      data.vcHost       || "—");
+          setText("status-connection-status", data.status       || "Registered");
+          setText("status-endpoint-id",       data.endpointId   || "—");
+          setText("status-hub-url",           data.hubUrl       || "—");
+          setText("status-last-updated",
+            data.lastUpdated ? new Date(data.lastUpdated).toLocaleString() : "—");
+
+          if (connectedEl) connectedEl.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+
+        function showFormScreen() {
+          if (connectedEl) connectedEl.hidden = true;
+          if (formWrap)    formWrap.hidden    = false;
+          restoreFormFromStorage();
+          var first = form && form.querySelector("input:not([type=hidden])");
+          if (first) first.focus();
+        }
+
+        function setText(id, value) {
+          var el = document.getElementById(id);
+          if (el) el.textContent = value;
+        }
+
+        if (updateBtn) {
+          updateBtn.addEventListener("click", showFormScreen);
+        }
+        // ─────────────────────────────────────────────────────────────────
+
+        // ── Persist form fields across navigation / refresh (passwords excluded) ──
+        var STORAGE_KEY = "tanzuhub-connect-form-v1";
+        var PERSIST_FIELDS = [
+          { id: "vcf-display-name",   type: "text" },
+          { id: "vcf-description",    type: "text" },
+          { id: "vcenter-host",       type: "text" },
+          { id: "foundation-vending", type: "checkbox" },
+          { id: "vcenter-user",       type: "text" },
+          { id: "vcenter-cert",       type: "text" },
+          { id: "hub-api-url",        type: "text" }
+          // vcenter-password and hub-api-token are intentionally not persisted
+        ];
+
+        function saveFormToStorage() {
+          try {
+            var data = {};
+            PERSIST_FIELDS.forEach(function (f) {
+              var el = document.getElementById(f.id);
+              if (!el) return;
+              data[f.id] = f.type === "checkbox" ? el.checked : el.value;
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+          } catch (_) {}
+        }
+
+        function restoreFormFromStorage() {
+          try {
+            var raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return;
+            var data = JSON.parse(raw);
+            PERSIST_FIELDS.forEach(function (f) {
+              if (!(f.id in data)) return;
+              var el = document.getElementById(f.id);
+              if (!el) return;
+              if (f.type === "checkbox") {
+                el.checked = Boolean(data[f.id]);
+              } else {
+                el.value = data[f.id] || "";
+              }
+            });
+          } catch (_) {}
+        }
+
+        function clearFormStorage() {
+          try { localStorage.removeItem(STORAGE_KEY); } catch (_) {}
+        }
+
+        // ── Persist connection status across page refreshes ───────────────
+        var CONN_STATUS_KEY = "tanzuhub-connect-status-v1";
+
+        function saveConnectionStatus(ep, vcHost, hubUrl) {
+          try {
+            localStorage.setItem(CONN_STATUS_KEY, JSON.stringify({
+              endpointName: ep && ep.endpointName ? ep.endpointName : vcHost || "",
+              vcHost:       vcHost  || "",
+              hubUrl:       hubUrl  || "",
+              endpointId:   ep ? (ep.managementEndpointId || ep.id || "") : "",
+              status:       ep && ep.managementEndpointStatus && ep.managementEndpointStatus.status
+                              ? ep.managementEndpointStatus.status : "Registered",
+              lastUpdated:  ep && ep.lastUpdateTime ? ep.lastUpdateTime : new Date().toISOString()
+            }));
+          } catch (_) {}
+        }
+
+        function loadConnectionStatus() {
+          try {
+            var raw = localStorage.getItem(CONN_STATUS_KEY);
+            return raw ? JSON.parse(raw) : null;
+          } catch (_) { return null; }
+        }
+        // ─────────────────────────────────────────────────────────────────
+
+        // Restore saved form values first (prefill below only fires when fields are still empty)
+        restoreFormFromStorage();
+
+        // Save on every change
+        PERSIST_FIELDS.forEach(function (f) {
+          var el = document.getElementById(f.id);
+          if (!el) return;
+          el.addEventListener("input",  saveFormToStorage);
+          el.addEventListener("change", saveFormToStorage);
+        });
+        // ─────────────────────────────────────────────────────────────────
+
+        // ── Pre-fill vCenter host from the active vSphere Client session ──
+        function getRegisteredVcenterHostname() {
+          try {
+            var sdk = globalThis.htmlClientSdk;
+            if (!sdk || !sdk.app || typeof sdk.app.getApiEndpoints !== "function") return "";
+            var eps = sdk.app.getApiEndpoints();
+            var origin = eps && eps.uiApiEndpoint && eps.uiApiEndpoint.origin;
+            if (typeof origin !== "string" || !origin.trim()) return "";
+            return new URL(origin).hostname || "";
+          } catch (_) { return ""; }
+        }
+
+        function prefillVcenterHostIfEmpty() {
+          var host = getRegisteredVcenterHostname();
+          if (!host) return;
+
+          var hostEl = document.getElementById("vcenter-host");
+          if (hostEl instanceof HTMLInputElement && !hostEl.value.trim()) {
+            hostEl.value = host;
+            var hint = hostEl.parentElement && hostEl.parentElement.nextElementSibling;
+            if (hint && hint.classList.contains("field-hint")) {
+              hint.textContent = "Pre-filled from your active vSphere Client session. Confirm before proceeding.";
+            }
+          }
+
+          var nameEl = document.getElementById("vcf-display-name");
+          if (nameEl instanceof HTMLInputElement && !nameEl.value.trim()) {
+            nameEl.value = host;
+          }
+        }
+
+        // Try immediately, then again once the SDK fires its ready callback.
+        prefillVcenterHostIfEmpty();
+        var _sdk = globalThis.htmlClientSdk;
+        if (_sdk && typeof _sdk.initialize === "function") {
+          _sdk.initialize(function () { prefillVcenterHostIfEmpty(); });
+        }
+        // ─────────────────────────────────────────────────────────────────
 
         fetchBtn.addEventListener("click", function () {
           var vcHost = (document.getElementById("vcenter-host").value || "").trim();
@@ -351,8 +559,7 @@
                      r.data.data.managementEndpointMutation &&
                      r.data.data.managementEndpointMutation.upsertEndpointWithCredential &&
                      r.data.data.managementEndpointMutation.upsertEndpointWithCredential.managementEndpoint;
-            var id = ep ? (ep.managementEndpointId || ep.id || "–") : "–";
-            setStatus("✓ Endpoint registered successfully. ID: " + id, false);
+            showStatusScreen(ep, vcHost, hubUrl);
           })
           .catch(function (err) {
             var hint = /failed to fetch|networkerror|load failed/i.test(err.message)
@@ -366,6 +573,17 @@
             btn.disabled = false;
           });
         });
+
+        // ── On-load routing: show status screen if a connection was previously saved ──
+        (function () {
+          var saved = loadConnectionStatus();
+          if (saved) {
+            // A prior successful connection exists — show status, hide form.
+            renderStatusScreen(saved);
+          }
+          // If no saved connection the form is already visible (default HTML state).
+        })();
+        // ─────────────────────────────────────────────────────────────────
       })();
     </script>
     <style>
@@ -402,6 +620,78 @@
         line-height: 1.4;
         resize: vertical;
         min-height: 6rem;
+      }
+
+      /* ── Status screen ───────────────────────────────────────────────── */
+      #vc-hub-connected {
+        max-width: 560px;
+        padding: 0.25rem 0;
+      }
+      .conn-badge-row {
+        margin-bottom: 0.6rem;
+      }
+      .conn-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        background: #dcfce7;
+        color: #15803d;
+        border: 1px solid #bbf7d0;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        padding: 0.2rem 0.75rem;
+      }
+      .conn-badge::before {
+        content: "✓";
+      }
+      .conn-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 0 0 1.25rem;
+        color: #111827;
+        word-break: break-all;
+      }
+      .conn-details {
+        display: grid;
+        gap: 0;
+        margin: 0 0 1.5rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .conn-detail-row {
+        display: grid;
+        grid-template-columns: 10rem 1fr;
+        align-items: baseline;
+        padding: 0.6rem 1rem;
+        border-bottom: 1px solid #e5e7eb;
+        gap: 0.75rem;
+      }
+      .conn-detail-row:last-child {
+        border-bottom: none;
+      }
+      .conn-detail-row dt {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .conn-detail-row dd {
+        font-size: 0.9rem;
+        color: #111827;
+        margin: 0;
+        word-break: break-all;
+      }
+      .conn-mono {
+        font-family: ui-monospace, Consolas, monospace;
+        font-size: 0.8rem !important;
+      }
+      .conn-actions {
+        display: flex;
+        gap: 0.75rem;
       }
     </style>
   </body>
