@@ -140,6 +140,7 @@ $DEFAULT_PLUGIN_SUMMARY = if ($env:PLUGIN_SUMMARY) { $env:PLUGIN_SUMMARY } else 
 
 $VC_USER = $null
 $VC_PASSWORD = $env:VC_PASSWORD
+$VC_THUMBPRINT = $env:VC_THUMBPRINT
 $PLUGIN_URL = $null
 $PLUGIN_SERVER_TP = $env:PLUGIN_SERVER_TP
 $PLUGIN_KEY = $null
@@ -176,11 +177,28 @@ if (Test-IsInteractive) {
         Write-Host "3) vCenter SSO password: (using existing `$env:VC_PASSWORD)"
     }
 
-    $PLUGIN_URL = Read-WithDefault "4) Plug-in manifest URL (must end with .../plugin.json)" $DEFAULT_PLUGIN_URL
+    if ([string]::IsNullOrWhiteSpace($VC_THUMBPRINT)) {
+        Write-Host ""
+        Write-Host "4) vCenter HTTPS cert SHA-1 thumbprint (-vct, for registration tool trust)"
+        $vcHost = ([System.Uri]$VC_SDK_URL).Host
+        $vcPort = ([System.Uri]$VC_SDK_URL).Port; if ($vcPort -lt 1) { $vcPort = 443 }
+        Write-Host "   Fetching thumbprint from ${vcHost}:${vcPort} ..." -ForegroundColor DarkGray
+        $autoVcThumb = Get-CertThumbprint -HostName $vcHost -Port $vcPort
+        if ($autoVcThumb) {
+            Write-Host "   Auto-detected: $autoVcThumb" -ForegroundColor Green
+        } else {
+            Write-Host "   Could not auto-detect — enter manually or leave blank to use -insecure." -ForegroundColor Yellow
+        }
+        $VC_THUMBPRINT = Read-WithDefault "   vCenter thumbprint (blank = use -insecure)" $(if ($autoVcThumb) { $autoVcThumb } else { "" })
+    } else {
+        Write-Host "4) vCenter thumbprint: (using existing `$env:VC_THUMBPRINT)"
+    }
+
+    $PLUGIN_URL = Read-WithDefault "5) Plug-in manifest URL (must end with .../plugin.json)" $DEFAULT_PLUGIN_URL
 
     if ([string]::IsNullOrWhiteSpace($PLUGIN_SERVER_TP)) {
         Write-Host ""
-        Write-Host "5) Plug-in server HTTPS cert SHA-1 thumbprint (with colons, e.g. AA:BB:CC:...)"
+        Write-Host "6) Plug-in server HTTPS cert SHA-1 thumbprint (with colons, e.g. AA:BB:CC:...)"
 
         # Auto-fetch the thumbprint from the server using .NET (no OpenSSL needed on Windows)
         $autoThumb = $null
@@ -210,14 +228,14 @@ if (Test-IsInteractive) {
             Write-Error "Thumbprint is required (or set `$env:PLUGIN_SERVER_TP)." -ErrorAction Stop
         }
     } else {
-        Write-Host "5) Plug-in server thumbprint: (using existing `$env:PLUGIN_SERVER_TP)"
+        Write-Host "6) Plug-in server thumbprint: (using existing `$env:PLUGIN_SERVER_TP)"
     }
 
-    $PLUGIN_KEY = Read-WithDefault "6) Extension key (-k); unique reverse-DNS; avoid com.example.*" $DEFAULT_PLUGIN_KEY
-    $PLUGIN_VERSION = Read-WithDefault "7) Plug-in version (-v); bump for re-register / refresh" $DEFAULT_PLUGIN_VERSION
-    $PLUGIN_NAME = Read-WithDefault "8) Display name in vSphere Client" $DEFAULT_PLUGIN_NAME
-    $PLUGIN_COMPANY = Read-WithDefault "9) Company / publisher (-c)" $DEFAULT_PLUGIN_COMPANY
-    $PLUGIN_SUMMARY = Read-WithDefault "10) Short summary (-s)" $DEFAULT_PLUGIN_SUMMARY
+    $PLUGIN_KEY = Read-WithDefault "7) Extension key (-k); unique reverse-DNS; avoid com.example.*" $DEFAULT_PLUGIN_KEY
+    $PLUGIN_VERSION = Read-WithDefault "8) Plug-in version (-v); bump for re-register / refresh" $DEFAULT_PLUGIN_VERSION
+    $PLUGIN_NAME = Read-WithDefault "9) Display name in vSphere Client" $DEFAULT_PLUGIN_NAME
+    $PLUGIN_COMPANY = Read-WithDefault "10) Company / publisher (-c)" $DEFAULT_PLUGIN_COMPANY
+    $PLUGIN_SUMMARY = Read-WithDefault "11) Short summary (-s)" $DEFAULT_PLUGIN_SUMMARY
     Write-Host ""
 } else {
     $VC_USER = if ($env:VC_USER) { $env:VC_USER } else { "administrator@vsphere.local" }
@@ -341,6 +359,11 @@ $javaArgs = @(
     "-name", $PLUGIN_NAME,
     "-summary", $PLUGIN_SUMMARY
 )
+if (-not [string]::IsNullOrWhiteSpace($VC_THUMBPRINT)) {
+    $javaArgs += @("-vct", $VC_THUMBPRINT)
+} else {
+    $javaArgs += "-insecure"
+}
 
 & $ToolBat @javaArgs
 exit $LASTEXITCODE
